@@ -4,8 +4,8 @@
  *			webdll
  *			Copyright ZKA Technologies, all rights reserved.
  *
- *			File: AppMain.cpp
- *			Purpose: Main Application entrypoint for the Mac.
+ *			File: PlatformInit.cpp
+ *			Purpose: Entrypoint for the specific platform
  *
  * =====================================================================
  */
