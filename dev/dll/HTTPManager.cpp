@@ -12,6 +12,8 @@
 #include "HTTPManager.h"
 #include "HelperMacros.h"
 
+#include <filesystem>
+
 namespace ZKA
 {
 	bool HTTPDownloadFactory::download(const String assetId, const String outputFileName) const noexcept
@@ -29,6 +31,11 @@ namespace ZKA
         http_path += full_path;
         http_path += "Contents/";
         http_path += outputFileName;
+
+        if (std::filesystem::exists(http_path))
+        {
+            std::filesystem::remove(http_path);
+        }
 
         std::ofstream file = mWriter.write(http_path.c_str());
 

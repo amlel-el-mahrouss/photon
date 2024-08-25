@@ -12,8 +12,6 @@
 
 #pragma once
 
-#include "WebCore.h"
-
 #ifndef ZKA_GET_DATA_DIR
 #ifdef _WIN32
 #define ZKA_GET_DATA_DIR(DIR)\

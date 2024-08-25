@@ -12,6 +12,8 @@
 
 #ifdef __APPLE__
 
+#include <HTTPManager.h>
+
 #include <objc/runtime.h>
 #include <objc/message.h>
 

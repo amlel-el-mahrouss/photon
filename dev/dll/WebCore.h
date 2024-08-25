@@ -12,6 +12,7 @@
 #define __ZKA_H__
 
 #include "Config.h"
+#include "HelperMacros.h"
 
 #ifndef ZKA_WINDOWS
 
@@ -601,7 +602,7 @@ namespace ZKA
 #endif
 
 				info->set_level(spdlog::level::info);
-				info->set_pattern("[%^Ngine%$] %v");
+				info->set_pattern("[%^ENGINE%$] %v");
 
 #ifdef _WIN32
 				auto critical = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
@@ -610,7 +611,7 @@ namespace ZKA
 #endif
 
 				critical->set_level(spdlog::level::critical);
-				critical->set_pattern("[%^Ngine%$] %v");
+				critical->set_pattern("[%^ENGINE%$] %v");
 
 #ifdef _WIN32
 				auto err = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
@@ -619,7 +620,7 @@ namespace ZKA
 #endif
 
 				err->set_level(spdlog::level::err);
-				err->set_pattern("[%^Ngine%$] %v");
+				err->set_pattern("[%^ENGINE%$] %v");
 
 				LOGGER = new spdlog::logger("EngineSink", {err, info, critical});
 
@@ -727,8 +728,8 @@ namespace ZKA
 
 		std::filesystem::path get_engine_dir() const noexcept
 		{
-			String dir = ZKA_ENV("APPDATA");
-			dir += "/webdll/";
+			ZKA_GET_DATA_DIR(dir);
+			dir += "Contents/";
 
 			return dir;
 		}
