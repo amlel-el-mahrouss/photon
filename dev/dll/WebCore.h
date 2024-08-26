@@ -299,14 +299,15 @@ namespace ZKA
 	using PrivShellData = HWND;
 
 	constexpr const char* SHELL_MANAGER_EXEC_OPEN = "open";
+	constexpr size_t	  cCredsLength			  = CREDUI_MAX_PASSWORD_LENGTH;
 
-	class ShellManager final
+	class ShellHelper final
 	{
 	public:
 		struct CredsResult final
 		{
 		private:
-			friend ShellManager;
+			friend ShellHelper;
 
 			TCHAR fCredsIn[cCredsLength] = {0};
 			PVOID fCredsOut				 = nullptr;
@@ -399,9 +400,9 @@ namespace ZKA
 		};
 
 		static CredsResult ask_for_credentials(
-			PrivShellData priv, const wchar_t* message = L"Please confirm it's you.\nBy entering"
+			PrivShellData priv, const wchar_t* message = L"Please confirm it's you.\nBy entering "
 														 L"your Windows credentials.",
-			const wchar_t* title = L"ZKA Web.") noexcept
+			const wchar_t* title = L"ZKA Browser.") noexcept
 		{
 			static BOOL isSaved = false;
 
