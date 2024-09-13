@@ -22,6 +22,10 @@
 #define ZKA_HTTP_PROTOCOL ("http://")
 #endif // !ZKA_HTTP_PROTOCOL
 
+#ifndef ZKA_ZKA_PROTOCOL
+#define ZKA_ZKA_PROTOCOL ("zka://")
+#endif // !ZKA_HTTP_PROTOCOL
+
 namespace ZKA::Utils
 {
 	// Accessors are like iterators, but with an offset.

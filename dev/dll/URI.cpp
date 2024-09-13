@@ -14,7 +14,7 @@
  @file
  */
 
-#include "Uri.h"
+#include "URI.h"
 
 #ifndef URI_MAXSIZE
 #define URI_MAXSIZE (1024)

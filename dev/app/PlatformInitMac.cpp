@@ -12,7 +12,7 @@
 
 #ifdef __APPLE__
 
-#include <HTTPManager.h>
+#include <HTTPDownloadFactory.h>
 
 #include <objc/runtime.h>
 #include <objc/message.h>

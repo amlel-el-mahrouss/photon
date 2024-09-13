@@ -7,9 +7,9 @@
  * =====================================================================
  */
 
-// @file HTTPManager.cpp
+// @file HTTPDownloadFactory.cpp
 
-#include "HTTPManager.h"
+#include "HTTPDownloadFactory.h"
 #include "HelperMacros.h"
 
 #include <filesystem>
@@ -18,9 +18,7 @@ namespace ZKA
 {
 	bool HTTPDownloadFactory::download(const String assetId, const String outputFileName) const noexcept
 	{
-        HTTP::HTTPWriter http_writer;
-
-        // We don't use MakeReq.exe here, it could be missing.
+        HTTP::HTTPWriter http_writer(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
         // static is added here wtf??
         // - check the preprocessor value of ZKA_GET_DATA_DIR :)
@@ -29,7 +27,7 @@ namespace ZKA
         String http_path;
 
         http_path += full_path;
-        http_path += "Contents/";
+        http_path += "Tmp/";
         http_path += outputFileName;
 
         if (std::filesystem::exists(http_path))

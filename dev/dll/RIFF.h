@@ -13,6 +13,9 @@
 
 #include <stdint.h>
 
+#define RiffTrue true
+#define RiffFalse false
+
 // WAVE file header format
 struct RiffHeader
 {
@@ -30,6 +33,3 @@ struct RiffHeader
     unsigned char data_chunk_header [4];		// DATA string or FLLR string
     unsigned int data_size;						// NumSamples * NumChannels * BitsPerSample/8 - size of the next chunk that will be read
 };
-
-#define RiffTrue true
-#define RiffFalse false

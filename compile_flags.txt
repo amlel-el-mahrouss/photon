@@ -1,0 +1,4 @@
+-std=c++20
+-Idev/
+-Idev/dll
+-Ivendor/
