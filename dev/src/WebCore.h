@@ -575,6 +575,7 @@ namespace ZKA
 #else
 		class ShellHelper final
 		{
+		public:
 			static int32_t notify_send(const char* title, const char* message)
 			{
 				std::string cmd = "notify-send -a 'iWeb Core Browser'";
@@ -585,7 +586,7 @@ namespace ZKA
 				cmd += message;
 				cmd += "\"";
 
-				system(cmd.c_str());
+				std::system(cmd.c_str());
 
 				return 0;
 			}
