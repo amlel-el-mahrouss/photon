@@ -9,6 +9,7 @@
 
 #pragma once
 
-#include "WebCore.h"
+#include <WebCore.h>
+#include <cstdint>
 
-ZKA_API int zka_crc32(const char* byte, int len);
+ZKA_API int32_t zka_crc32(const char* byte, int len);

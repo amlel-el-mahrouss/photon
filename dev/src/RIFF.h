@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include <WebCore.h>
 #include <stdint.h>
 
 #define RiffTrue true

@@ -11,4 +11,4 @@
  @file
  */
 
-#include <HTTPProto.h>
+#include <HTTPProtocol.h>

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "WebCore.h"
+#include <WebCore.h>
 
 #ifdef ZKA_WINDOWS
 

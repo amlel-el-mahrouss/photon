@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include "WebCore.h"
-#include "HTTPProto.h"
-#include "Uri.h"
+#include <WebCore.h>
+#include <HTTPProtocol.h>
+#include <URI.h>
 
 namespace ZKA
 {

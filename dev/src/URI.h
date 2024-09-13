@@ -48,6 +48,8 @@ namespace ZKA::Utils
 		UriParser& operator/=(const std::string& uri);
 		UriParser& operator/=(const char* uri);
 
+		void open_app();
+
 	private:
 		std::vector<char> m_data;
 		std::string m_protocol;

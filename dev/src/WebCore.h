@@ -11,8 +11,9 @@
 #ifndef __ZKA_H__
 #define __ZKA_H__
 
-#include "Config.h"
-#include "HelperMacros.h"
+#include <Config.h>
+#include <HelperMacros.h>
+#include <cstdlib>
 
 #ifndef ZKA_WINDOWS
 
@@ -33,8 +34,8 @@ inline int fopen_s(FILE** fp, const char* path, const char* res) noexcept
 ZKA_API void   zka_log(const char* str);
 ZKA_API size_t fstrlen(const char* str);
 ZKA_API time_t zka_get_epoch();
-ZKA_API FILE* zka_get_logger();
-ZKA_API bool  zka_open_logger();
+ZKA_API FILE*  zka_get_logger();
+ZKA_API bool   zka_open_logger();
 
 #ifdef _MSC_VER
 #define ZKA_PACKED_STRUCT(DECL)   \
@@ -571,6 +572,24 @@ namespace ZKA
 
 			return clicked_button;
 		}
+#else
+		class ShellHelper final
+		{
+			static int32_t notify_send(const char* title, const char* message)
+			{
+				std::string cmd = "notify-send -a 'iWeb Core Browser'";
+				cmd += "\"";
+				cmd += title;
+				cmd += "\"";
+				cmd += "\"";
+				cmd += message;
+				cmd += "\"";
+
+				system(cmd.c_str());
+
+				return 0;
+			}
+		};
 #endif // !ZKA_WINDOWS
 	};
 
@@ -599,7 +618,7 @@ namespace ZKA
 #ifdef _WIN32
 				auto info = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
 #else
-				auto info	  = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
+				auto info = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
 #endif
 
 				info->set_level(spdlog::level::info);
@@ -617,7 +636,7 @@ namespace ZKA
 #ifdef _WIN32
 				auto err = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
 #else
-				auto err	  = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
+				auto err = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
 #endif
 
 				err->set_level(spdlog::level::err);
@@ -639,6 +658,7 @@ namespace ZKA
 			: mTimer(std::chrono::steady_clock::now())
 		{
 		}
+
 		~Timer()
 		{
 		}
@@ -745,7 +765,7 @@ namespace ZKA
 			  mPointer(nullptr)
 		{
 			/* allocate these shits */ // type			  size
-			this->mPointer = static_cast<char*>(malloc(sizeof(char) * (sizeof(PtrType) * Size)));
+			this->mPointer = static_cast<char*>(malloc(sizeof(PtrType) * Size));
 			ZKA_ASSERT(mPointer); // assert that shit
 
 			/* zero memory that shit */
@@ -769,10 +789,12 @@ namespace ZKA
 		{
 			return sizeof(PtrType) * Size;
 		}
+
 		const std::size_t& capacity() const noexcept
 		{
 			return mIndex;
 		}
+
 		char* data() const noexcept
 		{
 			return mPointer;

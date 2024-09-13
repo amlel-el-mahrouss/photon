@@ -10,14 +10,15 @@
  * =====================================================================
  */
 
- /**
- @file
- */
+/**
+@file
+*/
 
 #include <URI.h>
+#include <HTTPDownloadFactory.h>
 
 #ifndef URI_MAXSIZE
-#define URI_MAXSIZE (1024)
+#define URI_MAXSIZE (8196)
 #endif // URI_MAXSIZE
 
 #ifndef URI_SEPARATOR
@@ -100,9 +101,46 @@ namespace ZKA::Utils
 		return *this;
 	}
 
-	std::string UriParser::port() noexcept { return m_port; }
+	std::string UriParser::port() noexcept
+	{
+		return m_port;
+	}
 
-	std::string UriParser::protocol() noexcept { return m_protocol; }
+	std::string UriParser::protocol() noexcept
+	{
+		return m_protocol;
+	}
 
-	UriParser& UriError::get() { return m_uri; }
-}
+	void UriParser::open_app()
+	{
+		if (this->protocol() == ZKA_HTTPS_PROTOCOL)
+		{
+			HTTPDownloadFactory download;
+			auto				only_host = this->get();
+			auto				only_page = this->get();
+
+			// here we make a clean host name.
+			if (only_host.find("www") != std::string::npos)
+				only_host.erase(only_host.find("www"), 3);
+
+			if (only_host.find("/") != std::string::npos)
+				only_host.erase(only_host.find("/"));
+
+			// and we get the contents later.
+			if (only_page.find("/") == std::string::npos)
+				return;
+
+			download.set_endpoint(only_host);
+
+			auto uuid = uuids::to_string(UUIDFactory::version<4>());
+
+			download.download(only_page.substr(only_page.find("/") + 1), only_host + "-" + uuid + ".html");
+		}
+	}
+
+	UriParser& UriError::get()
+	{
+		return m_uri;
+	}
+
+} // namespace ZKA::Utils
