@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			webdll
+ *			iWeb Browser Engine
  *			Copyright ZKA Technologies, all rights reserved.
  *
  *			File: Uri.h
@@ -22,9 +22,13 @@
 #define ZKA_HTTP_PROTOCOL ("http://")
 #endif // !ZKA_HTTP_PROTOCOL
 
+#ifndef ZKA_FILE_PROTOCOL
+#define ZKA_FILE_PROTOCOL ("file://")
+#endif // !ZKA_FILE_PROTOCOL
+
 #ifndef ZKA_ZKA_PROTOCOL
 #define ZKA_ZKA_PROTOCOL ("zka://")
-#endif // !ZKA_HTTP_PROTOCOL
+#endif // !ZKA_ZKA_PROTOCOL
 
 namespace ZKA::Utils
 {
@@ -48,7 +52,7 @@ namespace ZKA::Utils
 		UriParser& operator/=(const std::string& uri);
 		UriParser& operator/=(const char* uri);
 
-		void open_app();
+		bool open_app();
 
 	private:
 		std::vector<char> m_data;

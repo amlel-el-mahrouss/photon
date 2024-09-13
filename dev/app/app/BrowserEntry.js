@@ -3,7 +3,7 @@ const {
   BrowserWindow,
   BrowserView,
   WebContentsView,
-  contextBridge,
+  ipcRenderer,
 } = require("electron");
 
 const createWindow = () => {
@@ -12,19 +12,22 @@ const createWindow = () => {
     height: 720,
     frame: false,
     resizable: false,
+    minWidth: 800,
+    minHeight: 600,
     focusable: true,
     titleBarStyle: "hidden",
   });
 
-  const view = new WebContentsView();
-  win.contentView.addChildView(view);
-  view.setBounds({ x: 0, y: 0, width: 1280, height: 100 });
-  view.webContents.loadFile("res/toolbar_en.html");
+  const toolbar_view = new WebContentsView();
+  const frame_view = new WebContentsView();
 
-  const view2 = new WebContentsView();
-  win.contentView.addChildView(view2);
-  view2.setBounds({ x: 0, y: 100, width: 1280, height: 620 });
-  view2.webContents.loadFile("res/home_en.html");
+  win.contentView.addChildView(toolbar_view);
+  toolbar_view.setBounds({ x: 0, y: 0, width: 1280, height: 110 });
+  toolbar_view.webContents.loadFile("../res/toolbar_en.html");
+
+  win.contentView.addChildView(frame_view);
+  frame_view.setBounds({ x: 0, y: 110, width: 1280, height: 620 });
+  frame_view.webContents.loadFile("../res/home_en.html");
 };
 
 app.whenReady().then(() => {

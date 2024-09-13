@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			webdll
+ *			iWeb Browser Engine
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -178,5 +178,5 @@ namespace ZKA
 
 #   define ZKA_PHYSICS "Bullet"
 #else
-#   define ZKA_PHYSICS "webdll.Physics"
+#   define ZKA_PHYSICS "iWeb Browser Engine.Physics"
 #endif

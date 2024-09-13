@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			webdll
+ *			iWeb Browser Engine
  *
  *			Copyright ZKA Technologies, all rights reserved.
  *
@@ -12,7 +12,7 @@
 #define __ZKA_H__
 
 #include <Config.h>
-#include <HelperMacros.h>
+#include <Macros.h>
 #include <cstdlib>
 
 #ifndef ZKA_WINDOWS

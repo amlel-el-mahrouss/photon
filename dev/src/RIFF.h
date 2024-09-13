@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			webdll (XplicitAudio)
+ *			iWeb Browser Engine (XplicitAudio)
  *			Copyright Xplicit Corporation, all rights reserved.
  *
  *			Purpose: Xplicit Sound backend.

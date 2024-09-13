@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			webdll
+ *			iWeb Browser Engine
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -11,4 +11,4 @@
  @file
  */
 
-#include <HelperMacros.h>
+#include <Macros.h>

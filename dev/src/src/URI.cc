@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			webdll
+ *			iWeb Browser Engine
  *			Copyright ZKA Technologies, all rights reserved.
  *
  *			File: Uri.cpp
@@ -111,13 +111,14 @@ namespace ZKA::Utils
 		return m_protocol;
 	}
 
-	void UriParser::open_app()
+	bool UriParser::open_app()
 	{
-		if (this->protocol() == ZKA_HTTPS_PROTOCOL)
+		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
+			this->protocol() == ZKA_HTTP_PROTOCOL)
 		{
 			HTTPDownloadFactory download;
-			auto				only_host = this->get();
-			auto				only_page = this->get();
+			std::string			only_host = this->get();
+			std::string			only_page = this->get();
 
 			// here we make a clean host name.
 			if (only_host.find("www") != std::string::npos)
@@ -128,14 +129,25 @@ namespace ZKA::Utils
 
 			// and we get the contents later.
 			if (only_page.find("/") == std::string::npos)
-				return;
+				return false;
 
 			download.set_endpoint(only_host);
 
 			auto uuid = uuids::to_string(UUIDFactory::version<4>());
 
 			download.download(only_page.substr(only_page.find("/") + 1), only_host + "-" + uuid + ".html");
+
+			return true;
 		}
+		else if (this->protocol() == ZKA_FILE_PROTOCOL)
+		{
+#ifndef ZKA_WINDOWS
+			std::system(("xdg-open " + this->get()).c_str());
+#endif
+			return true;
+		}
+
+		return true;
 	}
 
 	UriParser& UriError::get()

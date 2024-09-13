@@ -10,6 +10,7 @@
                 background-color: #e6e6e6;
                 font-family: Helvetica, Arial, sans-serif;
                 font-size: 10pt;
+                -webkit-app-region: drag;
             }
 
             .hidden {
@@ -28,8 +29,6 @@
                 border-radius: 3px;
                 color: black;
                 box-shadow: 0px 2px 2px #aaa;
-
-                -webkit-app-region: drag;
             }
 
             #content-top #buttons,
@@ -289,19 +288,15 @@
     </head>
 
     <body>
-        <div id="main-frame-error">
-            <div id="box">
-                <div id="content-top">
-                    <div id="buttons">
-                        <button id="reload-button" onclick="location.back()">
-                            Back
-                        </button>
-                        <button id="reload-button" onclick="location.forward()">
-                            Next
-                        </button>
-                        <input placeholder="Powered by Google" />
-                    </div>
-                </div>
+        <div id="content-top">
+            <div id="buttons">
+                <button id="reload-button" onclick="location.back()">
+                    Back
+                </button>
+                <button id="reload-button" onclick="location.forward()">
+                    Next
+                </button>
+                <input placeholder="Powered by Google" />
             </div>
         </div>
     </body>

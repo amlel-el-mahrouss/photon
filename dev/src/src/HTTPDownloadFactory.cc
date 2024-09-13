@@ -1,16 +1,16 @@
 /*
  * =====================================================================
  *
- *			webdll
+ *			iWeb Browser Engine
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
  */
 
-// @file HTTPDownloadFactory.cpp
+// @file HTTPDownloadFactory.cc
 
 #include <HTTPDownloadFactory.h>
-#include <HelperMacros.h>
+#include <Macros.h>
 
 namespace ZKA
 {

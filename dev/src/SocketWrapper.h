@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			webdll
+ *			iWeb Browser Engine
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -22,9 +22,8 @@
 
 #else
 
-#ifndef _WIN32
-#   define INADDR_NONE -1
-#   define SOCKET_ERROR -1
+#ifndef ZKA_WINDOWS
+#   define SOCKET_ERROR SO_ERROR
 #   define WSAECONNRESET ECONNRESET
 #   define WSAEWOULDBLOCK EWOULDBLOCK
 #   define WSAGetLastError() errno

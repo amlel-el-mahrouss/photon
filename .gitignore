@@ -76,7 +76,7 @@ Docs/html/
 *.lib
 
 # Executables
-webdll/*.exe
+iWeb Browser Engine/*.exe
 *.out
 *.app
 

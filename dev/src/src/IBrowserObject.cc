@@ -7,8 +7,4 @@
  * =====================================================================
  */
 
- /**
- @file
- */
-
-#include <HTTPProtocol.h>
+ #include <IBrowserObject.h>

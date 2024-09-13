@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			webdll
+ *			iWeb Browser Engine
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -218,12 +218,6 @@ namespace ZKA::HTTP
 			{
 				if (shutdown(m_Socket->m_Socket, SD_BOTH) == SOCKET_ERROR)
 					ZKA_CLOSE(m_Socket->m_Socket);
-
-				char buf[256];
-				vsprintf(buf, "[ZKA] %s has been closed!", m_Socket->m_Dns.data());
-
-				ZKA_INFO(buf);
-				zka_log(buf);
 			}
 
 			SSL_free(m_Ssl);
@@ -331,7 +325,7 @@ namespace ZKA::HTTP
 			}
 			else
 			{
-				return ::read(sock->m_Socket, hdr->Bytes, hdr->Size);
+				return ::read(sock->m_Socket, bytes, len);
 			}
 		}
 
