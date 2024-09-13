@@ -22,11 +22,11 @@ const createWindow = () => {
   const frame_view = new WebContentsView();
 
   win.contentView.addChildView(toolbar_view);
-  toolbar_view.setBounds({ x: 0, y: 0, width: 1280, height: 110 });
+  toolbar_view.setBounds({ x: 0, y: 0, width: 1280, height: 60 });
   toolbar_view.webContents.loadFile("../res/toolbar_en.html");
 
   win.contentView.addChildView(frame_view);
-  frame_view.setBounds({ x: 0, y: 110, width: 1280, height: 620 });
+  frame_view.setBounds({ x: 0, y: 60, width: 1280, height: 720 - 60 });
   frame_view.webContents.loadFile("../res/home_en.html");
 };
 

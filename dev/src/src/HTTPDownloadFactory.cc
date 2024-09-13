@@ -61,21 +61,21 @@ namespace ZKA
 
             http_writer.read_from_socket(sock, bytes, MAX_BUF);
 
-            std::string _bytes = bytes;
+            String _bytes = bytes;
 
             auto valid_header = _bytes.find("\r\n\r\n");
 
-            if (valid_header == std::string::npos)
+            if (valid_header == String::npos)
             {
                 valid_header = _bytes.find("\n\n");
-                if (valid_header == std::string::npos)
+                if (valid_header == String::npos)
                 {
                     ZKA_ERROR("[HTTPS] INVALID_HTTP_PACKET.\n");
                     return false;
                 }
             }
 
-            if (valid_header != std::string::npos)
+            if (valid_header != String::npos)
             {
                 auto sz = HTTP::HTTPHelpers::content_length<10>(_bytes);
 

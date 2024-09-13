@@ -40,9 +40,9 @@ namespace ZKA::Utils
 
 	UriParser::~UriParser() = default;
 
-	std::string UriParser::get() noexcept
+	String UriParser::get() noexcept
 	{
-		std::string uri;
+		String uri;
 
 		for (size_t i = 0; i < m_data.size(); i++)
 		{
@@ -57,7 +57,7 @@ namespace ZKA::Utils
 		return uri;
 	}
 
-	UriParser& UriParser::operator/=(const std::string& uri)
+	UriParser& UriParser::operator/=(const String& uri)
 	{
 		this->operator/=(uri.c_str());
 
@@ -70,7 +70,7 @@ namespace ZKA::Utils
 			*uri == 0)
 			return *this;
 
-		std::string uri_str = uri;
+		String uri_str = uri;
 
 		if (strstr(uri, m_protocol.c_str()))
 			return *this;
@@ -101,12 +101,12 @@ namespace ZKA::Utils
 		return *this;
 	}
 
-	std::string UriParser::port() noexcept
+	String UriParser::port() noexcept
 	{
 		return m_port;
 	}
 
-	std::string UriParser::protocol() noexcept
+	String UriParser::protocol() noexcept
 	{
 		return m_protocol;
 	}
@@ -117,18 +117,18 @@ namespace ZKA::Utils
 			this->protocol() == ZKA_HTTP_PROTOCOL)
 		{
 			HTTPDownloadFactory download;
-			std::string			only_host = this->get();
-			std::string			only_page = this->get();
+			String			only_host = this->get();
+			String			only_page = this->get();
 
 			// here we make a clean host name.
-			if (only_host.find("www") != std::string::npos)
+			if (only_host.find("www") != String::npos)
 				only_host.erase(only_host.find("www"), 3);
 
-			if (only_host.find("/") != std::string::npos)
+			if (only_host.find("/") != String::npos)
 				only_host.erase(only_host.find("/"));
 
 			// and we get the contents later.
-			if (only_page.find("/") == std::string::npos)
+			if (only_page.find("/") == String::npos)
 				return false;
 
 			download.set_endpoint(only_host);

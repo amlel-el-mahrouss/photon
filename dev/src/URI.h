@@ -44,20 +44,20 @@ namespace ZKA::Utils
 		UriParser& operator=(const UriParser&) = default;
 		UriParser(const UriParser&) = default;
 
-		std::string port() noexcept;
-		std::string protocol() noexcept;
-		std::string get() noexcept;
+		String port() noexcept;
+		String protocol() noexcept;
+		String get() noexcept;
 
 	public:
-		UriParser& operator/=(const std::string& uri);
+		UriParser& operator/=(const String& uri);
 		UriParser& operator/=(const char* uri);
 
 		bool open_app();
 
 	private:
 		std::vector<char> m_data;
-		std::string m_protocol;
-		std::string m_port;
+		String m_protocol;
+		String m_port;
 
 	};
 

@@ -34,8 +34,8 @@ namespace ZKA::HTTP
 	public:
 		struct MIME final
 		{
-			std::string t_name;
-			std::string t_mime;
+			String t_name;
+			String t_mime;
 		};
 
 	public:
@@ -51,7 +51,7 @@ namespace ZKA::HTTP
 			if (!name)
 				return {.t_name = "Anything", .t_mime = "*/*"};
 
-			std::string extension = strchr(name, '.');
+			String extension = strchr(name, '.');
 			ZKA_ASSERT(!extension.empty());
 
 			if (!strcmp(extension.c_str(), ".png"))
@@ -72,7 +72,7 @@ namespace ZKA::HTTP
 		class HTTPSocket final
 		{
 			struct sockaddr_in m_Addr;
-			std::string		   m_Dns;
+			String		   m_Dns;
 			Network::CSocket   m_Socket;
 
 			friend HTTPWriter;
@@ -138,13 +138,13 @@ namespace ZKA::HTTP
 	class HTTPHelpers
 	{
 	public:
-		static std::string make_get(const std::string& path,
-									const std::string& host)
+		static String make_get(const String& path,
+									const String& host)
 		{
 			if (path.empty() || host.empty())
 				return "";
 
-			std::string request = "GET " + path + " HTTP/1.1\r\n";
+			String request = "GET " + path + " HTTP/1.1\r\n";
 			request += "Host: " + host + "\r\n";
 			request += "Connection: close";
 			request += "\r\n\r\n";
@@ -152,7 +152,7 @@ namespace ZKA::HTTP
 			return request;
 		}
 
-		static bool has_field(const std::string& http, const std::string& rest)
+		static bool has_field(const String& http, const String& rest)
 		{
 			if (http.empty())
 				return false;
@@ -160,18 +160,18 @@ namespace ZKA::HTTP
 			if (rest.empty())
 				throw std::runtime_error("Bad restrict type.");
 
-			return http.find(rest) != std::string::npos;
+			return http.find(rest) != String::npos;
 		}
 
 		template <int Base>
-		static long content_length(const std::string& http)
+		static long content_length(const String& http)
 		{
 			size_t at = http.find("Content-Length: ");
 
-			if (at == std::string::npos)
+			if (at == String::npos)
 				return HTTPHelpers::bad_pos;
 
-			std::string final;
+			String final;
 
 			for (size_t first = at; first < http.size(); ++first)
 			{
@@ -229,7 +229,7 @@ namespace ZKA::HTTP
 		HTTPWriter(const HTTPWriter&)			 = default;
 
 	public:
-		HTTPSharedPtr create_and_connect(const std::string dns)
+		HTTPSharedPtr create_and_connect(const String dns)
 		{
 			std::cout << dns << std::endl;
 

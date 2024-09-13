@@ -76,7 +76,7 @@ namespace ZKA
 	class Win32Error : public std::runtime_error
 	{
 	public:
-		Win32Error(const std::string& what)
+		Win32Error(const String& what)
 			: std::runtime_error(what)
 		{
 			mHr = GetLastError();
@@ -157,7 +157,7 @@ namespace ZKA
 	public:
 		ModuleManagerWin32() = delete;
 
-		explicit ModuleManagerWin32(const std::string& module_name)
+		explicit ModuleManagerWin32(const String& module_name)
 			: hMod(nullptr)
 		{
 			assert(!module_name.empty());
@@ -177,7 +177,7 @@ namespace ZKA
 		ModuleManagerWin32(const ModuleManagerWin32&)			 = default;
 
 		template <typename T>
-		ModuleType<T> get(const std::string& ordinal)
+		ModuleType<T> get(const String& ordinal)
 		{
 			if (!hMod)
 				return {};
@@ -458,7 +458,7 @@ namespace ZKA
 			return creds;
 		}
 
-		static Ref<HINSTANCE> open(std::string& appname, PrivShellData priv)
+		static Ref<HINSTANCE> open(String& appname, PrivShellData priv)
 		{
 			if (appname.empty())
 				return {};
@@ -484,7 +484,7 @@ namespace ZKA
 	};
 #endif
 
-	inline std::string get_at_current_path(const std::string& program_name)
+	inline String get_at_current_path(const String& program_name)
 	{
 		auto path = std::filesystem::current_path();
 		path /= program_name;
@@ -578,7 +578,7 @@ namespace ZKA
 		public:
 			static int32_t notify_send(const char* title, const char* message)
 			{
-				std::string cmd = "notify-send -a 'iWeb Core Browser'";
+				String cmd = "notify-send -a 'iWeb Core Browser'";
 				cmd += "\"";
 				cmd += title;
 				cmd += "\"";
