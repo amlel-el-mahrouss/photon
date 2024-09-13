@@ -1,0 +1,13 @@
+{
+  "name": "zka-browser-app",
+  "version": "1.0.0",
+  "description": "ZKA's browser",
+  "main": "BrowserEntry.js",
+  "scripts": {
+    "start": "electron . --no-sandbox",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "electron": "^32.1.0"
+  }
+}

@@ -3,14 +3,13 @@
     <head>
         <meta charset="UTF-8" />
 
-        <title>Mobilweb - Error</title>
+        <title>iWeb - Toolbar UI</title>
 
         <style>
             body {
                 background-color: #e6e6e6;
                 font-family: Helvetica, Arial, sans-serif;
                 font-size: 10pt;
-                margin: 50px 40px 20px 40px;
             }
 
             .hidden {
@@ -18,9 +17,8 @@
             }
 
             #main-frame-error {
-                margin: auto;
-                max-width: 540px;
-                min-width: 200px;
+                width: all;
+                height: 20px;
             }
 
             #box {
@@ -30,6 +28,8 @@
                 border-radius: 3px;
                 color: black;
                 box-shadow: 0px 2px 2px #aaa;
+
+                -webkit-app-region: drag;
             }
 
             #content-top #buttons,
@@ -38,7 +38,7 @@
                 margin: 10px 0px 25px 0px;
                 font-weight: normal;
                 font-size: 1.5em;
-                text-align: center;
+                text-align: left;
             }
 
             h2 {
@@ -75,11 +75,46 @@
             }
 
             button {
+                -webkit-app-region: no-drag;
                 border: 1px solid rgba(0, 0, 0, 0.25);
                 border-radius: 2px;
                 color: #444;
                 margin: 0px 5px;
                 min-height: 29px;
+                min-width: 65px;
+                -webkit-user-select: none;
+                padding: 8px 13px;
+                background-image: linear-gradient(
+                    #ededed,
+                    #ededed 38%,
+                    #dedede
+                );
+                /* iOS does not support linear-gradient without a prefix. */
+                background-image: -webkit-linear-gradient(
+                    #ededed,
+                    #ededed 38%,
+                    #dedede
+                );
+                background-image: -moz-linear-gradient(
+                    #ededed,
+                    #ededed 38%,
+                    #dedede
+                );
+                text-shadow: 0 1px 0 rgb(240, 240, 240);
+
+                /* Not done on mobile for performance reasons. */
+                box-shadow:
+                    0 1px 0 rgba(0, 0, 0, 0.08),
+                    inset 0 1px 2px rgba(255, 255, 255, 0.75);
+            }
+
+            input {
+                -webkit-app-region: no-drag;
+                border: 1px solid rgba(0, 0, 0, 0.25);
+                border-radius: 2px;
+                color: #444;
+                margin: 0px 5px;
+                min-height: 16px;
                 min-width: 65px;
                 -webkit-user-select: none;
                 padding: 8px 13px;
@@ -257,27 +292,14 @@
         <div id="main-frame-error">
             <div id="box">
                 <div id="content-top">
-                    <h1>
-                        <span>This page cannot be shown.</span>
-                    </h1>
-                    <h2>
-                        <span
-                            >We cannot show this page correctly, would you like
-                            to use WebKit for that?</span
-                        >
-                    </h2>
                     <div id="buttons">
-                        <button
-                            id="more-less-button"
-                            onclick="location.href='https://el-mahrouss-logic.com/help'"
-                        >
-                            Go Help (ZKA.com)</button
-                        ><button
-                            id="reload-button"
-                            onclick="location.href='zka://home'"
-                        >
-                            Go Home
+                        <button id="reload-button" onclick="location.back()">
+                            Back
                         </button>
+                        <button id="reload-button" onclick="location.forward()">
+                            Next
+                        </button>
+                        <input placeholder="Powered by Google" />
                     </div>
                 </div>
             </div>

@@ -11,4 +11,4 @@
  @file
  */
 
-#include "HelperMacros.h"
+#include <HTTPProto.h>
