@@ -7,6 +7,9 @@
 
 vcpkg/
 
+html/
+latex/
+
 Makefile
 *.make
 
