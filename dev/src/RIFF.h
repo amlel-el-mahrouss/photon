@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			iWeb Browser Engine (XplicitAudio)
+ *			Vito (XplicitAudio)
  *			Copyright Xplicit Corporation, all rights reserved.
  *
  *			Purpose: Xplicit Sound backend.
@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <WebCore.h>
+#include <BaseSpecs.h>
 #include <stdint.h>
 
 #define RiffTrue true

@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			iWeb Browser Engine
+ *			Vito
  *
  *			Copyright ZKA Technologies, all rights reserved.
  *

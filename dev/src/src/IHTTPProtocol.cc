@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			iWeb Browser Engine
+ *			Vito
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -11,4 +11,4 @@
  @file
  */
 
-#include <HTTPProtocol.h>
+#include <IHTTPProtocol.h>

@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			iWeb Browser Engine
+ *			Vito
  *			Copyright ZKA Technologies, all rights reserved.
  *
  *			File: Uri.h
@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "WebCore.h"
+#include "BaseSpecs.h"
 
 #ifndef ZKA_HTTPS_PROTOCOL
 #define ZKA_HTTPS_PROTOCOL ("https://")

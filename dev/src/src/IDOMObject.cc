@@ -1,10 +1,10 @@
 /*
  * =====================================================================
  *
- *			iWeb Browser Engine
+ *			Vito
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
  */
 
- #include <IBrowserObject.h>
+ #include <IDOMObject.h>

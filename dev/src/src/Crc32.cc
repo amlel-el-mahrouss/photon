@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			iWeb Browser Engine
+ *			Vito
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -67,7 +67,7 @@ static unsigned zka_crc32_byte(int crc, unsigned char byte) {
 int zka_crc32(const char* byte, int len) {
     int checksum = 0;
 
-    for (unsigned char index = 1; index < len; ++index)
+    for (uint8_t index = 1; index < len; ++index)
         checksum = zka_crc32_byte(checksum, byte[index]);
 
     return checksum;

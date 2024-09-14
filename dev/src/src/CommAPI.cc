@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			iWeb Browser Engine
+ *			Vito
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -11,7 +11,7 @@
  @file
  */
 
-#include <WebCore.h>
+#include <BaseSpecs.h>
 
 static FILE* g_ZKALogger{ nullptr };
 
@@ -51,7 +51,7 @@ char dbg_filename[256];
 bool zka_open_logger()
 {
 #ifdef ZKA_DEBUG
-	snprintf(dbg_filename, 256, "%lu_xplicit.log", zka_get_epoch());
+	snprintf(dbg_filename, 256, "%lu_zka.log", zka_get_epoch());
 
 	if (fopen_s(&g_ZKALogger, dbg_filename, "w+") != EXIT_SUCCESS)
 	{
@@ -61,7 +61,7 @@ bool zka_open_logger()
 		return false;
 	}
 
-#endif // !NDEBUG
+#endif // ZKA_DEBUG
 
 	return true;
 }

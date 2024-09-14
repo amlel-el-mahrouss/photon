@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			iWeb Browser Engine
+ *			Vito
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -9,12 +9,13 @@
 
 #pragma once
 
-#include <WebCore.h>
+#include <BaseSpecs.h>
 #include <SocketWrapper.h>
 
 // OpenSSL
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <string>
 
 #define ZKA_HTTP_VER  1.1f
 #define ZKA_USE_HTTPS 443
@@ -55,15 +56,19 @@ namespace ZKA::HTTP
 			ZKA_ASSERT(!extension.empty());
 
 			if (!strcmp(extension.c_str(), ".png"))
-				return {.t_name = "PNG", .t_mime = "Content-Type: image/png"};
+				return {.t_name = "PNG Image", .t_mime = "Content-Type: image/png"};
 			else if (!strcmp(extension.c_str(), ".bmp"))
-				return {.t_name = "Bitmap", .t_mime = "Content-Type: image/bmp"};
+				return {.t_name = "BMP Image", .t_mime = "Content-Type: image/bmp"};
+			else if (!strcmp(extension.c_str(), ".exe"))
+				return {.t_name = "Microsoft Portable Executable", .t_mime = "Content-Type: application/vnd.microsoft.executable"};
+			else if (!strcmp(extension.c_str(), ".pef"))
+				return {.t_name = "ZKA Preferred Executable Format", .t_mime = "Content-Type: application/vnd.zka.executable"};
 			else if (!strcmp(extension.c_str(), ".jpg"))
-				return {.t_name = "JPEG", .t_mime = "Content-Type: image/jpeg"};
-			else if (!strcmp(extension.c_str(), ".ar"))
-				return {.t_name = "ZKA Package Format", .t_mime = "Content-Type: archive/ar"};
+				return {.t_name = "JPEG Image", .t_mime = "Content-Type: image/jpeg"};
+			else if (!strcmp(extension.c_str(), ".zip"))
+				return {.t_name = "PKZIP", .t_mime = "Content-Type: application/zip"};
 
-			return {.t_name = "Not allowed", .t_mime = "Content-Type: */not-allowed"};
+			return {.t_name = "N/A", .t_mime = "Content-Type: zka/unknown"};
 		}
 	};
 
@@ -72,7 +77,7 @@ namespace ZKA::HTTP
 		class HTTPSocket final
 		{
 			struct sockaddr_in m_Addr;
-			String		   m_Dns;
+			String			   m_Dns;
 			Network::CSocket   m_Socket;
 
 			friend HTTPWriter;
@@ -118,7 +123,7 @@ namespace ZKA::HTTP
 	{
 	public:
 		explicit HTTPError(const std::uint16_t what)
-			: std::runtime_error("ZKA HTTP Error")
+			: std::runtime_error("HTTP_RESULT_")
 		{
 		}
 		~HTTPError() override = default; // let the ABI define that.
@@ -126,9 +131,17 @@ namespace ZKA::HTTP
 		HTTPError& operator=(const HTTPError&) = default;
 		HTTPError(const HTTPError&)			   = default;
 
-		int error() const
+		Int32 error() const
 		{
 			return mError;
+		}
+
+		String as_string() noexcept
+		{
+			String base = this->what();
+			base += std::to_string(mError);
+
+			return base;
 		}
 
 	private:
@@ -139,7 +152,7 @@ namespace ZKA::HTTP
 	{
 	public:
 		static String make_get(const String& path,
-									const String& host)
+							   const String& host)
 		{
 			if (path.empty() || host.empty())
 				return "";
@@ -197,7 +210,7 @@ namespace ZKA::HTTP
 	public:
 		HTTPWriter(bool use_https)
 		{
-		    if (!use_https)
+			if (!use_https)
 				return;
 
 			m_SslCtx = init_ssl();

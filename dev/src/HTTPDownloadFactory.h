@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			iWeb Browser Engine
+ *			Vito
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <WebCore.h>
-#include <HTTPProtocol.h>
+#include <BaseSpecs.h>
+#include <IHTTPProtocol.h>
 #include <URI.h>
 
 namespace ZKA
