@@ -3,7 +3,7 @@
   "compiler_std": "c++20",
   "headers_path": ["./", "../../vendor"],
   "sources_path": ["src/*.cc"],
-  "output_name": "libVitoSDK.so",
+  "output_name": "libCoreBrowserEngine.so",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__VITO__",
