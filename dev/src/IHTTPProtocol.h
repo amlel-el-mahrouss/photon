@@ -50,10 +50,12 @@ namespace ZKA::HTTP
 		MIMEFactory::MIME operator()(char* name)
 		{
 			if (!name)
-				return {.t_name = "Anything", .t_mime = "*/*"};
+				return {.t_name = "Any", .t_mime = "*/*"};
 
 			String extension = strchr(name, '.');
-			ZKA_ASSERT(!extension.empty());
+
+			if (extension.empty())
+				return {.t_name = "N/A", .t_mime = "*/*"};
 
 			if (!strcmp(extension.c_str(), ".png"))
 				return {.t_name = "PNG Image", .t_mime = "Content-Type: image/png"};
@@ -84,9 +86,10 @@ namespace ZKA::HTTP
 
 		public:
 			HTTPSocket()
-				: m_Socket(~0), m_Addr()
+				: m_Socket(INVALID_SOCKET), m_Addr()
 			{
 			}
+
 			~HTTPSocket() = default;
 
 			HTTPSocket& operator=(const HTTPSocket&) = default;

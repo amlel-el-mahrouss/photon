@@ -8,8 +8,8 @@
  * =====================================================================
  */
 
-#ifndef __ZKA_H__
-#define __ZKA_H__
+#ifndef __BASE_SPECS_H__
+#define __BASE_SPECS_H__
 
 #include <Config.h>
 #include <Macros.h>
@@ -302,10 +302,10 @@ namespace ZKA
 	constexpr const char* SHELL_MANAGER_EXEC_OPEN = "open";
 	constexpr size_t	  cCredsLength			  = CREDUI_MAX_PASSWORD_LENGTH;
 
-	class ShellHelper final
+	class ZKA_API ShellHelper final
 	{
 	public:
-		struct CredsResult final
+		struct ZKA_API CredsResult final
 		{
 		private:
 			friend ShellHelper;
@@ -463,11 +463,7 @@ namespace ZKA
 			if (appname.empty())
 				return {};
 
-			Ref<HINSTANCE> instance = ShellExecuteA(priv, SHELL_MANAGER_EXEC_OPEN, appname.c_str(), nullptr, nullptr, SW_SHOW);
-			if (!instance)
-				throw Win32Error("HINSTANCE Error, check hr()");
-
-			return instance;
+			return ShellHelper::open(appname.c_str(), priv);
 		}
 
 		static Ref<HINSTANCE> open(const char* appname, PrivShellData priv)
@@ -476,8 +472,9 @@ namespace ZKA
 				return {};
 
 			Ref<HINSTANCE> instance = ShellExecuteA(priv, SHELL_MANAGER_EXEC_OPEN, appname, nullptr, nullptr, SW_SHOW);
+
 			if (!instance)
-				throw Win32Error("HINSTANCE Error, check hr()");
+				throw Win32Error("Win32 error, check hr()");
 
 			return instance;
 		}
@@ -572,25 +569,6 @@ namespace ZKA
 
 			return clicked_button;
 		}
-#else
-		class ShellHelper final
-		{
-		public:
-			static int32_t notify_send(const char* title, const char* message)
-			{
-				String cmd = "notify-send -a 'iWeb Core Browser'";
-				cmd += "\"";
-				cmd += title;
-				cmd += "\"";
-				cmd += "\"";
-				cmd += message;
-				cmd += "\"";
-
-				std::system(cmd.c_str());
-
-				return 0;
-			}
-		};
 #endif // !ZKA_WINDOWS
 	};
 
@@ -610,7 +588,7 @@ namespace ZKA
 			return logging;
 		}
 
-		auto get()
+		auto get() noexcept
 		{
 			static spdlog::logger* LOGGER = nullptr;
 
@@ -623,7 +601,7 @@ namespace ZKA
 #endif
 
 				info->set_level(spdlog::level::info);
-				info->set_pattern("[%^ENGINE%$] %v");
+				info->set_pattern("[%^WWW%$] %v");
 
 #ifdef _WIN32
 				auto critical = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
@@ -632,7 +610,7 @@ namespace ZKA
 #endif
 
 				critical->set_level(spdlog::level::critical);
-				critical->set_pattern("[%^ENGINE%$] %v");
+				critical->set_pattern("[%^WWW%$] %v");
 
 #ifdef _WIN32
 				auto err = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
@@ -641,9 +619,9 @@ namespace ZKA
 #endif
 
 				err->set_level(spdlog::level::err);
-				err->set_pattern("[%^ENGINE%$] %v");
+				err->set_pattern("[%^WWW%$] %v");
 
-				LOGGER = new spdlog::logger("EngineSink", {err, info, critical});
+				LOGGER = new spdlog::logger("WWW_SINK", {err, info, critical});
 
 				std::ios_base::sync_with_stdio(false);
 			}
@@ -660,9 +638,7 @@ namespace ZKA
 		{
 		}
 
-		~Timer()
-		{
-		}
+		~Timer() = default;
 
 		std::chrono::steady_clock::time_point now() noexcept
 		{
@@ -878,4 +854,4 @@ namespace ZKA
 #define ZKA_ERROR(...)	  ZKA::Logger::get_singleton().get()->error(__VA_ARGS__)
 #define ZKA_INFO(...)	  ZKA::Logger::get_singleton().get()->info(__VA_ARGS__)
 
-#endif // ifndef __ZKA_H__
+#endif // ifndef __BASE_SPECS_H__

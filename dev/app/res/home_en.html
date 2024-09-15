@@ -1,314 +1,125 @@
 <!doctype html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8" />
-
-        <title>iWeb - Quick Start</title>
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Browser Home Page</title>
         <style>
             body {
-                background-color: #e6e6e6;
-                font-family: Helvetica, Arial, sans-serif;
-                font-size: 10pt;
-                margin: 50px 40px 20px 40px;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: #f0f0f0;
             }
-
-            .hidden {
-                display: none;
-            }
-
-            #main-frame-error {
-                margin: auto;
-                max-width: 540px;
-                min-width: 200px;
-            }
-
-            #box {
-                background-color: #fbfbfb;
-                border: 1px solid #aaa;
-                border-bottom: 1px solid #888;
-                border-radius: 3px;
-                color: black;
-                height: 300px;
-                box-shadow: 0px 2px 2px #aaa;
-            }
-
-            #content-top #buttons,
-            #content-top h1 {
-                color: #666;
-                margin: 10px 0px 25px 0px;
-                font-weight: normal;
-                font-size: 1.5em;
+            .container {
                 text-align: center;
             }
-
-            h2 {
-                color: #666;
-                font-size: 1.2em;
-                font-weight: normal;
-                margin: 10px 0;
+            .search-bar {
+                width: 500px;
+                padding: 10px;
+                font-size: 18px;
+                border: 1px solid #ddd;
+                border-radius: 24px;
+                outline: none;
             }
-
-            a {
-                color: #15c;
+            .quick-links {
+                margin-top: 20px;
+            }
+            .quick-links a {
+                display: inline-block;
+                margin: 0 10px;
+                padding: 10px;
                 text-decoration: none;
+                color: #333;
+                background-color: #fff;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }
+            .quick-links a:hover {
+                background-color: #e0e0e0;
             }
 
-            #content-top {
-                margin: 20px 20px 20px 25px;
+            .tooltip-container {
+                position: relative;
+                display: inline-block;
             }
 
-            #help-box-outer {
-                overflow: hidden;
-                -webkit-transition: height ease-in 218ms;
+            .tooltip-trigger {
+                padding: 10px 20px;
+                background-color: #3498db;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
             }
 
-            #help-box-inner {
-                background-color: #f9f9f9;
-                border-top: 1px solid #eee;
-                color: #444;
-                padding: 25px 20px;
-                text-align: start;
-            }
-
-            #help-box-inner a.bio-link:hover {
-                text-decoration: underline;
-            }
-
-            button {
-                border: 1px solid rgba(0, 0, 0, 0.25);
-                border-radius: 2px;
-                color: #444;
-                margin: 0px 5px;
-                min-height: 29px;
-                min-width: 65px;
-                -webkit-user-select: none;
-                padding: 8px 13px;
-                background-image: linear-gradient(
-                    #ededed,
-                    #ededed 38%,
-                    #dedede
-                );
-                /* iOS does not support linear-gradient without a prefix. */
-                background-image: -webkit-linear-gradient(
-                    #ededed,
-                    #ededed 38%,
-                    #dedede
-                );
-                background-image: -moz-linear-gradient(
-                    #ededed,
-                    #ededed 38%,
-                    #dedede
-                );
-                text-shadow: 0 1px 0 rgb(240, 240, 240);
-
-                /* Not done on mobile for performance reasons. */
-                box-shadow:
-                    0 1px 0 rgba(0, 0, 0, 0.08),
-                    inset 0 1px 2px rgba(255, 255, 255, 0.75);
-            }
-
-            input {
-                border: 1px solid rgba(0, 0, 0, 0.25);
-                border-radius: 2px;
-                color: #444;
-                margin: 0px 5px;
-                min-height: 16px;
-                min-width: 65px;
-                -webkit-user-select: none;
-                padding: 8px 13px;
-                background-image: linear-gradient(
-                    #ededed,
-                    #ededed 38%,
-                    #dedede
-                );
-                /* iOS does not support linear-gradient without a prefix. */
-                background-image: -webkit-linear-gradient(
-                    #ededed,
-                    #ededed 38%,
-                    #dedede
-                );
-                background-image: -moz-linear-gradient(
-                    #ededed,
-                    #ededed 38%,
-                    #dedede
-                );
-                text-shadow: 0 1px 0 rgb(240, 240, 240);
-
-                /* Not done on mobile for performance reasons. */
-                box-shadow:
-                    0 1px 0 rgba(0, 0, 0, 0.08),
-                    inset 0 1px 2px rgba(255, 255, 255, 0.75);
-            }
-
-            button:hover {
-                border: 1px solid rgba(0, 0, 0, 0.3);
-                color: #000;
-                background-image: -webkit-linear-gradient(
-                    #f0f0f0,
-                    #f0f0f0 38%,
-                    #e0e0e0
-                );
-                background-image: -moz-linear-gradient(
-                    #f0f0f0,
-                    #f0f0f0 38%,
-                    #e0e0e0
-                );
-                background-image: linear-gradient(
-                    #f0f0f0,
-                    #f0f0f0 38%,
-                    #e0e0e0
-                );
-                box-shadow:
-                    0 1px 0 rgba(0, 0, 0, 0.12),
-                    inset 0 1px 2px rgba(255, 255, 255, 0.95);
-            }
-
-            button:active {
-                border: 1px solid rgba(0, 0, 0, 0.3);
-                color: #444;
-                background-image: -webkit-linear-gradient(
-                    #e7e7e7,
-                    #e7e7e7 38%,
-                    #d7d7d7
-                );
-                background-image: -moz-linear-gradient(
-                    #e7e7e7,
-                    #e7e7e7 38%,
-                    #d7d7d7
-                );
-                background-image: linear-gradient(
-                    #e7e7e7,
-                    #e7e7e7 38%,
-                    #d7d7d7
-                );
-                box-shadow: none;
-            }
-
-            #reload-button {
+            .tooltip {
+                visibility: hidden;
+                width: 120px;
+                background-color: #333;
                 color: #fff;
-                background-image: -webkit-linear-gradient(
-                    #5d9aff,
-                    #5d9aff 38%,
-                    #5891f0
-                );
-                background-image: -moz-linear-gradient(
-                    #5d9aff,
-                    #5d9aff 38%,
-                    #5891f0
-                );
-                background-image: linear-gradient(
-                    #5d9aff,
-                    #5d9aff 38%,
-                    #5891f0
-                );
-                border: 1px solid rgba(45, 102, 195, 1);
-                text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
-
-                box-shadow:
-                    0 1px 0 rgba(0, 0, 0, 0.15),
-                    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px;
+                position: absolute;
+                z-index: 1;
+                bottom: 125%;
+                left: 50%;
+                margin-left: -60px;
+                opacity: 0;
+                transition: opacity 0.3s;
             }
 
-            #reload-button:hover {
-                background-image: -webkit-linear-gradient(
-                    #659efd,
-                    #659efd 38%,
-                    #6097f1
-                );
-                background-image: -moz-linear-gradient(
-                    #659efd,
-                    #659efd 38%,
-                    #6097f1
-                );
-                background-image: linear-gradient(
-                    #659efd,
-                    #659efd 38%,
-                    #6097f1
-                );
-                border: 1px solid rgba(45, 102, 195, 1);
-                box-shadow:
-                    0 1px 0 rgba(0, 0, 0, 0.25),
-                    inset 0 1px 2px rgba(255, 255, 255, 0.2);
-                transition: all 1s ease-out;
+            .tooltip::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: #333 transparent transparent transparent;
             }
 
-            #reload-button:active {
-                background-image: -webkit-linear-gradient(
-                    #6095ed,
-                    #6095ed 38%,
-                    #6095ed
-                );
-                background-image: -moz-linear-gradient(
-                    #6095ed,
-                    #6095ed 38%,
-                    #6095ed
-                );
-                background-image: linear-gradient(
-                    #6095ed,
-                    #6095ed 38%,
-                    #6095ed
-                );
-                border: 1px solid rgb(38, 84, 160);
-
-                box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
-            }
-
-            .error-code {
-                color: #a0a0a0;
-                margin-top: 15px;
-            }
-
-            /* Increase line height at higher resolutions. */
-            @media (min-width: 641px) and (min-height: 641px) {
-                #help-box-inner {
-                    line-height: 18px;
-                }
-            }
-
-            /* Decrease padding at low sizes. */
-            @media (max-width: 640px), (max-height: 640px) {
-                body {
-                    margin: 15px;
-                }
-                h1 {
-                    margin: 10px 0px 15px 0px;
-                }
-                #content-top {
-                    margin: 15px;
-                }
-                #help-box-inner {
-                    padding: 20px;
-                }
-                .error-code {
-                    margin-top: 10px;
-                }
+            .tooltip-container:hover .tooltip {
+                visibility: visible;
+                opacity: 1;
             }
         </style>
     </head>
-
     <body>
-        <div id="main-frame-error">
-            <div id="box">
-                <div id="content-top">
-                    <h1>
-                        <span>ZKA Quick Start.</span>
-                    </h1>
-                    <div id="buttons">
-                        <button
-                            class="reload-button"
-                            onclick="location.href='https://demo.versotile.org/crt.html'"
-                        >
-                            CSS/HTML Demo
-                        </button>
-                        <button
-                            class="reload-button"
-                            onclick="location.href='https://el-mahrouss-logic.com'"
-                        >
-                            ZKA
-                        </button>
-                    </div>
+        <div class="container">
+            <h1>Vito Browser</h1>
+            <form action="https://www.google.com/search" method="get">
+                <input
+                    type="text"
+                    name="q"
+                    class="search-bar"
+                    placeholder="Search the web"
+                    autofocus
+                />
+            </form>
+            <div class="quick-links">
+                <div class="tooltip-container">
+                    <a href="https://www.google.com">Google</a>
+                    <span class="tooltip">Google Search</span>
                 </div>
+                <div class="tooltip-container">
+                    <a href="https://www.youtube.com">YouTube</a>
+                    <span class="tooltip">Broadcast Yourself.</span>
+                </div>
+                <div class="tooltip-container">
+                    <a href="https://www.github.com">GitHub</a>
+                    <span class="tooltip"
+                        >Build software better, together.</span
+                    >
+                </div>
+                <a href="https://www.wikipedia.org">Wikipedia</a>
             </div>
         </div>
     </body>

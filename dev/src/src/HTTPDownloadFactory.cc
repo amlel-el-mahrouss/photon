@@ -14,94 +14,113 @@
 
 namespace ZKA
 {
-	bool HTTPDownloadFactory::download(const String assetId, const String outputFileName) const noexcept
+	bool HTTPDownloadFactory::download(const String url, const String output_file_name, const bool cache_data) const noexcept
 	{
-        HTTP::HTTPWriter http_writer(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+		HTTP::HTTPWriter http_writer(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
-        // static is added here wtf??
-        // - check the preprocessor value of ZKA_GET_DATA_DIR :)
-        ZKA_GET_DATA_DIR(full_path);
+		// static is added here wtf??
+		// - check the preprocessor value of ZKA_GET_DATA_DIR :)
+		ZKA_GET_DATA_DIR(full_path);
 
-        String http_path;
+		String http_path;
 
-        http_path += full_path;
-        http_path += "Tmp/";
-        http_path += outputFileName;
+		http_path += full_path;
+		http_path += ".tmp/";
+		http_path += output_file_name;
 
-        if (std::filesystem::exists(http_path))
-        {
-            std::filesystem::remove(http_path);
-        }
+		if (std::filesystem::exists(http_path))
+		{
+			if (cache_data)
+				return true;
 
-        std::ofstream file = mWriter.write(http_path.c_str());
+			std::filesystem::remove(http_path);
+		}
 
-        constexpr int64_t MAX_BUF = 1000000;
+		std::ofstream file = mWriter.write(http_path.c_str());
 
-        auto bytes = new char[MAX_BUF];
-        ZKA_ASSERT(bytes);
+		constexpr int64_t MAX_BUF = 1000000;
 
-        memset(bytes, 0, MAX_BUF);
+		auto bytes = new char[MAX_BUF];
+		ZKA_ASSERT(bytes);
 
-        if (bytes)
-        {
-            auto path = HTTP::HTTPHelpers::make_get(assetId, mEndpoint);
+		memset(bytes, 0, MAX_BUF);
 
-            auto http_hdr = HTTP::HTTP::HTTPHeader{ .Type = HTTP::HTTP::RequestType::GET, .Bytes = "", .Size = static_cast<int>(path.size()),};
-            memcpy(http_hdr.Bytes, path.data(), strlen(path.data()));
+		if (bytes)
+		{
+			auto path = HTTP::HTTPHelpers::make_get(url, mEndpoint);
 
-            Ref<HTTP::HTTP::HTTPHeader*> http_hdr_wrapper{ &http_hdr };
+			auto http_hdr = HTTP::HTTP::HTTPHeader{
+				.Type  = HTTP::HTTP::RequestType::GET,
+				.Bytes = "",
+				.Size  = static_cast<int>(path.size()),
+			};
+			memcpy(http_hdr.Bytes, path.data(), strlen(path.data()));
 
-            auto sock = http_writer.create_and_connect(mEndpoint);
+			Ref<HTTP::HTTP::HTTPHeader*> http_hdr_wrapper{&http_hdr};
 
-            if (!sock)
-                return false;
+			auto sock = http_writer.create_and_connect(mEndpoint);
 
-            if (!http_writer.send_from_socket(sock, http_hdr_wrapper))
-                return false;
+			if (!sock)
+				return false;
 
-            http_writer.read_from_socket(sock, bytes, MAX_BUF);
+			if (!http_writer.send_from_socket(sock, http_hdr_wrapper))
+				return false;
 
-            String _bytes = bytes;
+			http_writer.read_from_socket(sock, bytes, MAX_BUF);
 
-            auto valid_header = _bytes.find("\r\n\r\n");
+			String _bytes = bytes;
 
-            if (valid_header == String::npos)
-            {
-                valid_header = _bytes.find("\n\n");
-                if (valid_header == String::npos)
-                {
-                    ZKA_ERROR("[HTTPS] INVALID_HTTP_PACKET.\n");
-                    return false;
-                }
-            }
+			auto valid_header = _bytes.find("\r\n\r\n");
 
-            if (valid_header != String::npos)
-            {
-                auto sz = HTTP::HTTPHelpers::content_length<10>(_bytes);
+			if (valid_header == String::npos)
+			{
+				valid_header = _bytes.find("\n\n");
+				if (valid_header == String::npos)
+				{
+					ZKA_ERROR("[HTTPS] INVALID_HTTP_PACKET.\n");
+					return false;
+				}
+			}
 
-                delete bytes;
-                bytes = new char[sz];
+			if (valid_header != String::npos)
+			{
+				auto sz = HTTP::HTTPHelpers::content_length<10>(_bytes);
 
-                auto _sz = http_writer.read_from_socket(sock, bytes, sz);
+				delete bytes;
+				bytes = new char[sz];
 
-                while (_sz > 0)
-                {
-                    file.write(bytes, _sz);
-                    _sz = http_writer.read_from_socket(sock, bytes, sz);
-                }
+				auto _sz = http_writer.read_from_socket(sock, bytes, sz);
 
-                file.flush();
-                file.close();
+				while (_sz > 0)
+				{
+					file.write(bytes, _sz);
+					_sz = http_writer.read_from_socket(sock, bytes, sz);
+				}
 
-                delete[] bytes;
+				file.flush();
+				file.close();
 
-                return true;
-            }
+				delete[] bytes;
 
-            delete[] bytes;
-        }
+				return true;
+			}
 
-        return false;
+			delete[] bytes;
+		}
+
+		return false;
+	}
+
+	String HTTPDownloadFactory::get_download_dir() noexcept
+	{
+		ZKA_GET_DATA_DIR(full_path);
+
+		String http_path;
+
+		http_path += full_path;
+		http_path += ".tmp/";
+
+		return http_path;
 	}
 
 	void HTTPDownloadFactory::set_endpoint(const String& endpoint) noexcept
@@ -109,4 +128,4 @@ namespace ZKA
 		if (!endpoint.empty())
 			mEndpoint = endpoint;
 	}
-}
+} // namespace ZKA

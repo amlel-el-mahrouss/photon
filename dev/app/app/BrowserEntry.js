@@ -3,13 +3,16 @@ const {
   BrowserWindow,
   BrowserView,
   WebContentsView,
-  ipcRenderer,
-} = require("electron");
+  screen,
+} = require("electron/main");
 
-const createWindow = () => {
+const vitoCreateWindow = () => {
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width, height } = primaryDisplay.workAreaSize;
+
   const win = new BrowserWindow({
-    width: 1280,
-    height: 720,
+    width: width,
+    height: height,
     frame: false,
     resizable: false,
     minWidth: 800,
@@ -22,14 +25,14 @@ const createWindow = () => {
   const frame_view = new WebContentsView();
 
   win.contentView.addChildView(toolbar_view);
-  toolbar_view.setBounds({ x: 0, y: 0, width: 1280, height: 60 });
+  toolbar_view.setBounds({ x: 0, y: 0, width: width, height: 60 });
   toolbar_view.webContents.loadFile("../res/toolbar_en.html");
 
   win.contentView.addChildView(frame_view);
-  frame_view.setBounds({ x: 0, y: 60, width: 1280, height: 720 - 60 });
+  frame_view.setBounds({ x: 0, y: 60, width: width, height: height - 60 });
   frame_view.webContents.loadFile("../res/home_en.html");
 };
 
 app.whenReady().then(() => {
-  createWindow();
+  vitoCreateWindow();
 });

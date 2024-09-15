@@ -30,8 +30,9 @@ namespace ZKA
 		ZKA_COPY_DEFAULT(HTTPDownloadFactory);
 
 	public:
-		bool download(const String assetId, const String outputFileName) const noexcept;
+		bool download(const String url, const String output_file_name, const bool cache_data = false) const noexcept;
 		void set_endpoint(const String& endpoint) noexcept;
+		String get_download_dir() noexcept;
 
 	public:
 		const char* protocol() noexcept { return ZKA_HTTPS_PROTOCOL; }
@@ -40,8 +41,7 @@ namespace ZKA
 	private:
 		//! Filesystem wrapper, create, open, delete!
 		FilesystemWrapper mWriter;
-
-		//! HTTP endpoint
+		//! HTTP endpoint.
 		String mEndpoint;
 
 	};

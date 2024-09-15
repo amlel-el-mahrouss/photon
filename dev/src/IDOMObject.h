@@ -15,6 +15,8 @@
 #include <BaseSpecs.h>
 
 #define ZKA_INVALID_OBJECT (0)
+#define ZKA_HEAD_OBJECT (1)
+#define ZKA_BODY_OBJECT (2)
 
 namespace ZKA
 {
