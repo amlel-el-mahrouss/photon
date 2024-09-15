@@ -30,7 +30,7 @@
 
 #ifdef _WIN32
 
-#   include <WinSock2.h>
+#   include <winsock2.h>
 #   include <ws2tcpip.h>
 
 #else
@@ -66,13 +66,17 @@
 
 #ifdef _WIN32
 
-#include <Windows.h>
+#include <windows.h>
 #include <tlhelp32.h>
 
 #include <shellapi.h>
-#include <CommCtrl.h>
+#include <commctrl.h>
 #include <wincred.h>
 #include <combaseapi.h>
+
+#ifndef CRED_PACK_GENERIC_CREDENTIALS
+#define CRED_PACK_GENERIC_CREDENTIALS 0x1
+#endif
 
 #pragma comment(lib, "credui.lib")
 #pragma comment(lib, "comctl32.lib")
@@ -80,8 +84,10 @@
 
 #pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-#ifdef _WIN32
-#define ZKA_WINDOWS 1
+#ifdef _MSC_VER
+#   define ZKA_MSVC (1)
+#   define ZKA_CXX_COMPILER "Microsoft Visual C++"
+#   define ZKA_CXX ZKA_MSVC
 #endif // ifdef _MSC_VER
 
 #ifdef __EXPORT_ZKA__
@@ -90,12 +96,11 @@
 #   define ZKA_API __declspec(dllimport)
 #endif
 
-
-#ifdef _MSC_VER
-#   define ZKA_MSVC (1)
-#   define ZKA_CXX_COMPILER "Microsoft Visual C++"
-#   define ZKA_CXX ZKA_MSVC
-#endif // ifdef _MSC_VER
+#ifndef _NDEBUG
+#   define ZKA_DEBUG (1)
+#else
+#   define ZKA_RELEASE (2)
+#endif
 
 #else
 
@@ -103,25 +108,8 @@
 #   define ZKA_GCC (2)
 #   define ZKA_CXX_COMPILER "GNU C++"
 #   define ZKA_CXX ZKA_GCC
-
-#   define ZKA_API __attribute__ ((visibility ("default")))
 #endif
 
-#endif
-
-#ifndef _NDEBUG
-#   define ZKA_DEBUG (1)
-#else
-#   define ZKA_RELEASE (2)
-#endif
-
-#ifdef _WIN32
-#   define ZKA_ASSERT(expression) (void)(                                                \
-            (!!(expression)) ||                                                              \
-            (_wassert(_CRT_WIDE(#expression), _CRT_WIDE(__FILE__), (unsigned)(__LINE__)), 0) \
-        )
-#else
-#   define ZKA_ASSERT(expression) assert(expression)
 #endif
 
 #ifndef ZKA_ENV
@@ -170,13 +158,11 @@ namespace ZKA
     typedef std::uint64_t UInt64;
 }
 
-#define ZKA_RELEASE "1.0.0-Salamanca"
-
-#ifdef ZKA_BULLET
-#   include <bullet/btBulletCollisionCommon.h>
-#   include <bullet/btBulletDynamicsCommon.h>
-
-#   define ZKA_PHYSICS "Bullet"
+#ifdef _WIN32
+#   define ZKA_ASSERT(expression) (void)(                                                \
+            (!!(expression)) ||                                                              \
+            (_wassert(_CRT_WIDE(#expression), _CRT_WIDE(__FILE__), (unsigned)(__LINE__)), 0) \
+        )
 #else
-#   define ZKA_PHYSICS "Vito.Physics"
+#   define ZKA_ASSERT(expression) assert(expression)
 #endif

@@ -117,8 +117,8 @@ namespace ZKA::Utils
 			this->protocol() == ZKA_HTTP_PROTOCOL)
 		{
 			HTTPDownloadFactory download;
-			String			only_host = this->get();
-			String			only_page = this->get();
+			String				only_host = this->get();
+			String				only_page = this->get();
 
 			// here we make a clean host name.
 			if (only_host.find("www") != String::npos)
@@ -135,7 +135,7 @@ namespace ZKA::Utils
 
 			auto uuid = uuids::to_string(UUIDFactory::version<4>());
 
-			download.download(only_page.substr(only_page.find("/") + 1), only_host + "-" + uuid + ".html");
+			download.download_url(only_page.substr(only_page.find("/") + 1), only_host + "-" + uuid + ".html");
 
 			return true;
 		}
@@ -143,11 +143,18 @@ namespace ZKA::Utils
 		{
 #ifndef ZKA_WINDOWS
 			std::system(("xdg-open " + this->get()).c_str());
+#else
+            IShellHelper::open(this->get(), nullptr);
 #endif
 			return true;
 		}
+		else if (this->protocol() == ZKA_ZKA_PROTOCOL)
+		{
+		    // We don't handle the ZKA protocol directly.
+			return false;
+		}
 
-		return true;
+		return false;
 	}
 
 	UriParser& UriError::get()

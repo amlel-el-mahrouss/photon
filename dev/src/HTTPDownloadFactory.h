@@ -30,9 +30,9 @@ namespace ZKA
 		ZKA_COPY_DEFAULT(HTTPDownloadFactory);
 
 	public:
-		bool download(const String url, const String output_file_name, const bool cache_data = false) const noexcept;
+		bool download_url(const String url, const String output_file_name, const bool cache_data = false) const noexcept;
 		void set_endpoint(const String& endpoint) noexcept;
-		String get_download_dir() noexcept;
+		String get_download_dir() const noexcept;
 
 	public:
 		const char* protocol() noexcept { return ZKA_HTTPS_PROTOCOL; }

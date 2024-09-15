@@ -26,7 +26,7 @@ namespace ZKA::HTTP
 	static int16_t ZKA_HTTP_PORT = ZKA_USE_HTTPS;
 
 	class MIMEFactory;
-	class HTTPHelpers;
+	class IHTTPHelper;
 	class HTTPWriter;
 	class HTTPError;
 
@@ -151,18 +151,30 @@ namespace ZKA::HTTP
 		int mError{200};
 	};
 
-	class HTTPHelpers
+	inline String ZKA_HTTP_GET = "GET";
+	inline String ZKA_HTTP_GET = "POST";
+	inline String ZKA_HTTP_GET = "PUT";
+	inline String ZKA_HTTP_GET = "DELETE";
+
+	class ZKA_API IHTTPHelper final
 	{
 	public:
 		static String make_get(const String& path,
-							   const String& host)
+							   const String& host, bool no_tls, const String request_type)
 		{
 			if (path.empty() || host.empty())
 				return "";
 
-			String request = "GET " + path + " HTTP/1.1\r\n";
+			String request = request_type + " " + path + " HTTP/1.1\r\n";
+
+			if (no_tls)
+			{
+			    request = request_type + " " + path + " HTTP/1.0\r\n";
+			}
+
 			request += "Host: " + host + "\r\n";
-			request += "Connection: close";
+			request += "Connection: close\r\n";
+			request += "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
 			request += "\r\n\r\n";
 
 			return request;
@@ -185,7 +197,7 @@ namespace ZKA::HTTP
 			size_t at = http.find("Content-Length: ");
 
 			if (at == String::npos)
-				return HTTPHelpers::bad_pos;
+				return IHTTPHelper::bad_pos;
 
 			String final;
 

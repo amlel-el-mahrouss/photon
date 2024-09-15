@@ -14,9 +14,7 @@
 #include <cassert>
 #include <BaseSpecs.h>
 
-#define ZKA_INVALID_OBJECT (0)
-#define ZKA_HEAD_OBJECT (1)
-#define ZKA_BODY_OBJECT (2)
+#define ZKA_DOM_OBJECT (0)
 
 namespace ZKA
 {
@@ -24,18 +22,20 @@ namespace ZKA
 
 	class IDOMObject
 	{
-	public:
 		explicit IDOMObject(rapidxml::xml_node<char>* p_node)
 			: m_node(p_node)
 		{
 			ZKA_ASSERT(m_node);
 		}
 
+	public:
 		virtual ~IDOMObject() = default;
+
+		ZKA_COPY_DEFAULT(IDOMObject);
 
 		virtual Int32 type()
 		{
-			return ZKA_INVALID_OBJECT;
+			return ZKA_DOM_OBJECT;
 		}
 
 		virtual Ref<rapidxml::xml_node<char>*> node_as_ref()
@@ -80,7 +80,29 @@ namespace ZKA
 			return m_node->first_node(attrib_name, strlen(attrib_name));
 		}
 
+		static IDOMObject* make_dom_factory(char* data)
+		{
+			rapidxml::xml_document<char> doc;
+			doc.parse<0>(data);
+
+			IDOMObject* new_dom = new IDOMObject(doc.first_node());
+
+			if (new_dom)
+			{
+				ZKA_ERROR("new_dom allocation failure, probably out of memory.");
+				return nullptr;
+			}
+
+			return new_dom;
+		}
+
 	private:
 		rapidxml::xml_node<char>* m_node{nullptr};
 	};
+
+	bool is_html_document(String the_xml_blob) noexcept
+	{
+		return the_xml_blob.find("<!DOCTYPE html>") != String::npos &&
+			   the_xml_blob.find("<!DOCTYPE html>") == 0;
+	}
 } // namespace ZKA

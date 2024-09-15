@@ -302,15 +302,15 @@ namespace ZKA
 	constexpr const char* SHELL_MANAGER_EXEC_OPEN = "open";
 	constexpr size_t	  cCredsLength			  = CREDUI_MAX_PASSWORD_LENGTH;
 
-	class ZKA_API ShellHelper final
+	class ZKA_API IShellHelper final
 	{
 	public:
 		struct ZKA_API CredsResult final
 		{
 		private:
-			friend ShellHelper;
+			friend IShellHelper;
 
-			TCHAR fCredsIn[cCredsLength] = {0};
+			WCHAR fCredsIn[cCredsLength] = {0};
 			PVOID fCredsOut				 = nullptr;
 			ULONG fSizeCredsOut			 = cCredsLength;
 			ULONG fAuthPkg				 = 0;
@@ -325,9 +325,9 @@ namespace ZKA
 
 			bool operator()() noexcept
 			{
-				TCHAR* pszName		  = new TCHAR[CREDUI_MAX_USERNAME_LENGTH + 1];
-				TCHAR* pszPwd		  = new TCHAR[CREDUI_MAX_PASSWORD_LENGTH + 1];
-				TCHAR* pszDomain	  = new TCHAR[CREDUI_MAX_DOMAIN_TARGET_LENGTH + 1];
+				WCHAR* pszName		  = new WCHAR[CREDUI_MAX_USERNAME_LENGTH + 1];
+				WCHAR* pszPwd		  = new WCHAR[CREDUI_MAX_PASSWORD_LENGTH + 1];
+				WCHAR* pszDomain	  = new WCHAR[CREDUI_MAX_DOMAIN_TARGET_LENGTH + 1];
 				DWORD  maxLenName	  = CREDUI_MAX_USERNAME_LENGTH + 1;
 				DWORD  maxLenPassword = CREDUI_MAX_PASSWORD_LENGTH + 1;
 
@@ -337,7 +337,7 @@ namespace ZKA
 				//    DECRYPT CREDS BUFFER, ACCORDING TO TYPE.
 				//////////////////////////////////////////////////////////////
 
-				if (::CredUnPackAuthenticationBuffer(
+				if (::CredUnPackAuthenticationBufferW(
 						CRED_PACK_GENERIC_CREDENTIALS, fCredsOut, fSizeCredsOut, pszName,
 						&maxLenName, pszDomain, &maxLenDomain, pszPwd,
 						&maxLenPassword) == FALSE)
@@ -367,7 +367,7 @@ namespace ZKA
 
 				HANDLE token = nullptr;
 
-				if (::LogonUser(pszName, pszDomain, pszPwd, LOGON32_LOGON_NETWORK,
+				if (::LogonUserW(pszName, pszDomain, pszPwd, LOGON32_LOGON_NETWORK,
 								LOGON32_PROVIDER_DEFAULT, &token) == FALSE)
 				{
 					//////////////////////////////////////////////////////////////
@@ -401,9 +401,8 @@ namespace ZKA
 		};
 
 		static CredsResult ask_for_credentials(
-			PrivShellData priv, const wchar_t* message = L"Please confirm it's you.\nBy entering "
-														 L"your Windows credentials.",
-			const wchar_t* title = L"ZKA Browser.") noexcept
+			PrivShellData priv, const wchar_t* message = L"Please confirm it's you.",
+			const wchar_t* title = L"ZKA Security.") noexcept
 		{
 			static BOOL isSaved = false;
 
@@ -415,7 +414,7 @@ namespace ZKA
 			if (isSaved)
 				return credsRemember;
 
-			CREDUI_INFO ui{};
+			CREDUI_INFOW ui{};
 			ui.cbSize		  = sizeof(CREDUI_INFO);
 			ui.hwndParent	  = priv;
 			ui.pszMessageText = message;
@@ -433,7 +432,7 @@ namespace ZKA
 
 			auto dwAuthError = 0;
 
-			auto dwResult = ::CredUIPromptForWindowsCredentials(
+			auto dwResult = ::CredUIPromptForWindowsCredentialsW(
 				&ui,					  // Customizing information
 				dwAuthError,			  // Error code to display
 				&creds.fAuthPkg,		  // Authorization package
@@ -463,7 +462,7 @@ namespace ZKA
 			if (appname.empty())
 				return {};
 
-			return ShellHelper::open(appname.c_str(), priv);
+			return IShellHelper::open(appname.c_str(), priv);
 		}
 
 		static Ref<HINSTANCE> open(const char* appname, PrivShellData priv)

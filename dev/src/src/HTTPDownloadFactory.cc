@@ -14,19 +14,11 @@
 
 namespace ZKA
 {
-	bool HTTPDownloadFactory::download(const String url, const String output_file_name, const bool cache_data) const noexcept
+	bool HTTPDownloadFactory::download_url(const String url, const String output_file_name, const bool cache_data) const noexcept
 	{
 		HTTP::HTTPWriter http_writer(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
-		// static is added here wtf??
-		// - check the preprocessor value of ZKA_GET_DATA_DIR :)
-		ZKA_GET_DATA_DIR(full_path);
-
-		String http_path;
-
-		http_path += full_path;
-		http_path += ".tmp/";
-		http_path += output_file_name;
+		String http_path = this->get_download_dir();
 
 		if (std::filesystem::exists(http_path))
 		{
@@ -111,7 +103,7 @@ namespace ZKA
 		return false;
 	}
 
-	String HTTPDownloadFactory::get_download_dir() noexcept
+	String HTTPDownloadFactory::get_download_dir() const noexcept
 	{
 		ZKA_GET_DATA_DIR(full_path);
 
