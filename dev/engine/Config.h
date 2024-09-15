@@ -110,6 +110,8 @@
 #   define ZKA_CXX ZKA_GCC
 #endif
 
+#   define ZKA_API
+
 #endif
 
 #ifndef ZKA_ENV

@@ -5,7 +5,7 @@
  *			Copyright ZKA Technologies, all rights reserved.
  *
  *			File: Uri.h
- *			Purpose: Xplicit URI parser
+ *			Purpose: ZKA URI parser
  *
  * =====================================================================
  */

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <HTTPDownloadFactory.h>
+#include <HTTPRequestFactory.h>
 #include <rapidxml/rapidxml.hpp>
 #include <cassert>
 #include <BaseSpecs.h>

@@ -1,10 +1,10 @@
 /*
  * =====================================================================
  *
- *			Vito (XplicitAudio)
- *			Copyright Xplicit Corporation, all rights reserved.
+ *			Vito Audio Subsystem
+ *			Copyright ZKA Corporation, all rights reserved.
  *
- *			Purpose: Xplicit Sound backend.
+ *			Purpose: ZKA Sound backend.
  *
  * =====================================================================
  */

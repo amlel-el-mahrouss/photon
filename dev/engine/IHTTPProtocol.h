@@ -152,9 +152,9 @@ namespace ZKA::HTTP
 	};
 
 	inline String ZKA_HTTP_GET = "GET";
-	inline String ZKA_HTTP_GET = "POST";
-	inline String ZKA_HTTP_GET = "PUT";
-	inline String ZKA_HTTP_GET = "DELETE";
+	inline String ZKA_HTTP_POST = "POST";
+	inline String ZKA_HTTP_PUT = "PUT";
+	inline String ZKA_HTTP_DELETE = "DELETE";
 
 	class ZKA_API IHTTPHelper final
 	{

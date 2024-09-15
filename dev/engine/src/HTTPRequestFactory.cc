@@ -7,14 +7,14 @@
  * =====================================================================
  */
 
-// @file HTTPDownloadFactory.cc
+// @file HTTPRequestFactory.cc
 
-#include <HTTPDownloadFactory.h>
+#include <HTTPRequestFactory.h>
 #include <Macros.h>
 
 namespace ZKA
 {
-	bool HTTPDownloadFactory::download_url(const String url, const String output_file_name, const bool cache_data) const noexcept
+	bool HTTPRequestFactory::get_url(const String url, const String output_file_name, const bool cache_data) const
 	{
 		HTTP::HTTPWriter http_writer(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
@@ -30,16 +30,15 @@ namespace ZKA
 
 		std::ofstream file = mWriter.write(http_path.c_str());
 
-		constexpr int64_t MAX_BUF = 1000000;
-
-		auto bytes = new char[MAX_BUF];
+		constexpr int64_t ZKA_MAX_BUF = 100000000;
+		char* bytes = new char[ZKA_MAX_BUF];
 		ZKA_ASSERT(bytes);
 
-		memset(bytes, 0, MAX_BUF);
+		ZeroMemory(bytes, ZKA_MAX_BUF);
 
 		if (bytes)
 		{
-			auto path = HTTP::HTTPHelpers::make_get(url, mEndpoint);
+			auto path = HTTP::IHTTPHelper::make_get(url, mEndpoint, !(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS), HTTP::ZKA_HTTP_GET);
 
 			auto http_hdr = HTTP::HTTP::HTTPHeader{
 				.Type  = HTTP::HTTP::RequestType::GET,
@@ -58,7 +57,7 @@ namespace ZKA
 			if (!http_writer.send_from_socket(sock, http_hdr_wrapper))
 				return false;
 
-			http_writer.read_from_socket(sock, bytes, MAX_BUF);
+			http_writer.read_from_socket(sock, bytes, ZKA_MAX_BUF);
 
 			String _bytes = bytes;
 
@@ -69,16 +68,16 @@ namespace ZKA
 				valid_header = _bytes.find("\n\n");
 				if (valid_header == String::npos)
 				{
-					ZKA_ERROR("[HTTPS] INVALID_HTTP_PACKET.\n");
+					throw BrowserError("HTTP_INVALID_REQUEST");
 					return false;
 				}
 			}
 
 			if (valid_header != String::npos)
 			{
-				auto sz = HTTP::HTTPHelpers::content_length<10>(_bytes);
+				auto sz = HTTP::IHTTPHelper::content_length<10>(_bytes);
 
-				delete bytes;
+				delete[] bytes;
 				bytes = new char[sz];
 
 				auto _sz = http_writer.read_from_socket(sock, bytes, sz);
@@ -103,7 +102,7 @@ namespace ZKA
 		return false;
 	}
 
-	String HTTPDownloadFactory::get_download_dir() const noexcept
+	String HTTPRequestFactory::get_download_dir() const noexcept
 	{
 		ZKA_GET_DATA_DIR(full_path);
 
@@ -115,7 +114,7 @@ namespace ZKA
 		return http_path;
 	}
 
-	void HTTPDownloadFactory::set_endpoint(const String& endpoint) noexcept
+	void HTTPRequestFactory::set_endpoint(const String& endpoint) noexcept
 	{
 		if (!endpoint.empty())
 			mEndpoint = endpoint;

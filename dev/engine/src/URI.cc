@@ -5,7 +5,7 @@
  *			Copyright ZKA Technologies, all rights reserved.
  *
  *			File: Uri.cpp
- *			Purpose: Xplicit URI parser
+ *			Purpose: ZKA URI parser
  *
  * =====================================================================
  */
@@ -15,7 +15,7 @@
 */
 
 #include <URI.h>
-#include <HTTPDownloadFactory.h>
+#include <HTTPRequestFactory.h>
 
 #ifndef URI_MAXSIZE
 #define URI_MAXSIZE (8196)
@@ -116,7 +116,7 @@ namespace ZKA::Utils
 		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
 			this->protocol() == ZKA_HTTP_PROTOCOL)
 		{
-			HTTPDownloadFactory download;
+			HTTPRequestFactory http_factory;
 			String				only_host = this->get();
 			String				only_page = this->get();
 
@@ -131,11 +131,11 @@ namespace ZKA::Utils
 			if (only_page.find("/") == String::npos)
 				return false;
 
-			download.set_endpoint(only_host);
+			http_factory.set_endpoint(only_host);
 
 			auto uuid = uuids::to_string(UUIDFactory::version<4>());
 
-			download.download_url(only_page.substr(only_page.find("/") + 1), only_host + "-" + uuid + ".html");
+			http_factory.get_url(only_page.substr(only_page.find("/") + 1), only_host + "-" + uuid + ".html");
 
 			return true;
 		}
