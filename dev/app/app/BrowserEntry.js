@@ -6,8 +6,6 @@ const {
   screen,
 } = require("electron");
 
-const { app } = require("electron");
-
 const vitoCreateWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
