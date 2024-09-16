@@ -47,7 +47,7 @@ ZKA_API bool   zka_open_logger();
 
 namespace ZKA
 {
-	namespace FS = std::filesystem;
+    namespace FS = std::filesystem;
 
 	using Thread = std::thread;
 	using String = std::string;
@@ -59,7 +59,7 @@ namespace ZKA
 
 	using PString = BasicString<PChar>;
 
-	class BrowserError : public std::runtime_error
+	class ZKA_API BrowserError : public std::runtime_error
 	{
 	public:
 		BrowserError(const char* error = "Unidentified Error")
@@ -73,7 +73,7 @@ namespace ZKA
 	};
 
 #ifdef ZKA_WINDOWS
-	class Win32Error : public std::runtime_error
+	class ZKA_API Win32Error : public std::runtime_error
 	{
 	public:
 		Win32Error(const String& what)
@@ -101,7 +101,7 @@ namespace ZKA
 	class ModuleManagerWin32;
 
 	template <typename T>
-	class ModuleType final
+	class ZKA_API ModuleType final
 	{
 		ModuleType() = default;
 		friend ModuleManagerWin32;
@@ -125,7 +125,7 @@ namespace ZKA
 		T m_ptr;
 	};
 
-	class Win32Helper final
+	class ZKA_API Win32Helper final
 	{
 	public:
 		static HWND find_wnd(const wchar_t* compare)
@@ -152,7 +152,7 @@ namespace ZKA
 		}
 	};
 
-	class ModuleManagerWin32 final
+	class ZKA_API ModuleManagerWin32 final
 	{
 	public:
 		ModuleManagerWin32() = delete;
@@ -206,7 +206,7 @@ namespace ZKA
 	concept IsPointerAndNotNull = (IsPointer<T> && NotNull<T>);
 
 	template <typename T>
-	class Ref
+	class ZKA_API Ref
 	{
 	public:
 		Ref()
@@ -305,6 +305,12 @@ namespace ZKA
 	class ZKA_API IShellHelper final
 	{
 	public:
+		explicit IShellHelper() = default;
+		~IShellHelper()			= default;
+
+		IShellHelper& operator=(const IShellHelper&) = default;
+		IShellHelper(const IShellHelper&)			 = default;
+
 		struct ZKA_API CredsResult final
 		{
 		private:
@@ -368,7 +374,7 @@ namespace ZKA
 				HANDLE token = nullptr;
 
 				if (::LogonUserW(pszName, pszDomain, pszPwd, LOGON32_LOGON_NETWORK,
-								LOGON32_PROVIDER_DEFAULT, &token) == FALSE)
+								 LOGON32_PROVIDER_DEFAULT, &token) == FALSE)
 				{
 					//////////////////////////////////////////////////////////////
 					//    NOW CLEAR HERE, DONT ADD A GOTO, SINCE WE ERRORED.
@@ -400,9 +406,8 @@ namespace ZKA
 			}
 		};
 
-		static CredsResult ask_for_credentials(
-			PrivShellData priv, const wchar_t* message = L"Please confirm it's you.",
-			const wchar_t* title = L"ZKA Security.") noexcept
+		CredsResult ask_for_credentials(
+			PrivShellData priv, const wchar_t* message = L"Please confirm it's you.", const wchar_t* title = L"ZKA Security.") noexcept
 		{
 			static BOOL isSaved = false;
 
@@ -457,7 +462,7 @@ namespace ZKA
 			return creds;
 		}
 
-		static Ref<HINSTANCE> open(String& appname, PrivShellData priv)
+		Ref<HINSTANCE> open(const String& appname, PrivShellData priv)
 		{
 			if (appname.empty())
 				return {};
@@ -465,7 +470,7 @@ namespace ZKA
 			return IShellHelper::open(appname.c_str(), priv);
 		}
 
-		static Ref<HINSTANCE> open(const char* appname, PrivShellData priv)
+		Ref<HINSTANCE> open(const char* appname, PrivShellData priv)
 		{
 			if (!appname)
 				return {};
@@ -482,7 +487,7 @@ namespace ZKA
 
 	inline String get_at_current_path(const String& program_name)
 	{
-		auto path = std::filesystem::current_path();
+		auto path = FS::current_path();
 		path /= program_name;
 
 		try
@@ -699,7 +704,7 @@ namespace ZKA
 	public:
 		std::ofstream write(const char* outPath) const noexcept
 		{
-			if (std::filesystem::exists(outPath))
+			if (FS::exists(outPath))
 				return std::ofstream(outPath, std::ios::app);
 
 			return std::ofstream(outPath);
@@ -707,7 +712,7 @@ namespace ZKA
 
 		std::ofstream open(const char* outPath) const noexcept
 		{
-			if (!std::filesystem::exists(outPath))
+			if (!FS::exists(outPath))
 				return {};
 
 			return std::ofstream(outPath);
@@ -715,15 +720,15 @@ namespace ZKA
 
 		bool create_directory(const char* path) const noexcept
 		{
-			return std::filesystem::create_directory(path);
+			return FS::create_directory(path);
 		}
 
-		std::filesystem::path get_temp() const noexcept
+		FS::path get_temp() const noexcept
 		{
-			return std::filesystem::temp_directory_path();
+			return FS::temp_directory_path();
 		}
 
-		std::filesystem::path get_engine_dir() const noexcept
+		FS::path get_engine_dir() const noexcept
 		{
 			ZKA_GET_DATA_DIR(dir);
 			dir += "Contents/";

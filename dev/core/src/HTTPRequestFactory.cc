@@ -20,12 +20,12 @@ namespace ZKA
 
 		String http_path = this->get_download_dir();
 
-		if (std::filesystem::exists(http_path))
+		if (FS::exists(http_path))
 		{
 			if (cache_data)
 				return true;
 
-			std::filesystem::remove(http_path);
+			FS::remove(http_path);
 		}
 
 		std::ofstream file = mWriter.write(http_path.c_str());
