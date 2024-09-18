@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include <HTTPRequestFactory.h>
+#include <IURLLoader.hpp>
 #include <rapidxml/rapidxml.hpp>
 #include <cassert>
-#include <BaseSpecs.h>
+#include <BaseSpecs.hpp>
 
 #define ZKA_DOM_OBJECT (0)
 

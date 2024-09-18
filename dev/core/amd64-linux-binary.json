@@ -1,0 +1,15 @@
+{
+  "compiler_path": "g++",
+  "compiler_std": "c++20",
+  "headers_path": ["./", "../../vendor"],
+  "sources_path": ["src/*.cc", "standalone/*.cc"],
+  "output_name": "CoreBrowser.elf",
+  "compiler_flags": ["-lssl", "-lcrypto"],
+  "cpp_macros": [
+    "__VITO__",
+    "__AMD64_VITO__",
+    "cVitoVersion=0x0100",
+    "cVitoVersionHighest=0x0100",
+    "cVitoVersionLowest=0x0100"
+  ]
+}

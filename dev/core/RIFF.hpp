@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <BaseSpecs.h>
+#include <BaseSpecs.hpp>
 #include <stdint.h>
 
 #define RiffTrue true

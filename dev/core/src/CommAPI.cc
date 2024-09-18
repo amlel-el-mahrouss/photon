@@ -11,13 +11,13 @@
  @file
  */
 
-#include <BaseSpecs.h>
+#include <BaseSpecs.hpp>
 
-static FILE* g_ZKALogger{ nullptr };
+static FILE* gZKALogger{ nullptr };
 
 FILE* zka_get_logger(void)
 {
-	return g_ZKALogger;
+	return gZKALogger;
 }
 
 size_t fstrlen(const char* buffer)
@@ -42,7 +42,7 @@ void zka_log(const char* msg)
 #ifdef ZKA_DEBUG
 	char buf[sizeof(time_t)];
 	snprintf(buf, sizeof(time_t), "%lu", zka_get_epoch());
-	fprintf(g_ZKALogger, "[%s - LOG] %s", buf, msg);
+	fprintf(gZKALogger, "[%s - LOG] %s", buf, msg);
 #endif // ifdef ZKA_DEBUG
 }
 
@@ -53,7 +53,7 @@ bool zka_open_logger()
 #ifdef ZKA_DEBUG
 	snprintf(dbg_filename, 256, "%lu_zka.log", zka_get_epoch());
 
-	if (fopen_s(&g_ZKALogger, dbg_filename, "w+") != EXIT_SUCCESS)
+	if (fopen_s(&gZKALogger, dbg_filename, "w+") != EXIT_SUCCESS)
 	{
 		assert(false);
 		exit(EXIT_FAILURE);

@@ -4,6 +4,7 @@
 ## ZKA
 
 *.exe
+*.elf
 
 vendor/skia/
 depot_tools/

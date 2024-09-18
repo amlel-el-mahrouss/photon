@@ -11,7 +11,7 @@
  @file
  */
 
-#include <Crc32.h>
+#include <Crc32.hpp>
 
 ZKA::UInt32 ZKA_CRC32_TAB[256] = {
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,

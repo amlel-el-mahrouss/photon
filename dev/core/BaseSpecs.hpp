@@ -11,8 +11,8 @@
 #ifndef __BASE_SPECS_H__
 #define __BASE_SPECS_H__
 
-#include <Config.h>
-#include <Macros.h>
+#include <Config.hpp>
+#include <Macros.hpp>
 #include <cstdlib>
 
 #ifndef ZKA_WINDOWS
@@ -857,5 +857,6 @@ namespace ZKA
 #define ZKA_CRITICAL(...) ZKA::Logger::get_singleton().get()->critical(__VA_ARGS__)
 #define ZKA_ERROR(...)	  ZKA::Logger::get_singleton().get()->error(__VA_ARGS__)
 #define ZKA_INFO(...)	  ZKA::Logger::get_singleton().get()->info(__VA_ARGS__)
+#define ZKA_WARN(...)	  ZKA::Logger::get_singleton().get()->warn(__VA_ARGS__)
 
 #endif // ifndef __BASE_SPECS_H__

@@ -14,20 +14,20 @@
 @file
 */
 
-#include <URI.h>
-#include <HTTPRequestFactory.h>
+#include <URI.hpp>
+#include <IURLLoader.hpp>
 
-#ifndef URI_MAXSIZE
-#define URI_MAXSIZE (8196)
-#endif // URI_MAXSIZE
+#ifndef ZKA_URI_MAXSIZE
+#define ZKA_URI_MAXSIZE (8196)
+#endif // ZKA_URI_MAXSIZE
 
-#ifndef URI_SEPARATOR
-#define URI_SEPARATOR '\a'
-#endif // URI_SEPARATOR
+#ifndef ZKA_URI_SEPARATOR
+#define ZKA_URI_SEPARATOR '\a'
+#endif // ZKA_URI_SEPARATOR
 
 namespace ZKA::Utils
 {
-	UriParser::UriParser(const char* protocol)
+	URIParser::URIParser(const char* protocol)
 	{
 		for (std::size_t i = 0; i < strlen(protocol); i++)
 		{
@@ -38,15 +38,15 @@ namespace ZKA::Utils
 		}
 	}
 
-	UriParser::~UriParser() = default;
+	URIParser::~URIParser() = default;
 
-	String UriParser::get() noexcept
+	String URIParser::get() noexcept
 	{
 		String uri;
 
 		for (size_t i = 0; i < m_data.size(); i++)
 		{
-			if (m_data[i] == URI_SEPARATOR)
+			if (m_data[i] == ZKA_URI_SEPARATOR)
 				continue;
 
 			uri.push_back(m_data[i]);
@@ -57,14 +57,14 @@ namespace ZKA::Utils
 		return uri;
 	}
 
-	UriParser& UriParser::operator/=(const String& uri)
+	URIParser& URIParser::operator/=(const String& uri)
 	{
 		this->operator/=(uri.c_str());
 
 		return *this;
 	}
 
-	UriParser& UriParser::operator/=(const char* uri)
+	URIParser& URIParser::operator/=(const char* uri)
 	{
 		if (!uri ||
 			*uri == 0)
@@ -79,10 +79,13 @@ namespace ZKA::Utils
 		{
 			if (uri_str[i] == '\\' || uri_str[i] == '/')
 			{
-				m_data.push_back(URI_SEPARATOR);
+				m_data.push_back(ZKA_URI_SEPARATOR);
 			}
 			else if (uri_str[i] == ':')
 			{
+				if (!m_port.empty())
+					m_port.clear();
+
 				++i;
 
 				for (size_t y = i; y < uri_str.size(); ++y)
@@ -101,63 +104,42 @@ namespace ZKA::Utils
 		return *this;
 	}
 
-	String UriParser::port() noexcept
+	String URIParser::port() noexcept
 	{
 		return m_port;
 	}
 
-	String UriParser::protocol() noexcept
+	String URIParser::protocol() noexcept
 	{
 		return m_protocol;
 	}
 
-	bool UriParser::open_app()
+	bool URIParser::open_app()
 	{
 		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
 			this->protocol() == ZKA_HTTP_PROTOCOL)
 		{
-			HTTPRequestFactory http_factory;
-			String				only_host = this->get();
-			String				only_page = this->get();
-
-			// here we make a clean host name.
-			if (only_host.find("www") != String::npos)
-				only_host.erase(only_host.find("www"), 3);
-
-			if (only_host.find("/") != String::npos)
-				only_host.erase(only_host.find("/"));
-
-			// and we get the contents later.
-			if (only_page.find("/") == String::npos)
-				return false;
-
-			http_factory.set_endpoint(only_host);
-
-			auto uuid = uuids::to_string(UUIDFactory::version<4>());
-
-			http_factory.get_url(only_page.substr(only_page.find("/") + 1), only_host + "-" + uuid + ".html");
-
-			return true;
+			return false;
 		}
 		else if (this->protocol() == ZKA_FILE_PROTOCOL)
 		{
 #ifndef ZKA_WINDOWS
 			std::system(("xdg-open " + this->get()).c_str());
 #else
-            IShellHelper::open(this->get(), nullptr);
+			IShellHelper::open(this->get(), nullptr);
 #endif
 			return true;
 		}
 		else if (this->protocol() == ZKA_ZKA_PROTOCOL)
 		{
-		    // We don't handle the ZKA protocol directly.
+			// We don't handle the ZKA protocol directly.
 			return false;
 		}
 
 		return false;
 	}
 
-	UriParser& UriError::get()
+	URIParser& URIError::get()
 	{
 		return m_uri;
 	}

@@ -12,19 +12,23 @@
 
 #pragma once
 
-#include "BaseSpecs.h"
+#include <BaseSpecs.hpp>
 
 #ifndef ZKA_HTTPS_PROTOCOL
-#define ZKA_HTTPS_PROTOCOL ("https://")
+#define ZKA_HTTPS_PROTOCOL ("https")
 #endif // !ZKA_HTTPS_PROTOCOL
 
 #ifndef ZKA_HTTP_PROTOCOL
-#define ZKA_HTTP_PROTOCOL ("http://")
+#define ZKA_HTTP_PROTOCOL ("http")
 #endif // !ZKA_HTTP_PROTOCOL
 
 #ifndef ZKA_FILE_PROTOCOL
-#define ZKA_FILE_PROTOCOL ("file://")
+#define ZKA_FILE_PROTOCOL ("file")
 #endif // !ZKA_FILE_PROTOCOL
+
+#ifndef ZKA_MAIL_PROTOCOL
+#define ZKA_MAIL_PROTOCOL ("mailto")
+#endif // !ZKA_MAIL_PROTOCOL
 
 #ifndef ZKA_ZKA_PROTOCOL
 #define ZKA_ZKA_PROTOCOL ("zka://")
@@ -33,25 +37,26 @@
 namespace ZKA::Utils
 {
 	// Accessors are like iterators, but with an offset.
-	using UriAccessor = int32_t;
+	using URIAccessor = int32_t;
 
-	class ZKA_API UriParser final
+	class ZKA_API URIParser final
 	{
 	public:
-		UriParser(const char* protocol);
-		virtual ~UriParser();
+		URIParser(const char* protocol);
+		virtual ~URIParser();
 
-		UriParser& operator=(const UriParser&) = default;
-		UriParser(const UriParser&) = default;
+		URIParser& operator=(const URIParser&) = default;
+		URIParser(const URIParser&) = default;
 
 		String port() noexcept;
 		String protocol() noexcept;
 		String get() noexcept;
 
 	public:
-		UriParser& operator/=(const String& uri);
-		UriParser& operator/=(const char* uri);
+		URIParser& operator/=(const String& uri);
+		URIParser& operator/=(const char* uri);
 
+	public:
 		bool open_app();
 
 	private:
@@ -61,19 +66,19 @@ namespace ZKA::Utils
 
 	};
 
-	class ZKA_API UriError final : public std::runtime_error
+	class ZKA_API URIError final : public std::runtime_error
 	{
 	public:
-		UriError(UriParser& uri) : std::runtime_error("UriError"), m_uri(uri) {}
-		~UriError() = default; // let the ABI define that.
+		URIError(URIParser& uri) : std::runtime_error("URIError"), m_uri(uri) {}
+		~URIError() = default; // let the ABI define that.
 
-		UriError& operator=(const UriError&) = default;
-		UriError(const UriError&) = default;
+		URIError& operator=(const URIError&) = default;
+		URIError(const URIError&) = default;
 
-		UriParser& get();
+		URIParser& get();
 
 	private:
-		UriParser m_uri;
+		URIParser m_uri;
 
 	};
 }

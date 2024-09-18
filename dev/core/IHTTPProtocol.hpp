@@ -9,13 +9,13 @@
 
 #pragma once
 
-#include <BaseSpecs.h>
-#include <SocketWrapper.h>
+#include <BaseSpecs.hpp>
+#include <SocketWrapper.hpp>
 
 // OpenSSL
+#include <cstdio>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include <string>
 
 #define ZKA_HTTP_VER  1.1f
 #define ZKA_USE_HTTPS 443
@@ -23,7 +23,7 @@
 
 namespace ZKA::HTTP
 {
-	static int16_t ZKA_HTTP_PORT = ZKA_USE_HTTPS;
+	inline int32_t ZKA_HTTP_PORT = ZKA_USE_HTTPS;
 
 	class MIMEFactory;
 	class IHTTPHelper;
@@ -104,9 +104,8 @@ namespace ZKA::HTTP
 
 		struct HTTPHeader final
 		{
-			RequestType Type;
-			char		Bytes[4096];
-			int			Size;
+			RequestType		  Type;
+			std::vector<char> Bytes;
 		};
 
 	} // namespace HTTP
@@ -151,31 +150,27 @@ namespace ZKA::HTTP
 		int mError{200};
 	};
 
-	inline String ZKA_HTTP_GET = "GET";
-	inline String ZKA_HTTP_POST = "POST";
-	inline String ZKA_HTTP_PUT = "PUT";
+	inline String ZKA_HTTP_GET	  = "GET";
+	inline String ZKA_HTTP_POST	  = "POST";
+	inline String ZKA_HTTP_PUT	  = "PUT";
 	inline String ZKA_HTTP_DELETE = "DELETE";
 
 	class ZKA_API IHTTPHelper final
 	{
 	public:
-		static String make_get(const String& path,
-							   const String& host, bool no_tls, const String request_type)
+		static String form_request(const String& path,
+								   const String& host,
+								   bool			 no_tls,
+								   const String	 request_type)
 		{
 			if (path.empty() || host.empty())
 				return "";
 
-			String request = request_type + " " + path + " HTTP/1.1\r\n";
-
-			if (no_tls)
-			{
-			    request = request_type + " " + path + " HTTP/1.0\r\n";
-			}
-
-			request += "Host: " + host + "\r\n";
+			String request = request_type + " /" + path + " HTTP/1.1\r\n";
+			request += "Host: www." + host + "\r\n";
 			request += "Connection: close\r\n";
-			request += "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
-			request += "\r\n\r\n";
+
+			ZKA_INFO(request);
 
 			return request;
 		}
@@ -223,7 +218,7 @@ namespace ZKA::HTTP
 	class HTTPWriter final
 	{
 	public:
-		HTTPWriter(bool use_https)
+		explicit HTTPWriter(bool use_https)
 		{
 			if (!use_https)
 				return;
@@ -238,6 +233,8 @@ namespace ZKA::HTTP
 
 				throw BrowserError("Bad SSL context, SSL_new() failed!");
 			}
+
+			ZKA_WARN("Init HTTPS context.");
 		}
 
 		~HTTPWriter() noexcept
@@ -259,8 +256,6 @@ namespace ZKA::HTTP
 	public:
 		HTTPSharedPtr create_and_connect(const String dns)
 		{
-			std::cout << dns << std::endl;
-
 			if (dns.empty())
 				throw HTTPError(HTTP_DNS_ERROR);
 
@@ -288,8 +283,8 @@ namespace ZKA::HTTP
 				{
 					ZKA_CLOSE(sock->m_Socket);
 
-					zka_log("Invalid hostname! returning nullptr...");
-					zka_log(dns.c_str());
+					ZKA_INFO("Invalid hostname! returning nullptr...");
+					ZKA_INFO(dns.c_str());
 
 					return nullptr;
 				}
@@ -299,9 +294,13 @@ namespace ZKA::HTTP
 
 			sock->m_Dns = String{dns.data()};
 
-			int result = connect(sock->m_Socket, reinterpret_cast<struct sockaddr*>(&sock->m_Addr), sizeof(sock->m_Addr));
+			int result = ::connect(sock->m_Socket, reinterpret_cast<struct sockaddr*>(&sock->m_Addr), sizeof(sock->m_Addr));
+
 			if (result == SOCKET_ERROR)
+			{
+				perror("HTTP");
 				return nullptr;
+			}
 
 			if (ZKA_HTTP_PORT == ZKA_USE_HTTPS)
 			{
@@ -313,10 +312,12 @@ namespace ZKA::HTTP
 					return nullptr;
 				}
 
-				printf("[ZKA] Connected with HTTPS %s encryption\n", SSL_get_cipher(m_Ssl));
+				ZKA_INFO(String("Connected with HTTPS encryption: ") + SSL_get_cipher(m_Ssl));
+
+				return sock;
 			}
 
-			printf("[ZKA] Connected with HTTP.\n");
+			ZKA_INFO("Connected with HTTP.");
 
 			return sock;
 		}
@@ -327,15 +328,15 @@ namespace ZKA::HTTP
 				!hdr)
 				return -1;
 
-			ZKA_ASSERT(!sock->m_Dns.empty());
+			ZKA_ASSERT(hdr->Bytes.size() > 0);
 
 			if (ZKA_HTTP_PORT == ZKA_USE_HTTPS)
 			{
-				return SSL_write(m_Ssl, hdr->Bytes, hdr->Size);
+				return ::SSL_write(m_Ssl, hdr->Bytes.data(), hdr->Bytes.size());
 			}
 			else
 			{
-				return ::write(sock->m_Socket, hdr->Bytes, hdr->Size);
+				return ::send(sock->m_Socket, hdr->Bytes.data(), hdr->Bytes.size(), 0) > 0;
 			}
 		}
 
@@ -353,7 +354,7 @@ namespace ZKA::HTTP
 			}
 			else
 			{
-				return ::read(sock->m_Socket, bytes, len);
+				return ::recv(sock->m_Socket, bytes, len, 0) > 0;
 			}
 		}
 
@@ -374,7 +375,7 @@ namespace ZKA::HTTP
 
 	private:
 		HTTPSharedPtr m_Socket;
-		SSL_CTX*	  m_SslCtx;
-		SSL*		  m_Ssl;
+		SSL_CTX*	  m_SslCtx{nullptr};
+		SSL*		  m_Ssl{nullptr};
 	};
 } // namespace ZKA::HTTP

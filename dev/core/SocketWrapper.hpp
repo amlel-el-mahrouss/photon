@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <BaseSpecs.h>
+#include <BaseSpecs.hpp>
 
 #ifdef ZKA_WINDOWS
 
@@ -23,7 +23,7 @@
 #else
 
 #ifndef ZKA_WINDOWS
-#   define SOCKET_ERROR SO_ERROR
+#   define SOCKET_ERROR -1
 #   define WSAECONNRESET ECONNRESET
 #   define WSAEWOULDBLOCK EWOULDBLOCK
 #   define WSAGetLastError() errno
