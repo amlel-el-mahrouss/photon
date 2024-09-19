@@ -173,6 +173,11 @@ namespace ZKA::HTTP
 			request += "Host: " + host + "\r\n";
 			request += "Connection: close\r\n";
 
+			MIMEFactory factory;
+			auto		mime_struct = factory(const_cast<char*>(path.data()));
+
+			request += "Accept: " + mime_struct.t_mime + "\r\n";
+
 			request += "User-Agent: Photon / (NewOS; AMD64) Photon/2024 Photon-DX-Renderer/1.0\r\n";
 
 			ZKA_INFO(request);
