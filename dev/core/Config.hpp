@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			Vito
+ *			Photon
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -36,6 +36,8 @@
 #else
 
 #   include <arpa/inet.h>
+#   include <netdb.h>
+#   include <netinet/in.h>
 
 #define SD_BOTH SHUT_RDWR
 #define SD_SEND SHUT_WR
@@ -86,11 +88,7 @@
 #   define ZKA_CXX ZKA_MSVC
 #endif // ifdef _MSC_VER
 
-#ifdef __EXPORT_ZKA__
-#   define ZKA_API __declspec(dllexport)
-#else
-#   define ZKA_API __declspec(dllimport)
-#endif
+#define ZKA_API
 
 #ifndef _NDEBUG
 #   define ZKA_DEBUG (1)

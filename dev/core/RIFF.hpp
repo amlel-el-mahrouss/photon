@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			Vito Audio Subsystem
+ *			Photon Audio Subsystem
  *			Copyright ZKA Corporation, all rights reserved.
  *
  *			Purpose: ZKA Sound backend.

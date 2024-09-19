@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			Vito
+ *			Photon
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -12,10 +12,7 @@
 #include <BaseSpecs.hpp>
 #include <SocketWrapper.hpp>
 
-// OpenSSL
 #include <cstdio>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
@@ -49,7 +46,7 @@ namespace ZKA::HTTP
 		MIMEFactory(const MIMEFactory&)			   = default;
 
 	public:
-		MIMEFactory::MIME operator()(char* name)
+		MIMEFactory::MIME operator()(Char* name)
 		{
 			if (!name)
 				return {.t_name = "Any", .t_mime = "*/*"};
@@ -60,19 +57,23 @@ namespace ZKA::HTTP
 				return {.t_name = "N/A", .t_mime = "*/*"};
 
 			if (!strcmp(extension.c_str(), ".png"))
-				return {.t_name = "PNG Image", .t_mime = "Content-Type: image/png"};
+				return {.t_name = "PNG Image", .t_mime = "image/png"};
+			else if (!strcmp(extension.c_str(), ".html"))
+				return {.t_name = "HTML Document", .t_mime = "text/html"};
 			else if (!strcmp(extension.c_str(), ".bmp"))
-				return {.t_name = "BMP Image", .t_mime = "Content-Type: image/bmp"};
+				return {.t_name = "BMP Image", .t_mime = "image/bmp"};
+			else if (!strcmp(extension.c_str(), ".webp"))
+				return {.t_name = "WEBP Image", .t_mime = "image/webp"};
 			else if (!strcmp(extension.c_str(), ".exe"))
-				return {.t_name = "Microsoft Portable Executable", .t_mime = "Content-Type: application/vnd.microsoft.executable"};
+				return {.t_name = "Microsoft Portable Executable", .t_mime = "application/vnd.microsoft.executable"};
 			else if (!strcmp(extension.c_str(), ".pef"))
-				return {.t_name = "ZKA Preferred Executable Format", .t_mime = "Content-Type: application/vnd.zka.executable"};
+				return {.t_name = "ZKA Preferred Executable Format", .t_mime = "application/vnd.zka.executable"};
 			else if (!strcmp(extension.c_str(), ".jpg"))
-				return {.t_name = "JPEG Image", .t_mime = "Content-Type: image/jpeg"};
+				return {.t_name = "JPEG Image", .t_mime = "image/jpeg"};
 			else if (!strcmp(extension.c_str(), ".zip"))
-				return {.t_name = "PKZIP", .t_mime = "Content-Type: application/zip"};
+				return {.t_name = "PKZIP", .t_mime = "application/zip"};
 
-			return {.t_name = "N/A", .t_mime = "Content-Type: zka/unknown"};
+			return {.t_name = "N/A", .t_mime = "*/*"};
 		}
 	};
 
@@ -165,15 +166,21 @@ namespace ZKA::HTTP
 		static String form_request(const String& path,
 								   const String& host,
 								   bool			 no_tls,
-								   const String	 request_type)
+								   const String	 request_type, const String mime)
 		{
 			if (path.empty() || host.empty())
 				return "";
 
 			String request = request_type + " /" + path + " HTTP/1.1\r\n";
 			request += "Host: " + host + "\r\n";
-			request += "Connection: keep-alive\r\n";
-			request += "User-Agent: Vito-Photon / (NewOS; AMD64) Photon/20240101 Vito/1.0\r\n";
+			request += "Connection: close\r\n";
+
+			MIMEFactory factory;
+			MIMEFactory::MIME mime_struct = factory(mime);
+
+			request += "Accept: " + mime_struct.t_value + "\r\n";
+
+			request += "User-Agent: Photon / (NewOS; AMD64) Photon/2024 Photon-DX-Renderer/1.0\r\n";
 
 			ZKA_INFO(request);
 

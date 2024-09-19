@@ -1,7 +1,7 @@
 /*
  * =====================================================================
  *
- *			Vito
+ *			Photon
  *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
@@ -47,8 +47,8 @@ namespace ZKA
 {
 	enum class SOCKET_FLAG : std::int64_t
 	{
-		NON_BLOCKING = FNONBLOCK,
-		ASYNC = FASYNC,
+		NON_BLOCKING = FIONBIO,
+		ASYNC		 = FIOASYNC,
 	};
 }
 
