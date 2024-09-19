@@ -10,8 +10,6 @@
 /// @file IURLLoader.cc
 
 #include <IURLLoader.hpp>
-#include <Macros.hpp>
-#include <string>
 
 namespace ZKA
 {
@@ -19,19 +17,19 @@ namespace ZKA
 
 	String IURLLoader::post(Utils::URIParser& url, String data, bool cache_data)
 	{
-		HTTP::HTTPWriter http_writer(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+		HTTP::HTTPWriter http_probe(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
 		if (HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS &&
 			url.protocol() != ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_WARN("Trying to use HTTPS on a HTTP route.");
-			return "";
+			return ZKA_EMPTY_HTML;
 		}
 		else if (HTTP::ZKA_HTTP_PORT != ZKA_USE_HTTPS &&
 				 url.protocol() == ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_ERROR("Trying to use HTTP on a HTTPS route.");
-			return "";
+			return ZKA_EMPTY_HTML;
 		}
 
 		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, !(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS), HTTP::ZKA_HTTP_POST);
@@ -55,54 +53,33 @@ namespace ZKA
 
 		Ref<HTTP::HTTP::HTTPHeader*> http_hdr_wrapper{&http_hdr};
 
-		auto sock = http_writer.create_and_connect(mEndpoint);
+		auto sock = http_probe.create_and_connect(mEndpoint);
 
 		if (!sock)
-			return "";
+			return ZKA_EMPTY_HTML;
 
-		if (!http_writer.send_from_socket(sock, http_hdr_wrapper))
-			return "";
+		if (!http_probe.send_from_socket(sock, http_hdr_wrapper))
+			return ZKA_EMPTY_HTML;
 
-		return "";
+		return ZKA_EMPTY_HTML;
 	}
 
-	String IURLLoader::get(Utils::URIParser& url, String output_as, bool cache_data)
+	String IURLLoader::get(Utils::URIParser& url, bool cache_data)
 	{
-		HTTP::HTTPWriter http_writer(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+		HTTP::HTTPWriter http_probe(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
 		if (HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS &&
 			url.protocol() != ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_WARN("Trying to use HTTPS on a HTTP route.");
-			return "";
+			return ZKA_EMPTY_HTML;
 		}
 		else if (HTTP::ZKA_HTTP_PORT != ZKA_USE_HTTPS &&
 				 url.protocol() == ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_ERROR("Trying to use HTTP on a HTTPS route.");
-			return "";
+			return ZKA_EMPTY_HTML;
 		}
-
-		String http_path = this->get_download_dir();
-
-		if (FS::exists(http_path))
-		{
-			http_path += output_as;
-
-			if (cache_data)
-			{
-				ZKA_INFO("Getting previously downloaded page...\n");
-
-				std::stringstream ss;
-				ss << std::ifstream(http_path).rdbuf();
-
-				return ss.str();
-			}
-
-			FS::remove(http_path);
-		}
-
-		std::ofstream file = mWriter.write(http_path.c_str());
 
 		char* bytes = new char[ZKA_MAX_BUF];
 		ZKA_ASSERT(bytes);
@@ -111,7 +88,9 @@ namespace ZKA
 
 		if (bytes)
 		{
-			auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, !(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS), HTTP::ZKA_HTTP_GET);
+			bool false_on_https = !(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+
+			auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, false_on_https, HTTP::ZKA_HTTP_GET);
 			http_request += "\r\n\r\n"; // End HTTP request.
 
 			auto http_hdr = HTTP::HTTP::HTTPHeader{
@@ -125,80 +104,62 @@ namespace ZKA
 
 			Ref<HTTP::HTTP::HTTPHeader*> http_hdr_wrapper{&http_hdr};
 
-			auto sock = http_writer.create_and_connect(mEndpoint);
+			auto sock = http_probe.create_and_connect(mEndpoint);
 
 			if (!sock)
-				return "";
+				return ZKA_EMPTY_HTML;
 
-			if (!http_writer.send_from_socket(sock, http_hdr_wrapper))
-				return "";
+			if (!http_probe.send_from_socket(sock, http_hdr_wrapper))
+				return ZKA_EMPTY_HTML;
 
-			ZKA_INFO("Reading HTTP data...");
-
-			http_writer.read_from_socket(sock, bytes, ZKA_MAX_BUF);
-
-			ZKA_INFO("Reading HTTP data (assign to String)...");
+			http_probe.read_from_socket(sock, bytes, ZKA_MAX_BUF);
 
 			String bytes_as_string = bytes;
+			String header_as_string = bytes_as_string.substr(0, bytes_as_string.find("\r\n\r\n") + strlen("\r\n\r\n"));
 
-			ZKA_INFO("Analyzing HTTP header...");
-			ZKA_INFO(bytes_as_string);
-
-			auto valid_header = bytes_as_string.find("\r\n\r\n");
-
-			if (valid_header == String::npos)
-			{
-				valid_header = bytes_as_string.find("\n\n");
-				if (valid_header == String::npos)
-				{
-					throw BrowserError("HTTP_INVALID_REQUEST");
-					return "";
-				}
-			}
-
-			if (valid_header != String::npos)
-			{
-				auto sz = HTTP::IHTTPHelper::content_length<10>(bytes_as_string);
-
-				ZKA_INFO("Writing down HTTP body...");
-
-				char* bytes_out = new char[sz];
-				ZKA_ASSERT(bytes_out);
-
-				http_writer.read_from_socket(sock, bytes_out, sz);
-
-				file.write(bytes_out, sz);
-				file.flush();
-
-				bytes_as_string = bytes_out;
-
-				delete[] bytes_out;
-				delete[] bytes;
-
-				return bytes_as_string;
-			}
+			long len = HTTP::IHTTPHelper::content_length<10>(bytes_as_string);
 
 			delete[] bytes;
+			bytes = nullptr;
+
+			if (len < 1)
+			{
+			    throw BrowserError("ERROR_BAD_HTTP_PACKET");
+			}
+
+			len += header_as_string.size();
+
+			HTTP::HTTPWriter http_fetch(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+
+			char* bytes = new char[len];
+			ZKA_ASSERT(bytes);
+
+			ZeroMemory(bytes, len);
+
+			sock.reset();
+
+			sock = http_fetch.create_and_connect(mEndpoint);
+
+			if (!http_fetch.send_from_socket(sock, http_hdr_wrapper))
+				return ZKA_EMPTY_HTML;
+
+			http_fetch.read_from_socket(sock, bytes, len);
+			bytes_as_string = bytes;
+
+			return bytes_as_string;
 		}
 
-		return "";
-	}
-
-	String IURLLoader::get_download_dir() const noexcept
-	{
-		ZKA_GET_DATA_DIR(full_path);
-
-		String http_path;
-
-		http_path += full_path;
-		http_path += ".tmp/";
-
-		return http_path;
+		return ZKA_EMPTY_HTML;
 	}
 
 	void IURLLoader::set_endpoint(const String& endpoint) noexcept
 	{
 		if (!endpoint.empty())
 			mEndpoint = endpoint;
+	}
+
+	String IURLLoader::get_endpoint() noexcept
+	{
+	   return mEndpoint;
 	}
 } // namespace ZKA

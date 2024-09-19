@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include <IURLLoader.hpp>
 #include <rapidxml/rapidxml.hpp>
 #include <cassert>
 #include <BaseSpecs.hpp>
@@ -100,7 +99,7 @@ namespace ZKA
 		rapidxml::xml_node<char>* m_node{nullptr};
 	};
 
-	bool is_html_document(String the_xml_blob) noexcept
+	inline bool is_html_document(String the_xml_blob) noexcept
 	{
 		return the_xml_blob.find("<!DOCTYPE html>") != String::npos &&
 			   the_xml_blob.find("<!DOCTYPE html>") == 0;

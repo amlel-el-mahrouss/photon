@@ -31,6 +31,8 @@ inline int fopen_s(FILE** fp, const char* path, const char* res) noexcept
 
 #define ZKA_END_OF_BUFFER '\0'
 
+#define ZKA_EMPTY_HTML "<html><head></head><body></body></html>"
+
 ZKA_API void   zka_log(const char* str);
 ZKA_API size_t fstrlen(const char* str);
 ZKA_API time_t zka_get_epoch();
@@ -62,7 +64,7 @@ namespace ZKA
 	class ZKA_API BrowserError : public std::runtime_error
 	{
 	public:
-		BrowserError(const char* error = "Unidentified Error")
+		BrowserError(const char* error = "ERROR_UNKNOWN")
 			: std::runtime_error(error)
 		{
 		}
@@ -702,20 +704,20 @@ namespace ZKA
 		ZKA_COPY_DEFAULT(FilesystemWrapper);
 
 	public:
-		std::ofstream write(const char* outPath) const noexcept
+		std::ofstream write(const char* out_path, bool append) const noexcept
 		{
-			if (FS::exists(outPath))
-				return std::ofstream(outPath, std::ios::app);
+			if (FS::exists(out_path) && append)
+				return std::ofstream(out_path, std::ios::app);
 
-			return std::ofstream(outPath);
+			return std::ofstream(out_path);
 		}
 
-		std::ofstream open(const char* outPath) const noexcept
+		std::ofstream open(const char* out_path) const noexcept
 		{
-			if (!FS::exists(outPath))
+			if (!FS::exists(out_path))
 				return {};
 
-			return std::ofstream(outPath);
+			return std::ofstream(out_path);
 		}
 
 		bool create_directory(const char* path) const noexcept

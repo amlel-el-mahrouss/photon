@@ -66,6 +66,8 @@ namespace ZKA::Utils
 
 	};
 
+	typedef URIParser URLParser;
+
 	class ZKA_API URIError final : public std::runtime_error
 	{
 	public:

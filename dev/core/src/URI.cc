@@ -15,7 +15,6 @@
 */
 
 #include <URI.hpp>
-#include <IURLLoader.hpp>
 
 #ifndef ZKA_URI_MAXSIZE
 #define ZKA_URI_MAXSIZE (8196)

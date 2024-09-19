@@ -9,11 +9,10 @@
 
 #pragma once
 
-#include <BaseSpecs.hpp>
 #include <IHTTPProtocol.hpp>
 #include <URI.hpp>
 
-#define ZKA_SUPPORT_PROTO "HTTP"
+#define ZKA_URL_PROTO "HTTP"
 
 namespace ZKA
 {
@@ -32,15 +31,15 @@ namespace ZKA
 		ZKA_COPY_DEFAULT(IURLLoader);
 
 	public:
-		String   post(Utils::URIParser& url, String data, bool cache_data);
-		String   get(Utils::URIParser& url, String output_file_name, bool cache_data = false);
+		String   post(Utils::URIParser& url, String data, bool cache_data = false);
+		String   get(Utils::URIParser& url, bool cache_data = false);
 		void   set_endpoint(const String& endpoint) noexcept;
-		String get_download_dir() const noexcept;
+		String get_endpoint() noexcept;
 
 	public:
 		const char* get_protocol() noexcept
 		{
-			return ZKA_SUPPORT_PROTO;
+			return ZKA_URL_PROTO;
 		}
 
 	private:

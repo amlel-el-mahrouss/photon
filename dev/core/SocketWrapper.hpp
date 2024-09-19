@@ -10,6 +10,7 @@
 #pragma once
 
 #include <BaseSpecs.hpp>
+#include <fcntl.h>
 
 #ifdef ZKA_WINDOWS
 
@@ -46,8 +47,8 @@ namespace ZKA
 {
 	enum class SOCKET_FLAG : std::int64_t
 	{
-		NON_BLOCKING = FIONBIO,
-		ASYNC = FIOASYNC,
+		NON_BLOCKING = FNONBLOCK,
+		ASYNC = FASYNC,
 	};
 }
 

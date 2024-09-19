@@ -35,10 +35,6 @@
 
 #else
 
-#   include <sys/socket.h>
-#   include <unistd.h>
-#   include <netdb.h>
-#   include <sys/ioctl.h>
 #   include <arpa/inet.h>
 
 #define SD_BOTH SHUT_RDWR

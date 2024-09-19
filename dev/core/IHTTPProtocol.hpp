@@ -14,6 +14,8 @@
 
 // OpenSSL
 #include <cstdio>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
@@ -100,6 +102,8 @@ namespace ZKA::HTTP
 		{
 			GET,
 			POST,
+			PUT,
+			DELETE
 		};
 
 		struct HTTPHeader final
@@ -167,8 +171,9 @@ namespace ZKA::HTTP
 				return "";
 
 			String request = request_type + " /" + path + " HTTP/1.1\r\n";
-			request += "Host: www." + host + "\r\n";
-			request += "Connection: close\r\n";
+			request += "Host: " + host + "\r\n";
+			request += "Connection: keep-alive\r\n";
+			request += "User-Agent: Vito-Photon / (NewOS; AMD64) Photon/20240101 Vito/1.0\r\n";
 
 			ZKA_INFO(request);
 
@@ -241,7 +246,7 @@ namespace ZKA::HTTP
 		{
 			if (m_Socket)
 			{
-				if (shutdown(m_Socket->m_Socket, SD_BOTH) == SOCKET_ERROR)
+				if (ZKA_SHUTDOWN(m_Socket->m_Socket, SD_BOTH) == SOCKET_ERROR)
 					ZKA_CLOSE(m_Socket->m_Socket);
 			}
 
@@ -264,14 +269,15 @@ namespace ZKA::HTTP
 			if (!sock)
 				throw HTTPError(HTTP_INTERNAL_ERROR);
 
-			sock->m_Socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+			sock->m_Socket = ::socket(AF_INET, SOCK_STREAM, 0);
 
 			if (sock->m_Socket == INVALID_SOCKET)
 				throw HTTPError(HTTP_INTERNAL_ERROR);
 
 			ZeroMemory(&sock->m_Addr, sizeof(struct sockaddr_in));
 
-			sock->m_Addr.sin_family		 = AF_INET;
+			sock->m_Addr.sin_family = AF_INET;
+
 			sock->m_Addr.sin_addr.s_addr = inet_addr(dns.c_str());
 			sock->m_Addr.sin_port		 = htons(ZKA_HTTP_PORT);
 
@@ -307,8 +313,11 @@ namespace ZKA::HTTP
 				SSL_set_fd(m_Ssl, sock->m_Socket);
 				auto status = SSL_connect(m_Ssl);
 
-				if (status != 1)
+				if (status <= 0)
 				{
+					SSL_get_error(m_Ssl, status);
+					ERR_print_errors_fp(stderr);
+
 					return nullptr;
 				}
 
