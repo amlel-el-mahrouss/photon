@@ -17,15 +17,11 @@
 /// <returns></returns>
 int main(int argc, char** argv)
 {
-	ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTPS;
-	ZKA::Utils::URIParser url(ZKA_HTTPS_PROTOCOL);
-	ZKA::IURLLoader loader;
+	ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTP;
+	ZKA::Utils::URIParser url(ZKA_HTTP_PROTOCOL);
+	url /= "perdu.com/index.html";
 
-	loader.set_endpoint("perdu.com");
-
-	auto http_object = loader.get(url);
-
-	std::cout << http_object << std::endl;
+	url.open_app();
 
     return 0;
 }

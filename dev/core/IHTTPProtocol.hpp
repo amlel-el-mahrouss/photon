@@ -169,8 +169,8 @@ namespace ZKA::HTTP
 			if (path.empty() || host.empty())
 				return "";
 
-			std::string request = request_type + " /" + path + " HTTP/1.1\r\n";
-			request += "Host: " + host + "\r\n";
+			std::string request = request_type + " " + path + " HTTP/1.1\r\n";
+			request += "Host: www." + host + "\r\n";
 			request += "Connection: close\r\n";
 
 			MIMEFactory factory;

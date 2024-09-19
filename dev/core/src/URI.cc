@@ -15,6 +15,7 @@
 */
 
 #include <URI.hpp>
+#include <IURLLoader.hpp>
 
 #ifndef ZKA_URI_MAXSIZE
 #define ZKA_URI_MAXSIZE (8196)
@@ -76,11 +77,7 @@ namespace ZKA::Utils
 
 		for (size_t i = 0; i < uri_str.size(); ++i)
 		{
-			if (uri_str[i] == '\\' || uri_str[i] == '/')
-			{
-				m_data.push_back(ZKA_URI_SEPARATOR);
-			}
-			else if (uri_str[i] == ':')
+			if (uri_str[i] == ':')
 			{
 				if (!m_port.empty())
 					m_port.clear();
@@ -118,7 +115,33 @@ namespace ZKA::Utils
 		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
 			this->protocol() == ZKA_HTTP_PROTOCOL)
 		{
-			return false;
+			URIParser  url(this->protocol().c_str());
+			IURLLoader		  loader;
+
+			String root = "";
+
+			String content = this->get();
+
+			if (content.find("/") != std::string::npos)
+			{
+				loader.set_endpoint(content.substr(0, content.find("/")));
+
+				root += content.substr(content.find("/"));
+
+				// remove port.
+				if (root.find(":") != String::npos)
+					root.erase(root.find(":"));
+			}
+			else
+			{
+				loader.set_endpoint(content);
+			}
+
+			url /= root;
+
+			loader.get(url);
+
+			return true;
 		}
 		else if (this->protocol() == ZKA_FILE_PROTOCOL)
 		{
