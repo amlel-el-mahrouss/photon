@@ -12,7 +12,7 @@
 #include <BaseSpecs.hpp>
 #include <SocketWrapper.hpp>
 
-#include <cstdio>
+// OpenSSL headers.
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
@@ -34,8 +34,8 @@ namespace ZKA::HTTP
 	public:
 		struct MIME final
 		{
-			String t_name;
-			String t_mime;
+			std::string t_name;
+			std::string t_mime;
 		};
 
 	public:
@@ -46,34 +46,32 @@ namespace ZKA::HTTP
 		MIMEFactory(const MIMEFactory&)			   = default;
 
 	public:
-		MIMEFactory::MIME operator()(Char* name)
+		MIMEFactory::MIME operator()(char* name)
 		{
-			if (!name)
-				return {.t_name = "Any", .t_mime = "*/*"};
-
-			String extension = strchr(name, '.');
-
-			if (extension.empty())
+			if (!name ||
+				!strchr(name, '.'))
 				return {.t_name = "N/A", .t_mime = "*/*"};
 
-			if (!strcmp(extension.c_str(), ".png"))
+			std::string extension = strchr(name, '.');
+
+			if (strstr(extension.c_str(), ".png"))
 				return {.t_name = "PNG Image", .t_mime = "image/png"};
-			else if (!strcmp(extension.c_str(), ".html"))
+			else if (strstr(extension.c_str(), ".html"))
 				return {.t_name = "HTML Document", .t_mime = "text/html"};
-			else if (!strcmp(extension.c_str(), ".bmp"))
+			else if (strstr(extension.c_str(), ".bmp"))
 				return {.t_name = "BMP Image", .t_mime = "image/bmp"};
-			else if (!strcmp(extension.c_str(), ".webp"))
+			else if (strstr(extension.c_str(), ".webp"))
 				return {.t_name = "WEBP Image", .t_mime = "image/webp"};
-			else if (!strcmp(extension.c_str(), ".exe"))
+			else if (strstr(extension.c_str(), ".exe"))
 				return {.t_name = "Microsoft Portable Executable", .t_mime = "application/vnd.microsoft.executable"};
-			else if (!strcmp(extension.c_str(), ".pef"))
+			else if (strstr(extension.c_str(), ".pef"))
 				return {.t_name = "ZKA Preferred Executable Format", .t_mime = "application/vnd.zka.executable"};
-			else if (!strcmp(extension.c_str(), ".jpg"))
+			else if (strstr(extension.c_str(), ".jpg"))
 				return {.t_name = "JPEG Image", .t_mime = "image/jpeg"};
-			else if (!strcmp(extension.c_str(), ".zip"))
+			else if (strstr(extension.c_str(), ".zip"))
 				return {.t_name = "PKZIP", .t_mime = "application/zip"};
 
-			return {.t_name = "N/A", .t_mime = "*/*"};
+			return {.t_name = "N/A", .t_mime = "*/y"};
 		}
 	};
 
@@ -82,7 +80,7 @@ namespace ZKA::HTTP
 		class HTTPSocket final
 		{
 			struct sockaddr_in m_Addr;
-			String			   m_Dns;
+			std::string			   m_Dns;
 			Network::CSocket   m_Socket;
 
 			friend HTTPWriter;
@@ -104,7 +102,7 @@ namespace ZKA::HTTP
 			GET,
 			POST,
 			PUT,
-			DELETE
+			DEL,
 		};
 
 		struct HTTPHeader final
@@ -143,9 +141,9 @@ namespace ZKA::HTTP
 			return mError;
 		}
 
-		String as_string() noexcept
+		std::string as_string() noexcept
 		{
-			String base = this->what();
+			std::string base = this->what();
 			base += std::to_string(mError);
 
 			return base;
@@ -155,30 +153,25 @@ namespace ZKA::HTTP
 		int mError{200};
 	};
 
-	inline String ZKA_HTTP_GET	  = "GET";
-	inline String ZKA_HTTP_POST	  = "POST";
-	inline String ZKA_HTTP_PUT	  = "PUT";
-	inline String ZKA_HTTP_DELETE = "DELETE";
+	inline std::string ZKA_HTTP_GET	  = "GET";
+	inline std::string ZKA_HTTP_POST	  = "POST";
+	inline std::string ZKA_HTTP_PUT	  = "PUT";
+	inline std::string ZKA_HTTP_DELETE = "DELETE";
 
 	class ZKA_API IHTTPHelper final
 	{
 	public:
-		static String form_request(const String& path,
-								   const String& host,
-								   bool			 no_tls,
-								   const String	 request_type, const String mime)
+		static std::string form_request(const std::string path,
+								   const std::string host,
+								   const bool			 no_tls,
+								   const std::string	 request_type)
 		{
 			if (path.empty() || host.empty())
 				return "";
 
-			String request = request_type + " /" + path + " HTTP/1.1\r\n";
+			std::string request = request_type + " /" + path + " HTTP/1.1\r\n";
 			request += "Host: " + host + "\r\n";
 			request += "Connection: close\r\n";
-
-			MIMEFactory factory;
-			MIMEFactory::MIME mime_struct = factory(mime);
-
-			request += "Accept: " + mime_struct.t_value + "\r\n";
 
 			request += "User-Agent: Photon / (NewOS; AMD64) Photon/2024 Photon-DX-Renderer/1.0\r\n";
 
@@ -187,7 +180,7 @@ namespace ZKA::HTTP
 			return request;
 		}
 
-		static bool has_field(const String& http, const String& rest)
+		static bool has_field(const std::string& http, const std::string& rest)
 		{
 			if (http.empty())
 				return false;
@@ -195,18 +188,18 @@ namespace ZKA::HTTP
 			if (rest.empty())
 				throw std::runtime_error("Bad restrict type.");
 
-			return http.find(rest) != String::npos;
+			return http.find(rest) != std::string::npos;
 		}
 
 		template <int Base>
-		static long content_length(const String& http)
+		static long content_length(const std::string& http)
 		{
 			size_t at = http.find("Content-Length: ");
 
-			if (at == String::npos)
+			if (at == std::string::npos)
 				return IHTTPHelper::bad_pos;
 
-			String final;
+			std::string final;
 
 			for (size_t first = at; first < http.size(); ++first)
 			{
@@ -266,7 +259,7 @@ namespace ZKA::HTTP
 		HTTPWriter(const HTTPWriter&)			 = default;
 
 	public:
-		HTTPSharedPtr create_and_connect(const String dns)
+		HTTPSharedPtr create_and_connect(const std::string dns)
 		{
 			if (dns.empty())
 				throw HTTPError(HTTP_DNS_ERROR);
@@ -305,7 +298,7 @@ namespace ZKA::HTTP
 				sock->m_Addr.sin_addr.s_addr = *((u_long*)host->h_addr);
 			}
 
-			sock->m_Dns = String{dns.data()};
+			sock->m_Dns = std::string{dns.data()};
 
 			int result = ::connect(sock->m_Socket, reinterpret_cast<struct sockaddr*>(&sock->m_Addr), sizeof(sock->m_Addr));
 
@@ -328,7 +321,7 @@ namespace ZKA::HTTP
 					return nullptr;
 				}
 
-				ZKA_INFO(String("Connected with HTTPS encryption: ") + SSL_get_cipher(m_Ssl));
+				ZKA_INFO(std::string("Connected with HTTPS encryption: ") + SSL_get_cipher(m_Ssl));
 
 				return sock;
 			}

@@ -9,6 +9,8 @@
 vendor/skia/
 depot_tools/
 
+*.manifest
+
 vcpkg/
 
 html/

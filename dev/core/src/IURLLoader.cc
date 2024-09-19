@@ -17,7 +17,7 @@ namespace ZKA
 
 	String IURLLoader::post(Utils::URIParser& url, String data, bool cache_data)
 	{
-		HTTP::HTTPWriter http_probe(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+		HTTP::HTTPWriter http_post(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
 		if (HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS &&
 			url.protocol() != ZKA_HTTPS_PROTOCOL)
@@ -53,12 +53,12 @@ namespace ZKA
 
 		Ref<HTTP::HTTP::HTTPHeader*> http_hdr_wrapper{&http_hdr};
 
-		auto sock = http_probe.create_and_connect(mEndpoint);
+		auto sock = http_post.create_and_connect(mEndpoint);
 
 		if (!sock)
 			return ZKA_EMPTY_HTML;
 
-		if (!http_probe.send_from_socket(sock, http_hdr_wrapper))
+		if (!http_post.send_from_socket(sock, http_hdr_wrapper))
 			return ZKA_EMPTY_HTML;
 
 		return ZKA_EMPTY_HTML;

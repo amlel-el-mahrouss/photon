@@ -21,9 +21,11 @@ int main(int argc, char** argv)
 	ZKA::Utils::URIParser url(ZKA_HTTPS_PROTOCOL);
 	ZKA::IURLLoader loader;
 
-	loader.set_endpoint("google.com");
+	loader.set_endpoint("perdu.com");
 
 	auto http_object = loader.get(url);
+
+	std::cout << http_object << std::endl;
 
     return 0;
 }

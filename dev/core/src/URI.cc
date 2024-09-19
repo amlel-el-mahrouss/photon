@@ -122,11 +122,9 @@ namespace ZKA::Utils
 		}
 		else if (this->protocol() == ZKA_FILE_PROTOCOL)
 		{
-#ifndef ZKA_WINDOWS
-			std::system(("xdg-open " + this->get()).c_str());
-#else
-			IShellHelper::open(this->get(), nullptr);
-#endif
+			IShellHelper helper;
+			helper.open(this->get(), nullptr);
+
 			return true;
 		}
 		else if (this->protocol() == ZKA_ZKA_PROTOCOL)
