@@ -22,7 +22,7 @@
 
 namespace ZKA::HTTP
 {
-	inline int32_t ZKA_HTTP_PORT = ZKA_USE_HTTPS;
+	inline int16_t ZKA_HTTP_PORT = ZKA_USE_HTTPS;
 
 	class MIMEFactory;
 	class IHTTPHelper;
@@ -108,7 +108,7 @@ namespace ZKA::HTTP
 		struct HTTPHeader final
 		{
 			RequestType		  Type;
-			std::vector<char> Bytes;
+			String Bytes;
 		};
 
 	} // namespace HTTP
@@ -163,22 +163,20 @@ namespace ZKA::HTTP
 	public:
 		static std::string form_request(const std::string path,
 								   const std::string host,
-								   const bool			 no_tls,
 								   const std::string	 request_type)
 		{
 			if (path.empty() || host.empty())
 				return "";
 
 			std::string request = request_type + " " + path + " HTTP/1.1\r\n";
-			request += "Host: www." + host + "\r\n";
-			request += "Connection: close\r\n";
+			request += "Host: " + host + "\r\n";
+			request += "Connection: Keep-Alive\r\n";
+			request += "User-Agent: Mozilla/5.0\r\n";
 
 			MIMEFactory factory;
 			auto		mime_struct = factory(const_cast<char*>(path.data()));
 
 			request += "Accept: " + mime_struct.t_mime + "\r\n";
-
-			request += "User-Agent: Photon / (NewOS; AMD64) Photon/2024 Photon-DX-Renderer/1.0\r\n";
 
 			ZKA_INFO(request);
 
@@ -350,7 +348,7 @@ namespace ZKA::HTTP
 			}
 			else
 			{
-				return ::send(sock->m_Socket, hdr->Bytes.data(), hdr->Bytes.size(), 0) > 0;
+				return ::write(sock->m_Socket, hdr->Bytes.data(), hdr->Bytes.size()) > 0;
 			}
 		}
 
@@ -368,7 +366,7 @@ namespace ZKA::HTTP
 			}
 			else
 			{
-				return ::recv(sock->m_Socket, bytes, len, 0) > 0;
+				return ::read(sock->m_Socket, bytes, len) > 0;
 			}
 		}
 

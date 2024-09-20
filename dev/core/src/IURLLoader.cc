@@ -32,24 +32,18 @@ namespace ZKA
 			return ZKA_EMPTY_HTML;
 		}
 
-		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, !(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS), HTTP::ZKA_HTTP_POST);
+		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_POST);
 
 		http_request += "Content-Length: " + std::to_string(data.size()) + "\r\n";
-		http_request += "\r\n\r\n"; // End HTTP request.
+
+		http_request += "\r\n";
 
 		auto http_hdr = HTTP::HTTP::HTTPHeader{
 			.Type = HTTP::HTTP::RequestType::POST,
 		};
 
-		for (auto& ch : http_request)
-		{
-			http_hdr.Bytes.push_back(ch);
-		}
-
-		for (auto& ch : data)
-		{
-			http_hdr.Bytes.push_back(ch);
-		}
+		http_hdr.Bytes += http_request;
+		http_hdr.Bytes += data;
 
 		Ref<HTTP::HTTP::HTTPHeader*> http_hdr_wrapper{&http_hdr};
 
@@ -88,19 +82,15 @@ namespace ZKA
 
 		if (bytes)
 		{
-			bool false_on_https = !(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+			auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_GET);
 
-			auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, false_on_https, HTTP::ZKA_HTTP_GET);
-			http_request += "\r\n\r\n"; // End HTTP request.
+			http_request += "\r\n";
 
 			auto http_hdr = HTTP::HTTP::HTTPHeader{
 				.Type = HTTP::HTTP::RequestType::GET,
 			};
 
-			for (auto& ch : http_request)
-			{
-				http_hdr.Bytes.push_back(ch);
-			}
+			http_hdr.Bytes = http_request;
 
 			Ref<HTTP::HTTP::HTTPHeader*> http_hdr_wrapper{&http_hdr};
 
@@ -114,7 +104,7 @@ namespace ZKA
 
 			http_probe.read_from_socket(sock, bytes, ZKA_MAX_BUF);
 
-			String bytes_as_string = bytes;
+			String bytes_as_string	= bytes;
 			String header_as_string = bytes_as_string.substr(0, bytes_as_string.find("\r\n\r\n") + strlen("\r\n\r\n"));
 
 			long len = HTTP::IHTTPHelper::content_length<10>(bytes_as_string);
@@ -124,7 +114,7 @@ namespace ZKA
 
 			if (len < 1)
 			{
-			    throw BrowserError("ERROR_BAD_HTTP_PACKET");
+				throw BrowserError("ERROR_BAD_HTTP_PACKET");
 			}
 
 			len += header_as_string.size();
@@ -160,6 +150,6 @@ namespace ZKA
 
 	String IURLLoader::get_endpoint() noexcept
 	{
-	   return mEndpoint;
+		return mEndpoint;
 	}
 } // namespace ZKA

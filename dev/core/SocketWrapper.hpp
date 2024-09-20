@@ -41,6 +41,9 @@
 #define ZKA_CONNECT connect
 #define ZKA_IOCTL ioctl
 
+#define FIONBIO FNONBLOCK
+#define FIOASYNC FASYNC
+
 #endif // ZKA_WINDOWS
 
 namespace ZKA

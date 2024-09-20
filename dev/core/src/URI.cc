@@ -139,14 +139,21 @@ namespace ZKA::Utils
 
 			url /= root;
 
-			loader.get(url);
+			std::cout << loader.get(url);
 
 			return true;
 		}
 		else if (this->protocol() == ZKA_FILE_PROTOCOL)
 		{
+#ifdef ZKA_WINDOWS
 			IShellHelper helper;
 			helper.open(this->get(), nullptr);
+#else
+            String cmd = "xdg-open ";
+            cmd += this->get();
+
+            std::system(cmd.c_str());
+#endif
 
 			return true;
 		}
