@@ -115,10 +115,19 @@ namespace ZKA::Utils
 		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
 			this->protocol() == ZKA_HTTP_PROTOCOL)
 		{
-			URIParser  url(this->protocol().c_str());
-			IURLLoader		  loader;
+			if (this->protocol() == ZKA_HTTP_PROTOCOL)
+			{
+				ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTP;
+			}
+			else
+			{
+				ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTPS;
+			}
 
-			String root = "";
+			URIParser  url(this->protocol().c_str());
+			IURLLoader loader;
+
+			String root = "/";
 
 			String content = this->get();
 
@@ -126,7 +135,7 @@ namespace ZKA::Utils
 			{
 				loader.set_endpoint(content.substr(0, content.find("/")));
 
-				root += content.substr(content.find("/"));
+				root = content.substr(content.find("/"));
 
 				// remove port.
 				if (root.find(":") != String::npos)
@@ -149,10 +158,10 @@ namespace ZKA::Utils
 			IShellHelper helper;
 			helper.open(this->get(), nullptr);
 #else
-            String cmd = "xdg-open ";
-            cmd += this->get();
+			String cmd = "xdg-open ";
+			cmd += this->get();
 
-            std::system(cmd.c_str());
+			std::system(cmd.c_str());
 #endif
 
 			return true;

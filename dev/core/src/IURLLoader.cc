@@ -34,9 +34,9 @@ namespace ZKA
 
 		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_POST);
 
-		http_request += "Content-Length: " + std::to_string(data.size()) + "\r\n";
+		http_request += "Content-Length: " + std::to_string(data.size());
 
-		http_request += "\r\n";
+		http_request += "\r\n\r\n";
 
 		auto http_hdr = HTTP::HTTP::HTTPHeader{
 			.Type = HTTP::HTTP::RequestType::POST,
@@ -83,8 +83,9 @@ namespace ZKA
 		if (bytes)
 		{
 			auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_GET);
-
 			http_request += "\r\n";
+
+			std::cout << http_request;
 
 			auto http_hdr = HTTP::HTTP::HTTPHeader{
 				.Type = HTTP::HTTP::RequestType::GET,
@@ -126,14 +127,12 @@ namespace ZKA
 
 			ZeroMemory(bytes, len);
 
-			sock.reset();
+			auto sock_fetch = http_fetch.create_and_connect(mEndpoint);
 
-			sock = http_fetch.create_and_connect(mEndpoint);
-
-			if (!http_fetch.send_from_socket(sock, http_hdr_wrapper))
+			if (!http_fetch.send_from_socket(sock_fetch, http_hdr_wrapper))
 				return ZKA_EMPTY_HTML;
 
-			http_fetch.read_from_socket(sock, bytes, len);
+			http_fetch.read_from_socket(sock_fetch, bytes, len);
 			bytes_as_string = bytes;
 
 			return bytes_as_string;

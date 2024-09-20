@@ -45,7 +45,7 @@
 
 #define ZeroMemory(ptr, sz) memset(ptr, 0, sz)
 
-#define INVALID_SOCKET -1
+#define INVALID_SOCKET ((uintptr_t)-1)
 
 #endif
 

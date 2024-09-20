@@ -99,9 +99,24 @@ namespace ZKA
 		rapidxml::xml_node<char>* m_node{nullptr};
 	};
 
+	inline String get_html_document(String the_xml_blob) noexcept
+	{
+		if (the_xml_blob.find("<!DOCTYPE html>") != String::npos &&
+		    the_xml_blob.size() > strlen("<!DOCTYPE html>"))
+		{
+			return the_xml_blob.substr(the_xml_blob.find("<!DOCTYPE html>") + strlen("<!DOCTYPE html>"));
+		}
+
+		return ZKA_EMPTY_HTML;
+	}
+
 	inline bool is_html_document(String the_xml_blob) noexcept
 	{
-		return the_xml_blob.find("<!DOCTYPE html>") != String::npos &&
-			   the_xml_blob.find("<!DOCTYPE html>") == 0;
+		if (the_xml_blob.find("<!DOCTYPE html>") != String::npos)
+		{
+			return true;
+		}
+
+		return false;
 	}
 } // namespace ZKA

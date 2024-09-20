@@ -85,7 +85,7 @@ Docs/html/
 *.lib
 
 # Executables
-Vito/*.exe
+Photon/*.exe
 *.out
 *.app
 

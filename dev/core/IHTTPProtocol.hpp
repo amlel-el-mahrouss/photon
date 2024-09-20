@@ -79,18 +79,14 @@ namespace ZKA::HTTP
 	{
 		class HTTPSocket final
 		{
-			struct sockaddr_in m_Addr;
-			std::string			   m_Dns;
-			Network::CSocket   m_Socket;
+			struct sockaddr_in m_Addr{0};
+			std::string			   m_Dns{""};
+			Network::CSocket   m_Socket{INVALID_SOCKET};
 
 			friend HTTPWriter;
 
 		public:
-			HTTPSocket()
-				: m_Socket(INVALID_SOCKET), m_Addr()
-			{
-			}
-
+			HTTPSocket() = default;
 			~HTTPSocket() = default;
 
 			HTTPSocket& operator=(const HTTPSocket&) = default;
@@ -166,7 +162,7 @@ namespace ZKA::HTTP
 								   const std::string	 request_type)
 		{
 			if (path.empty() || host.empty())
-				return "";
+				throw BrowserError("ILL_FORMED_PACKET");
 
 			std::string request = request_type + " " + path + " HTTP/1.1\r\n";
 			request += "Host: " + host + "\r\n";
@@ -177,8 +173,6 @@ namespace ZKA::HTTP
 			auto		mime_struct = factory(const_cast<char*>(path.data()));
 
 			request += "Accept: " + mime_struct.t_mime + "\r\n";
-
-			ZKA_INFO(request);
 
 			return request;
 		}
@@ -318,9 +312,6 @@ namespace ZKA::HTTP
 
 				if (status <= 0)
 				{
-					SSL_get_error(m_Ssl, status);
-					ERR_print_errors_fp(stderr);
-
 					return nullptr;
 				}
 
@@ -348,7 +339,7 @@ namespace ZKA::HTTP
 			}
 			else
 			{
-				return ::write(sock->m_Socket, hdr->Bytes.data(), hdr->Bytes.size()) > 0;
+				return ::send(sock->m_Socket, hdr->Bytes.data(), hdr->Bytes.size(), 0) > 0;
 			}
 		}
 
@@ -366,7 +357,7 @@ namespace ZKA::HTTP
 			}
 			else
 			{
-				return ::read(sock->m_Socket, bytes, len) > 0;
+				return ::recv(sock->m_Socket, bytes, len, 0) > 0;
 			}
 		}
 

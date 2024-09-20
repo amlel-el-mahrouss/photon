@@ -17,9 +17,8 @@
 /// <returns></returns>
 int main(int argc, char** argv)
 {
-	ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTP;
-	ZKA::Utils::URIParser url(ZKA_HTTP_PROTOCOL);
-	url /= "www.perdu.com/index.html";
+	ZKA::Utils::URIParser url(argv[1]);
+	url /= argv[2];
 
 	url.open_app();
 
