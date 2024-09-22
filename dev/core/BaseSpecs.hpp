@@ -13,6 +13,7 @@
 
 #include <Config.hpp>
 #include <Macros.hpp>
+#include <cerrno>
 #include <cstdlib>
 
 #ifndef ZKA_WINDOWS
@@ -495,15 +496,44 @@ namespace ZKA
 		IShellHelper& operator=(const IShellHelper&) = default;
 		IShellHelper(const IShellHelper&)			 = default;
 
-		void open(const char* app_name)
+		bool validate(const char* permission_name)
+		{
+			static std::vector<std::string> cPerms;
+
+			if (std::find(cPerms.cbegin(), cPerms.cend(), permission_name) != cPerms.end())
+				return true;
+
+			String cmd = "pkexec --user $USER echo";
+
+			if (std::system(cmd.c_str()) > 1)
+			{
+				cmd = "notify-send -a 'Photon' 'Permission Manager' 'Permission defined for: ";
+				cmd += permission_name;
+				cmd += "'";
+
+				std::system(cmd.c_str());
+
+				return false;
+			}
+
+			cmd = "notify-send -a 'Photon' 'Permission Manager' 'Got Permission for: ";
+			cmd += permission_name;
+			cmd += "'";
+			std::system(cmd.c_str());
+
+			cPerms.push_back(permission_name);
+			return true;
+		}
+
+		int open(const char* app_name)
 		{
 			if (!app_name)
-				return;
+				return ENOENT;
 
 			String cmd = "xdg-open ";
 			cmd += app_name;
 
-			std::system(cmd.c_str());
+			return std::system(cmd.c_str());
 		}
 	};
 #endif
