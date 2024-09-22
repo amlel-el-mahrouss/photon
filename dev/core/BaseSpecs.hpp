@@ -8,8 +8,7 @@
  * =====================================================================
  */
 
-#ifndef __BASE_SPECS_H__
-#define __BASE_SPECS_H__
+#pragma once
 
 #include <Config.hpp>
 #include <Macros.hpp>
@@ -897,7 +896,7 @@ namespace ZKA
 
 	ZKA_API inline BasicString<PChar> platform_string(const char* utf8)
 	{
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> cvt;
+		std::wstring_convert<std::codecvt_utf8_utf16<PChar>> cvt;
 		return cvt.from_bytes(utf8);
 	}
 } // namespace ZKA
@@ -911,5 +910,3 @@ namespace ZKA
 #define ZKA_ERROR(...)	  ZKA::Logger::get_singleton().get()->error(__VA_ARGS__)
 #define ZKA_INFO(...)	  ZKA::Logger::get_singleton().get()->info(__VA_ARGS__)
 #define ZKA_WARN(...)	  ZKA::Logger::get_singleton().get()->warn(__VA_ARGS__)
-
-#endif // ifndef __BASE_SPECS_H__

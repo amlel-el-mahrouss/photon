@@ -60,7 +60,10 @@ ZKA::UInt32 ZKA_CRC32_TAB[256] = {
 };
 
 static unsigned zka_crc32_byte(int crc, unsigned char byte) {
-    crc = (crc >> 8) ^ ZKA_CRC32_TAB[(byte) ^ (crc & 0x000000FF)]; // shift 8 bytes to the right XOR polynomial XOR the crc without the 2 highest bytes
+    crc = (crc >> 8) ^ ZKA_CRC32_TAB[(byte) ^ (crc & 0x000000FF)];
+    // shift 8 bytes to the right XOR polynomial XOR the crc without the 2 highest bytes.
+
+    // comment is for code above.
     return crc;
 }
 

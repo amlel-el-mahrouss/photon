@@ -12,10 +12,8 @@
 #pragma once
 
 #include <BaseSpecs.hpp>
-#include <stdint.h>
 
-#define RiffTrue true
-#define RiffFalse false
+#define ZKA_RIFF_MAG "RIFF"
 
 // WAVE file header format
 struct RiffHeader

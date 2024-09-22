@@ -99,33 +99,36 @@ namespace ZKA
 		rapidxml::xml_node<char>* m_node{nullptr};
 	};
 
-	inline String get_html_document(String data) noexcept
-	{
-		String the_xml_blob = data;
-
-		std::transform(the_xml_blob.begin(), the_xml_blob.end(), the_xml_blob.begin(),
-					   [](unsigned char c) { return std::tolower(c); });
-
-		if (the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos &&
-			the_xml_blob.size() > strlen(ZKA_HTML_DOCTYPE))
-		{
-		    // Still the same string, so it doesn't matter.
-			return data.substr(the_xml_blob.find(ZKA_HTML_DOCTYPE) + strlen(ZKA_HTML_DOCTYPE));
-		}
-
-		return ZKA_EMPTY_HTML;
-	}
-
 	inline bool is_html_document(String the_xml_blob) noexcept
 	{
 		std::transform(the_xml_blob.begin(), the_xml_blob.end(), the_xml_blob.begin(),
 					   [](unsigned char c) { return std::tolower(c); });
 
-		if (the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos)
+		return the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos;
+	}
+
+	inline String get_html_document(String the_xml_blob) noexcept
+	{
+		if (!is_html_document(the_xml_blob))
 		{
-			return true;
+			return ZKA_EMPTY_HTML;
 		}
 
-		return false;
+		std::transform(the_xml_blob.begin(), the_xml_blob.end(), the_xml_blob.begin(),
+					   [](unsigned char c) { return std::tolower(c); });
+
+		if (the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos)
+		{
+			return the_xml_blob.substr(the_xml_blob.find(ZKA_HTML_DOCTYPE) + strlen(ZKA_HTML_DOCTYPE));
+		}
+		else
+		{
+			String doctype = ZKA_HTML_DOCTYPE;
+			std::transform(doctype.begin(), doctype.end(), doctype.begin(),
+						   [](unsigned char c) { return std::tolower(c); });
+
+			return the_xml_blob.substr(the_xml_blob.find(doctype) + doctype.size());
+		}
 	}
+
 } // namespace ZKA

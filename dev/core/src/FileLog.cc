@@ -20,17 +20,6 @@ FILE* zka_get_logger(void)
 	return gZKALogger;
 }
 
-size_t zka_strlen(const char* buffer)
-{
-	if (!buffer) return 0;
-	if (*buffer == ZKA_END_OF_BUFFER) return 0;
-
-	size_t index = 0;
-	while (buffer[index] != ZKA_END_OF_BUFFER) ++index;
-
-	return index;
-}
-
 time_t zka_get_epoch()
 {
 	time_t curtime = time(nullptr);
