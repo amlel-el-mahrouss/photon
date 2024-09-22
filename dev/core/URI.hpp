@@ -57,7 +57,7 @@ namespace ZKA::Utils
 		URIParser& operator/=(const char* uri);
 
 	public:
-		bool open_app();
+		bool open_app() noexcept;
 
 	private:
 		std::vector<char> m_data;

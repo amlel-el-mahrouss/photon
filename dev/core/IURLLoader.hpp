@@ -18,31 +18,28 @@ namespace ZKA
 {
 	/*
 	 *	@brief IURLLoader
-	 *	@brief Takes care of HTTPS/HTTP requests.
+	 *	@brief Interface for loading HTTP/HTTPS urls, this is the base class for loading stuff as well.
 	 */
 
-	class ZKA_API IURLLoader final
+	class ZKA_API IURLLoader
 	{
 	public:
 		IURLLoader()  = default;
-		~IURLLoader() = default;
+		virtual ~IURLLoader() = default;
 
 	public:
 		ZKA_COPY_DEFAULT(IURLLoader);
 
 	public:
-		String   post(Utils::URIParser& url, String data, bool cache_data = false);
-		String   get(Utils::URIParser& url, bool cache_data = false);
-		void   set_endpoint(const String& endpoint) noexcept;
-		String get_endpoint() noexcept;
+		virtual String   post(Utils::URIParser& url, String data, bool cache_data = false);
+		virtual String   put(Utils::URIParser& url, String data, bool cache_data = false);
+		virtual String   del(Utils::URIParser& url, String data, bool cache_data = false);
+		virtual String   get(Utils::URIParser& url, bool cache_data = true);
+		virtual void   set_endpoint(const String& endpoint) noexcept;
+		virtual String get_endpoint() noexcept;
+		virtual String get_protocol() noexcept;
 
-	public:
-		const char* get_protocol() noexcept
-		{
-			return ZKA_URL_PROTO;
-		}
-
-	private:
+	protected:
 		//! Filesystem wrapper, create, open, delete!
 		FilesystemWrapper mWriter;
 		//! HTTP endpoint.

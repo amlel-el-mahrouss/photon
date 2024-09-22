@@ -13,10 +13,13 @@
 #include <SocketWrapper.hpp>
 
 // OpenSSL headers.
+#include <cstddef>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <string>
 
-#define ZKA_HTTP_VER  1.1f
+#define ZKA_HTTP_VER 1.1
+
 #define ZKA_USE_HTTPS 443
 #define ZKA_USE_HTTP  80
 
@@ -79,14 +82,17 @@ namespace ZKA::HTTP
 	{
 		class HTTPSocket final
 		{
-			struct sockaddr_in m_Addr{0};
-			std::string			   m_Dns{""};
-			Network::CSocket   m_Socket{INVALID_SOCKET};
+			struct sockaddr_in m_Addr
+			{
+				0
+			};
+			std::string		 m_Dns{""};
+			Network::CSocket m_Socket{INVALID_SOCKET};
 
 			friend HTTPWriter;
 
 		public:
-			HTTPSocket() = default;
+			HTTPSocket()  = default;
 			~HTTPSocket() = default;
 
 			HTTPSocket& operator=(const HTTPSocket&) = default;
@@ -103,8 +109,8 @@ namespace ZKA::HTTP
 
 		struct HTTPHeader final
 		{
-			RequestType		  Type;
-			String Bytes;
+			RequestType Type{RequestType::GET};
+			String		Bytes{};
 		};
 
 	} // namespace HTTP
@@ -149,30 +155,63 @@ namespace ZKA::HTTP
 		int mError{200};
 	};
 
-	inline std::string ZKA_HTTP_GET	  = "GET";
-	inline std::string ZKA_HTTP_POST	  = "POST";
-	inline std::string ZKA_HTTP_PUT	  = "PUT";
+	inline std::string ZKA_HTTP_GET	   = "GET";
+	inline std::string ZKA_HTTP_POST   = "POST";
+	inline std::string ZKA_HTTP_PUT	   = "PUT";
 	inline std::string ZKA_HTTP_DELETE = "DELETE";
 
 	class ZKA_API IHTTPHelper final
 	{
 	public:
-		static std::string form_request(const std::string path,
-								   const std::string host,
-								   const std::string	 request_type)
+		static std::string form_request(const std::string								 path,
+										const std::string								 host,
+										const std::string								 request_type,
+										const size_t									 length	 = 0,
+										std::vector<std::pair<std::string, std::string>> headers = {}, String data = "")
 		{
 			if (path.empty() || host.empty())
 				throw BrowserError("ILL_FORMED_PACKET");
 
-			std::string request = request_type + " " + path + " HTTP/1.1\r\n";
-			request += "Host: " + host + "\r\n";
-			request += "Connection: Keep-Alive\r\n";
-			request += "User-Agent: Mozilla/5.0\r\n";
+			std::string request = request_type;
+
+			request += " ";
+			request += path;
+			request += " HTTP/1.1\r\n";
+			request += "Host: ";
+			request += host;
+			request += "\r\n";
+			request += "User-Agent: Photon/1.0\r\n";
 
 			MIMEFactory factory;
 			auto		mime_struct = factory(const_cast<char*>(path.data()));
 
-			request += "Accept: " + mime_struct.t_mime + "\r\n";
+			if (length > 0 && request_type == ZKA_HTTP_POST)
+			{
+				request += "Content-Length: ";
+				request += std::to_string(length);
+				request += "\r\n";
+			}
+
+			request += "Accept: ";
+			request += mime_struct.t_mime;
+			request += "\r\n";
+
+			for (const auto& header : headers)
+			{
+				request += header.first;
+				request += ": ";
+				request += header.second;
+				request += "\r\n";
+			}
+
+			request += "Connection: keep-alive\r\n";
+			request += "\r\n";
+
+			if (data.size() > 0 && request_type == ZKA_HTTP_POST)
+			{
+				request += data;
+			}
+
 
 			return request;
 		}
@@ -198,6 +237,8 @@ namespace ZKA::HTTP
 
 			std::string final;
 
+			at += strlen("Content-Length: ");
+
 			for (size_t first = at; first < http.size(); ++first)
 			{
 				if (http[first] == '\r')
@@ -209,10 +250,12 @@ namespace ZKA::HTTP
 				}
 			}
 
-			return std::stol(final, nullptr, Base);
+			std::cout << final << std::endl;
+
+			return std::atol(final.c_str());
 		}
 
-		static const int bad_pos = -1;
+		static const int bad_pos = 0;
 	};
 
 	using HTTPSharedPtr = std::shared_ptr<HTTP::HTTPSocket>;
@@ -225,7 +268,7 @@ namespace ZKA::HTTP
 			if (!use_https)
 				return;
 
-			m_SslCtx = init_ssl();
+			m_SslCtx = _init_ssl();
 			m_Ssl	 = SSL_new(m_SslCtx);
 
 			// in case the SSL context fails
@@ -239,17 +282,7 @@ namespace ZKA::HTTP
 			ZKA_WARN("Init HTTPS context.");
 		}
 
-		~HTTPWriter() noexcept
-		{
-			if (m_Socket)
-			{
-				if (ZKA_SHUTDOWN(m_Socket->m_Socket, SD_BOTH) == SOCKET_ERROR)
-					ZKA_CLOSE(m_Socket->m_Socket);
-			}
-
-			SSL_free(m_Ssl);
-			SSL_CTX_free(m_SslCtx);
-		}
+		~HTTPWriter() = default;
 
 	public:
 		HTTPWriter& operator=(const HTTPWriter&) = default;
@@ -266,7 +299,7 @@ namespace ZKA::HTTP
 			if (!sock)
 				throw HTTPError(HTTP_INTERNAL_ERROR);
 
-			sock->m_Socket = ::socket(AF_INET, SOCK_STREAM, 0);
+			sock->m_Socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 			if (sock->m_Socket == INVALID_SOCKET)
 				throw HTTPError(HTTP_INTERNAL_ERROR);
@@ -325,44 +358,83 @@ namespace ZKA::HTTP
 			return sock;
 		}
 
-		int64_t send_from_socket(HTTPSharedPtr& sock, Ref<HTTP::HTTPHeader*>& hdr)
+		bool close_socket() noexcept
+		{
+			if (m_Socket)
+			{
+				if (ZKA_SHUTDOWN(m_Socket->m_Socket, SD_BOTH) == SOCKET_ERROR)
+					ZKA_CLOSE(m_Socket->m_Socket);
+
+				if (m_Ssl)
+				{
+					SSL_free(m_Ssl);
+					SSL_CTX_free(m_SslCtx);
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
+		bool send_from_socket(HTTPSharedPtr& sock, const char* bytes, size_t len)
 		{
 			if (!sock ||
-				!hdr)
-				return -1;
+				!len ||
+				!bytes)
+				return false;
 
-			ZKA_ASSERT(hdr->Bytes.size() > 0);
+			// form_request contain /0 and such, let's clean that.
+			for (auto i = 0ul; i < (len - 1); ++i)
+			{
+			    if (bytes[i] == 0)
+				{
+				    const_cast<char*>(bytes)[i] = ' ';
+				}
+			}
 
 			if (ZKA_HTTP_PORT == ZKA_USE_HTTPS)
 			{
-				return ::SSL_write(m_Ssl, hdr->Bytes.data(), hdr->Bytes.size());
+				return ::SSL_write(m_Ssl, bytes, len) > 0;
 			}
 			else
 			{
-				return ::send(sock->m_Socket, hdr->Bytes.data(), hdr->Bytes.size(), 0) > 0;
+				return ::send(sock->m_Socket, bytes, len, 0) > 0;
 			}
 		}
 
 		int64_t read_from_socket(HTTPSharedPtr& sock, char* bytes, int len)
 		{
 			if (!sock ||
-				!bytes)
+				!bytes ||
+				len < 1)
 				return -1;
-
-			ZKA_ASSERT(len > 0);
 
 			if (ZKA_HTTP_PORT == ZKA_USE_HTTPS)
 			{
-				return SSL_read(m_Ssl, bytes, len);
+				auto ret = ::SSL_read(m_Ssl, bytes, len);
+
+				bytes[len - 1] = 0;
+
+				if (ret == -1)
+				    return false;
+
+				return ret == 1;
 			}
 			else
 			{
-				return ::recv(sock->m_Socket, bytes, len, 0) > 0;
+				auto ret = ::recv(sock->m_Socket, bytes, len, 0);
+				bytes[len - 1] = 0;
+
+				if (ret == -1)
+				    return false;
+
+				return ret == 0;
 			}
 		}
 
 	private:
-		SSL_CTX* init_ssl(void) noexcept
+		SSL_CTX* _init_ssl(void) noexcept
 		{
 			const SSL_METHOD* method = TLS_client_method(); /* Create new client-method instance */
 			SSL_CTX*		  ctx	 = SSL_CTX_new(method);

@@ -20,7 +20,7 @@ FILE* zka_get_logger(void)
 	return gZKALogger;
 }
 
-size_t fstrlen(const char* buffer)
+size_t zka_strlen(const char* buffer)
 {
 	if (!buffer) return 0;
 	if (*buffer == ZKA_END_OF_BUFFER) return 0;
@@ -60,15 +60,13 @@ ZKA_API bool zka_open_logger()
 #else
 	snprintf(gDbgFilename, sizeof(time_t), "%lu_zka.log", zka_get_epoch());
 #endif
-
 	if (fopen_s(&gZKALogger, gDbgFilename, "w+") != EXIT_SUCCESS)
 	{
-		assert(false);
-		exit(EXIT_FAILURE);
+		ZKA_ASSERT(false);
+		::exit(EXIT_FAILURE);
 
 		return false;
 	}
-
 #endif // ZKA_DEBUG
 
 	return true;

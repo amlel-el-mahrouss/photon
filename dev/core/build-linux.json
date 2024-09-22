@@ -1,10 +1,10 @@
 {
-  "compiler_path": "g++",
+  "compiler_path": "clang++",
   "compiler_std": "c++20",
-  "headers_path": [ "./", "../../vendor" ],
-  "sources_path": [ "src/*.cc", "app/AppMain.cc" ],
+  "headers_path": ["./", "../../vendor"],
+  "sources_path": ["src/*.cc", "app/AppMain.cc"],
   "output_name": "PhotonBrowser.elf",
-  "compiler_flags": [ "-lssl", "-lcrypto" ],
+  "compiler_flags": ["-lssl", "-lcrypto"],
   "cpp_macros": [
     "__VITO__",
     "__AMD64_VITO__",

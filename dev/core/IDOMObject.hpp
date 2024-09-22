@@ -10,10 +10,10 @@
 #pragma once
 
 #include <rapidxml/rapidxml.hpp>
-#include <cassert>
 #include <BaseSpecs.hpp>
 
-#define ZKA_DOM_OBJECT (0)
+#define ZKA_DOM_OBJECT	 (0)
+#define ZKA_HTML_DOCTYPE "<!doctype html>"
 
 namespace ZKA
 {
@@ -99,12 +99,18 @@ namespace ZKA
 		rapidxml::xml_node<char>* m_node{nullptr};
 	};
 
-	inline String get_html_document(String the_xml_blob) noexcept
+	inline String get_html_document(String data) noexcept
 	{
-		if (the_xml_blob.find("<!DOCTYPE html>") != String::npos &&
-		    the_xml_blob.size() > strlen("<!DOCTYPE html>"))
+		String the_xml_blob = data;
+
+		std::transform(the_xml_blob.begin(), the_xml_blob.end(), the_xml_blob.begin(),
+					   [](unsigned char c) { return std::tolower(c); });
+
+		if (the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos &&
+			the_xml_blob.size() > strlen(ZKA_HTML_DOCTYPE))
 		{
-			return the_xml_blob.substr(the_xml_blob.find("<!DOCTYPE html>") + strlen("<!DOCTYPE html>"));
+		    // Still the same string, so it doesn't matter.
+			return data.substr(the_xml_blob.find(ZKA_HTML_DOCTYPE) + strlen(ZKA_HTML_DOCTYPE));
 		}
 
 		return ZKA_EMPTY_HTML;
@@ -112,7 +118,10 @@ namespace ZKA
 
 	inline bool is_html_document(String the_xml_blob) noexcept
 	{
-		if (the_xml_blob.find("<!DOCTYPE html>") != String::npos)
+		std::transform(the_xml_blob.begin(), the_xml_blob.end(), the_xml_blob.begin(),
+					   [](unsigned char c) { return std::tolower(c); });
+
+		if (the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos)
 		{
 			return true;
 		}

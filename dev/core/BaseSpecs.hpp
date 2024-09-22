@@ -31,10 +31,10 @@ inline int fopen_s(FILE** fp, const char* path, const char* res) noexcept
 
 #define ZKA_END_OF_BUFFER '\0'
 
-#define ZKA_EMPTY_HTML "<html><head></head><body></body></html>"
+#define ZKA_EMPTY_HTML "<!doctype html><html><head></head><body></body></html>\r\n"
 
 ZKA_API void   zka_log(const char* str);
-ZKA_API size_t fstrlen(const char* str);
+ZKA_API size_t zka_strlen(const char* str);
 ZKA_API time_t zka_get_epoch();
 ZKA_API FILE*  zka_get_logger();
 ZKA_API bool   zka_open_logger();
@@ -49,7 +49,7 @@ ZKA_API bool   zka_open_logger();
 
 namespace ZKA
 {
-    namespace FS = std::filesystem;
+	namespace FS = std::filesystem;
 
 	using Thread = std::thread;
 	using String = std::string;
@@ -408,7 +408,7 @@ namespace ZKA
 			}
 		};
 
-		CredsResult ask_for_credentials(
+		CredsResult validate(
 			PrivShellData priv, const wchar_t* message = L"Please confirm it's you.", const wchar_t* title = L"ZKA Security.") noexcept
 		{
 			static BOOL isSaved = false;
@@ -464,25 +464,46 @@ namespace ZKA
 			return creds;
 		}
 
-		Ref<HINSTANCE> open(const String& appname, PrivShellData priv)
+		Ref<HINSTANCE> open(const String& app_name, PrivShellData priv)
 		{
-			if (appname.empty())
+			if (app_name.empty())
 				return {};
 
-			return IShellHelper::open(appname.c_str(), priv);
+			return IShellHelper::open(app_name.c_str(), priv);
 		}
 
-		Ref<HINSTANCE> open(const char* appname, PrivShellData priv)
+		Ref<HINSTANCE> open(const char* app_name, PrivShellData priv)
 		{
-			if (!appname)
+			if (!app_name)
 				return {};
 
-			Ref<HINSTANCE> instance = ShellExecuteA(priv, SHELL_MANAGER_EXEC_OPEN, appname, nullptr, nullptr, SW_SHOW);
+			Ref<HINSTANCE> instance = ShellExecuteA(priv, SHELL_MANAGER_EXEC_OPEN, app_name, nullptr, nullptr, SW_SHOW);
 
 			if (!instance)
 				throw Win32Error("Win32 error, check hr()");
 
 			return instance;
+		}
+	};
+#else
+	class ZKA_API IShellHelper final
+	{
+	public:
+		explicit IShellHelper() = default;
+		~IShellHelper()			= default;
+
+		IShellHelper& operator=(const IShellHelper&) = default;
+		IShellHelper(const IShellHelper&)			 = default;
+
+		void open(const char* app_name)
+		{
+			if (!app_name)
+				return;
+
+			String cmd = "xdg-open ";
+			cmd += app_name;
+
+			std::system(cmd.c_str());
 		}
 	};
 #endif

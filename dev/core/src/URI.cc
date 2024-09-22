@@ -110,58 +110,70 @@ namespace ZKA::Utils
 		return m_protocol;
 	}
 
-	bool URIParser::open_app()
+	bool URIParser::open_app() noexcept
 	{
 		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
 			this->protocol() == ZKA_HTTP_PROTOCOL)
 		{
-			if (this->protocol() == ZKA_HTTP_PROTOCOL)
+			try
 			{
-				ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTP;
+				if (this->protocol() == ZKA_HTTP_PROTOCOL)
+				{
+					ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTP;
+				}
+				else
+				{
+					ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTPS;
+				}
+
+				URIParser  url(this->protocol().c_str());
+				IURLLoader loader;
+
+				String root = "/";
+
+				String content = this->get();
+
+				if (content.find("/") != std::string::npos)
+				{
+					loader.set_endpoint(content.substr(0, content.find("/")));
+
+					root = content.substr(content.find("/"));
+
+					// remove port.
+					if (root.find(":") != String::npos)
+						root.erase(root.find(":"));
+				}
+				else
+				{
+					loader.set_endpoint(content);
+				}
+
+				url /= root;
+
+				auto http = loader.get(url, true);
+
+				std::cout << http;
+
+				if (http.find("\r\n\r\n") != String::npos)
+				{
+					auto html = http.substr(http.find("\r\n\r\n") + strlen("\r\n\r\n"));
+				}
 			}
-			else
+			catch (BrowserError err)
 			{
-				ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTPS;
+
 			}
-
-			URIParser  url(this->protocol().c_str());
-			IURLLoader loader;
-
-			String root = "/";
-
-			String content = this->get();
-
-			if (content.find("/") != std::string::npos)
-			{
-				loader.set_endpoint(content.substr(0, content.find("/")));
-
-				root = content.substr(content.find("/"));
-
-				// remove port.
-				if (root.find(":") != String::npos)
-					root.erase(root.find(":"));
-			}
-			else
-			{
-				loader.set_endpoint(content);
-			}
-
-			url /= root;
-
-			std::cout << loader.get(url);
 
 			return true;
 		}
 		else if (this->protocol() == ZKA_FILE_PROTOCOL)
 		{
-#ifdef ZKA_WINDOWS
 			IShellHelper helper;
+
+#ifdef ZKA_WINDOWS
 			helper.open(this->get(), nullptr);
 #else
-			String cmd = "xdg-open ";
-			cmd += this->get();
-
-			std::system(cmd.c_str());
+			helper.open(this->get().c_str());
 #endif
 
 			return true;
