@@ -1,10 +1,19 @@
 {
   "compiler_path": "clang++",
   "compiler_std": "c++20",
-  "headers_path": ["./", "../../vendor"],
-  "sources_path": ["src/*.cc", "src/app/*.cc", "src/stdjs/*.cc"],
-  "output_name": "PhotonBrowser.elf",
-  "compiler_flags": ["-lssl", "-lcrypto"],
+  "headers_path": ["./", "../../vendor", "../"],
+  "sources_path": [
+    "src/core/*.cc",
+    "src/engine/*.cc",
+    "src/plugin/*.cc",
+    "src/render/*.cc"
+  ],
+  "output_name": "../dist/PhotonBrowser.elf",
+  "compiler_flags": [
+    "-lssl",
+    "-lcrypto",
+    "$(pkg-config gtkmm-3.0 --cflags --libs)"
+  ],
   "cpp_macros": [
     "__VITO__",
     "__AMD64_VITO__",

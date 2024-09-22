@@ -12,4 +12,4 @@
 #include <BaseSpecs.hpp>
 
 class IPlugin;
-class IPluginLoader;
+class IPluginProvider;

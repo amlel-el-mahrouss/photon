@@ -2,3 +2,4 @@
 -Idev/
 -Idev/core
 -Ivendor/
+-I/usr/include/gtkmm-4.0

@@ -1,10 +1,8 @@
 /*
  * =====================================================================
  *
- *			Photon Audio Subsystem
- *			Copyright ZKA Corporation, all rights reserved.
- *
- *			Purpose: ZKA Sound backend.
+ *			Photon
+ *			Copyright ZKA Technologies, all rights reserved.
  *
  * =====================================================================
  */

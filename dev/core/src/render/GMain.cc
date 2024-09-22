@@ -1,4 +1,3 @@
-
 /*
  * =====================================================================
  *
@@ -9,14 +8,10 @@
  */
 
 #include <IURLLoader.hpp>
+#include <ui/XUL.hpp>
 
-/// @brief Browser entrypoint.
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
-	ZKA::Utils::URIParser url(argv[1]);
-	url /= argv[2];
 
-	std::cout << url.open_app();
-
-    return 0;
+	return 0;
 }
