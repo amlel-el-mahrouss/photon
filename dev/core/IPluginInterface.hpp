@@ -7,15 +7,6 @@
  * =====================================================================
  */
 
-#include <IURLLoader.hpp>
+#pragma once
 
-/// @brief Browser entrypoint.
-int main(int argc, char** argv)
-{
-	ZKA::Utils::URIParser url(argv[1]);
-	url /= argv[2];
-
-	url.open_app();
-
-    return 0;
-}
+#include <BaseSpecs.hpp>

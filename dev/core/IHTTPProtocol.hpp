@@ -322,7 +322,7 @@ namespace ZKA::HTTP
 					ZKA_INFO("Invalid hostname! returning nullptr...");
 					ZKA_INFO(dns.c_str());
 
-					return nullptr;
+					throw BrowserError("INVALID_DNS_PROBE_X2");
 				}
 
 				sock->m_Addr.sin_addr.s_addr = *((u_long*)host->h_addr);

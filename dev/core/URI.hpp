@@ -51,13 +51,11 @@ namespace ZKA::Utils
 		String port() noexcept;
 		String protocol() noexcept;
 		String get() noexcept;
+		String open_app();
 
 	public:
 		URIParser& operator/=(const String& uri);
 		URIParser& operator/=(const char* uri);
-
-	public:
-		bool open_app() noexcept;
 
 	private:
 		std::vector<char> m_data;
