@@ -8,9 +8,7 @@
  */
 
 #include <URL.hpp>
-#include <ui/XUL.hpp>
-
-
+#include <ui/GLib.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -21,10 +19,7 @@ int main(int argc, char* argv[])
 	std::atexit(ZKA::fini_winsock);
 #endif
 
-	ZKA::Utils::URIParser parser(argv[1]);
-	parser /= argv[2];
 
-	std::cout << parser.open();
 
 	return 0;
 }
