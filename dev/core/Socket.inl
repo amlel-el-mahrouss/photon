@@ -4,7 +4,7 @@
  *			Photon
  *			Copyright ZKA Technologies, all rights reserved.
  *
- *			File: SocketWrapper.inl
+ *			File: Socket.inl
  *			Purpose: C++ Socket Wrapper
  *
  * =====================================================================

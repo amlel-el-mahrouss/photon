@@ -42,7 +42,15 @@ namespace ZKA
 			return ZKA_EMPTY_HTML;
 		}
 
-		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_POST, data.size(), {}, data);
+		std::vector<std::pair<std::string, std::string>> headers;
+
+		if (!cache_data)
+		{
+			headers.push_back({"Pragma", "no-cache"});
+			headers.push_back({"Cache-Control", "no-cache"});
+		}
+
+		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_POST, data.size(), headers, data);
 
 		auto sock = http_post.create_and_connect(mEndpoint);
 
@@ -51,6 +59,27 @@ namespace ZKA
 
 		if (!http_post.send_from_socket(sock, http_request.c_str(), http_request.size()))
 			return ZKA_EMPTY_HTML;
+
+		char* bytes = new char[ZKA_MAX_BUF];
+		ZKA_ASSERT(bytes);
+
+		ZeroMemory(bytes, ZKA_MAX_BUF);
+
+		if (bytes)
+		{
+			http_post.read_from_socket(sock, bytes, ZKA_MAX_BUF);
+
+			String result = bytes;
+
+			http_post.close_socket();
+
+			delete[] bytes;
+			bytes = nullptr;
+
+			return result;
+		}
+
+		http_post.close_socket();
 
 		return ZKA_EMPTY_HTML;
 	}
@@ -108,6 +137,8 @@ namespace ZKA
 
 			return result;
 		}
+
+		http_probe.close_socket();
 
 		return ZKA_EMPTY_HTML;
 	}

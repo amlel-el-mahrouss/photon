@@ -16,5 +16,4 @@
 #define ZKA_JS_NULL "null"
 #define ZKA_JS_WINDOW "window"
 
-class IJSSymbolProvider;
 class IJSEngineSandbox;

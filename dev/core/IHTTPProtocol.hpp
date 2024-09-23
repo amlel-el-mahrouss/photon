@@ -10,7 +10,7 @@
 #pragma once
 
 #include <BaseSpecs.hpp>
-#include <SocketWrapper.hpp>
+#include <Socket.hpp>
 
 // OpenSSL headers.
 #include <cstddef>

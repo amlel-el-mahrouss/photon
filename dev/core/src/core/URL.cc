@@ -14,9 +14,8 @@
 @file
 */
 
-#include <URI.hpp>
+#include <URL.hpp>
 #include <IURLLoader.hpp>
-#include <fstream>
 
 #ifndef ZKA_URI_MAXSIZE
 #define ZKA_URI_MAXSIZE (8196)
@@ -111,7 +110,64 @@ namespace ZKA::Utils
 		return m_protocol;
 	}
 
-	String URIParser::open_app()
+	String URIParser::send(String data)
+	{
+		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
+			this->protocol() == ZKA_HTTP_PROTOCOL)
+		{
+			try
+			{
+				if (this->protocol() == ZKA_HTTP_PROTOCOL)
+				{
+					ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTP;
+				}
+				else
+				{
+					ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTPS;
+				}
+
+				URIParser  url(this->protocol().c_str());
+				IURLLoader loader;
+
+				String root = "/";
+
+				String content = this->get();
+
+				if (content.find("/") != std::string::npos)
+				{
+					loader.set_endpoint(content.substr(0, content.find("/")));
+
+					root = content.substr(content.find("/"));
+
+					// remove port.
+					if (root.find(":") != String::npos)
+						root.erase(root.find(":"));
+				}
+				else
+				{
+					loader.set_endpoint(content);
+				}
+
+				url /= root;
+
+				auto http = loader.post(url, data, true);
+
+				if (http.find("\r\n\r\n") != String::npos)
+				{
+					auto html = http.substr(http.find("\r\n\r\n") + strlen("\r\n\r\n"));
+					return html;
+				}
+			}
+			catch (BrowserError err)
+			{
+				return "";
+			}
+		}
+
+		return "";
+	}
+
+	String URIParser::open()
 	{
 		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
 			this->protocol() == ZKA_HTTP_PROTOCOL)
@@ -161,7 +217,11 @@ namespace ZKA::Utils
 			}
 			catch (BrowserError err)
 			{
-				std::ifstream err_html("../res/error.html");
+			    ZKA_GET_DATA_DIR(DIR);
+
+				DIR += "/res/error.html";
+
+				std::ifstream err_html(DIR);
 
 				if (err_html.is_open())
 				{
@@ -198,7 +258,9 @@ namespace ZKA::Utils
 		}
 		else if (this->protocol() == ZKA_ZKA_PROTOCOL)
 		{
-			// We don't handle the ZKA protocol directly.
+
+
+
 			return ZKA_EMPTY_HTML;
 		}
 

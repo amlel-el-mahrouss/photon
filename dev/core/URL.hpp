@@ -46,12 +46,15 @@ namespace ZKA::Utils
 		virtual ~URIParser();
 
 		URIParser& operator=(const URIParser&) = default;
-		URIParser(const URIParser&) = default;
+		URIParser(const URIParser&)			   = default;
 
 		String port() noexcept;
 		String protocol() noexcept;
 		String get() noexcept;
-		String open_app();
+
+	public:
+		String send(String data);
+		String open();
 
 	public:
 		URIParser& operator/=(const String& uri);
@@ -59,9 +62,8 @@ namespace ZKA::Utils
 
 	private:
 		std::vector<char> m_data;
-		String m_protocol;
-		String m_port;
-
+		String			  m_protocol;
+		String			  m_port;
 	};
 
 	typedef URIParser URLParser;
@@ -69,16 +71,18 @@ namespace ZKA::Utils
 	class ZKA_API URIError final : public std::runtime_error
 	{
 	public:
-		URIError(URIParser& uri) : std::runtime_error("URIError"), m_uri(uri) {}
+		URIError(URIParser& uri)
+			: std::runtime_error("URIError"), m_uri(uri)
+		{
+		}
 		~URIError() = default; // let the ABI define that.
 
 		URIError& operator=(const URIError&) = default;
-		URIError(const URIError&) = default;
+		URIError(const URIError&)			 = default;
 
 		URIParser& get();
 
 	private:
 		URIParser m_uri;
-
 	};
-}
+} // namespace ZKA::Utils

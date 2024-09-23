@@ -10,7 +10,7 @@
 #pragma once
 
 #include <IHTTPProtocol.hpp>
-#include <URI.hpp>
+#include <URL.hpp>
 
 #define ZKA_URL_PROTO "HTTP"
 
