@@ -109,6 +109,8 @@ namespace ZKA
 			headers.push_back({"Cache-Control", "no-cache"});
 		}
 
+		ZKA_INFO("Forming HTTP request...");
+
 		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_GET, 0, headers);
 
 		auto sock = http_probe.create_and_connect(mEndpoint);

@@ -172,6 +172,8 @@ namespace ZKA::HTTP
 			if (path.empty() || host.empty())
 				throw BrowserError("ILL_FORMED_PACKET");
 
+			ZKA_INFO("Forming packet...");
+
 			std::string request = request_type;
 
 			request += " ";
@@ -212,6 +214,10 @@ namespace ZKA::HTTP
 				request += data;
 			}
 
+			
+			ZKA_INFO("Packet created...");
+
+			ZKA_INFO(request.c_str());
 
 			return request;
 		}
@@ -294,12 +300,16 @@ namespace ZKA::HTTP
 			if (dns.empty())
 				throw HTTPError(HTTP_DNS_ERROR);
 
+			ZKA_INFO("Creating HTTPSharedPtr...");
+
 			HTTPSharedPtr sock = std::make_unique<HTTP::HTTPSocket>();
 
 			if (!sock)
 				throw HTTPError(HTTP_INTERNAL_ERROR);
 
-			sock->m_Socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+			ZKA_INFO("Creating Socket...");
+			
+			sock->m_Socket = ::ZKA_SOCKET(AF_INET, SOCK_STREAM, 0);
 
 			if (sock->m_Socket == INVALID_SOCKET)
 				throw HTTPError(HTTP_INTERNAL_ERROR);
@@ -310,6 +320,8 @@ namespace ZKA::HTTP
 
 			sock->m_Addr.sin_addr.s_addr = inet_addr(dns.c_str());
 			sock->m_Addr.sin_port		 = htons(ZKA_HTTP_PORT);
+
+			ZKA_INFO("Connecting...");
 
 			if (sock->m_Addr.sin_addr.s_addr == INADDR_NONE)
 			{
@@ -352,8 +364,10 @@ namespace ZKA::HTTP
 
 				return sock;
 			}
-
-			ZKA_INFO("Connected with HTTP.");
+			else
+			{
+				ZKA_INFO("Connected with HTTP.");
+			}
 
 			return sock;
 		}
@@ -383,15 +397,6 @@ namespace ZKA::HTTP
 				!len ||
 				!bytes)
 				return false;
-
-			// form_request contain /0 and such, let's clean that.
-			for (auto i = 0ul; i < (len - 1); ++i)
-			{
-			    if (bytes[i] == 0)
-				{
-				    const_cast<char*>(bytes)[i] = ' ';
-				}
-			}
 
 			if (ZKA_HTTP_PORT == ZKA_USE_HTTPS)
 			{

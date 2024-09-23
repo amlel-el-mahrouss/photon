@@ -21,40 +21,21 @@
 #define ZKA_URI_MAXSIZE (8196)
 #endif // ZKA_URI_MAXSIZE
 
-#ifndef ZKA_URI_SEPARATOR
-#define ZKA_URI_SEPARATOR '\a'
-#endif // ZKA_URI_SEPARATOR
-
 namespace ZKA::Utils
 {
 	URIParser::URIParser(const char* protocol)
 	{
-		for (std::size_t i = 0; i < strlen(protocol); i++)
-		{
-			if (protocol[i] == ':')
-				break;
+		m_protocol = protocol;
 
-			m_protocol += protocol[i];
-		}
+		if (m_protocol.find(":") != String::npos)
+			m_protocol.erase(m_protocol.find(":"));
 	}
 
 	URIParser::~URIParser() = default;
 
 	String URIParser::get() noexcept
 	{
-		String uri;
-
-		for (size_t i = 0; i < m_data.size(); i++)
-		{
-			if (m_data[i] == ZKA_URI_SEPARATOR)
-				continue;
-
-			uri.push_back(m_data[i]);
-		}
-
-		uri += '\0';
-
-		return uri;
+		return m_data;
 	}
 
 	URIParser& URIParser::operator/=(const String& uri)
@@ -72,29 +53,14 @@ namespace ZKA::Utils
 
 		String uri_str = uri;
 
-		if (strstr(uri, m_protocol.c_str()))
-			return *this;
-
-		for (size_t i = 0; i < uri_str.size(); ++i)
+		if (uri_str.find(":") != String::npos)
 		{
-			if (uri_str[i] == ':')
-			{
-				if (!m_port.empty())
-					m_port.clear();
-
-				++i;
-
-				for (size_t y = i; y < uri_str.size(); ++y)
-				{
-					m_port += uri_str[y];
-				}
-
-				break;
-			}
-			else
-			{
-				m_data.push_back(uri[i]);
-			}
+			m_data = uri_str.substr(0, uri_str.find(":"));
+			m_port = uri_str.substr(uri_str.find(":") + 1);
+		}
+		else
+		{
+			m_data = uri_str;
 		}
 
 		return *this;

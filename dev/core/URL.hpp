@@ -61,7 +61,7 @@ namespace ZKA::Utils
 		URIParser& operator/=(const char* uri);
 
 	private:
-		std::vector<char> m_data;
+		String			  m_data;
 		String			  m_protocol;
 		String			  m_port;
 	};
