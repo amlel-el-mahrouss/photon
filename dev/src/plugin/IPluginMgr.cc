@@ -7,4 +7,4 @@
  * =====================================================================
  */
 
-#include <IPluginInterface.hpp>
+#include <IPluginMgr.hpp>

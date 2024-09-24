@@ -185,7 +185,7 @@ namespace ZKA
 			{
 			    ZKA_GET_DATA_DIR(DIR);
 
-				DIR += "/res/error.html";
+				DIR += "/.html/DialogError.html";
 
 				std::ifstream err_html(DIR);
 

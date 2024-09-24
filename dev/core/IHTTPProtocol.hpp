@@ -182,7 +182,7 @@ namespace ZKA::HTTP
 			request += "Host: ";
 			request += host;
 			request += "\r\n";
-			request += "User-Agent: Photon/1.0\r\n";
+			request += "User-Agent: Photon/1.0.0 (NewOS) Photon/1.0.0 Version/1.0.0\r\n";
 
 			MIMEFactory factory;
 			auto		mime_struct = factory(const_cast<char*>(path.data()));

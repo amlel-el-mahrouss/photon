@@ -33,15 +33,9 @@ namespace ZKA
 
 		ZKA_COPY_DEFAULT(IDOMObject);
 
-		virtual Int32 type()
+		virtual Int32 node_type()
 		{
 			return ZKA_DOM_OBJECT;
-		}
-
-		virtual Ref<rapidxml::xml_node<char>*> node_as_ref()
-		{
-			ZKA_ASSERT(m_node);
-			return make_ref(m_node);
 		}
 
 		virtual bool is_element()
@@ -68,6 +62,30 @@ namespace ZKA
 			return rapidxml::node_doctype == m_node->type();
 		}
 
+		virtual String type()
+		{
+			if (auto type = this->get_attribute("type"); type)
+				return type->value();
+
+			return "";
+		}
+
+		virtual String src()
+		{
+			if (auto type = this->get_attribute("src"); type)
+				return type->value();
+
+			return "";
+		}
+
+		virtual String value()
+		{
+			if (auto type = this->get_node(nullptr)->value(); type)
+				return type;
+
+			return "";
+		}
+
 		virtual rapidxml::xml_attribute<char>* get_attribute(const char* attrib_name)
 		{
 			ZKA_ASSERT(m_node);
@@ -77,12 +95,16 @@ namespace ZKA
 		virtual rapidxml::xml_node<char>* get_node(const char* attrib_name)
 		{
 			ZKA_ASSERT(m_node);
+
+			if (!attrib_name)
+				return m_node;
+
 			return m_node->first_node(attrib_name, strlen(attrib_name));
 		}
 
 		static IDOMObject* make_dom_object(String data)
 		{
-		    if (data.empty())
+			if (data.empty())
 				return nullptr;
 
 			rapidxml::xml_document<char> doc;

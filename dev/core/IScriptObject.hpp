@@ -12,7 +12,7 @@
 /// @file IScriptObject.hpp
 /// @brief <script> element.
 
-#include <IHTMLParser.hpp>
+#include <IDOMObject.hpp>
 
 #define ZKA_SCRIPT_OBJECT (1)
 
@@ -30,25 +30,9 @@ namespace ZKA
 	public:
 		~IScriptObject() override = default;
 
-		Int32 type() override
+		Int32 node_type() override
 		{
 			return ZKA_SCRIPT_OBJECT;
-		}
-
-		String mime()
-		{
-			if (auto type = this->get_attribute("type"); type)
-				return type->value();
-
-			return "";
-		}
-
-		String src()
-		{
-			if (auto type = this->get_attribute("src"); type)
-				return type->value();
-
-			return "";
 		}
 
 		static IScriptObject* make_script_object(String data)
