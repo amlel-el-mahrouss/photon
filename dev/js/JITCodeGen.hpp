@@ -7,14 +7,6 @@
  * =====================================================================
  */
 
-#include <ui/GWindow.hpp>
+#pragma once
 
-namespace ZKA
-{
-	int32_t GWindow::run(int argc, char** argv)
-	{
-	    ZKA_INFO("Starting Photon...");
-
-	    return 0;
-	}
-} // namespace ZKA
+#include <js/JITSpecs.hpp>

@@ -74,6 +74,18 @@ namespace ZKA
 		BrowserError(const BrowserError&)			 = default;
 	};
 
+	inline String zka_replace_format(String fmt, String output, String with)
+	{
+		auto err_pos = output.find("{{ " + fmt + " }}");
+
+		if (err_pos != String::npos)
+		{
+			output.replace(err_pos, ("{{ " + fmt + " }}").size(), with);
+		}
+
+		return output;
+	}
+
 #ifdef ZKA_WINDOWS
 	class ZKA_API Win32Error : public std::runtime_error
 	{
@@ -118,6 +130,7 @@ namespace ZKA
 		{
 			return m_ptr;
 		}
+
 		T operator->()
 		{
 			return m_ptr;

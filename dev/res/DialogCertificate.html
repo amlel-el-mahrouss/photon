@@ -88,31 +88,29 @@
             <div class="certificate-header">
                 <div class="certificate-title">
                     <span class="security-icon"></span>
-                    Certificate
+                    Continue to {{ URL }}?
                 </div>
             </div>
             <div class="certificate-content">
                 <div class="certificate-row">
                     <div class="certificate-label">Common Name (CN)</div>
-                    <div class="certificate-value">example.com</div>
+                    <div class="certificate-value">{{ COMM_NAME }}</div>
                 </div>
                 <div class="certificate-row">
                     <div class="certificate-label">Organization (O)</div>
-                    <div class="certificate-value">Example Inc.</div>
+                    <div class="certificate-value">{{ ORG }}</div>
                 </div>
                 <div class="certificate-row">
                     <div class="certificate-label">Issued By</div>
-                    <div class="certificate-value">
-                        DigiCert SHA2 Secure Server CA
-                    </div>
+                    <div class="certificate-value">{{ ISSUER }}</div>
                 </div>
                 <div class="certificate-row">
                     <div class="certificate-label">Valid From</div>
-                    <div class="certificate-value">Sep 24, 2023</div>
+                    <div class="certificate-value">{{ DATE START }]</div>
                 </div>
                 <div class="certificate-row">
                     <div class="certificate-label">Valid To</div>
-                    <div class="certificate-value">Sep 25, 2024</div>
+                    <div class="certificate-value">{{ DATE END }}</div>
                 </div>
             </div>
             <div class="certificate-footer">

@@ -54,7 +54,7 @@ namespace ZKA
 
 			if (new_dom)
 			{
-				ZKA_ERROR("new_dom allocation failure, probably out of memory.");
+				ZKA_ERROR("<script> allocation failed, probably out of memory.");
 				return nullptr;
 			}
 

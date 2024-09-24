@@ -196,13 +196,9 @@ namespace ZKA
 
 					auto output = ss.str();
 
-					auto err_pos = output.find("{{ERROR_CODE}}");
+					output = zka_replace_format("ERR_CODE", output, err.what());
 
-					if (err_pos != String::npos)
-					{
-						output.replace(err_pos, strlen("{{ERROR_CODE}}"), err.what());
-						return output;
-					}
+					return output;
 				}
 
 				return ZKA_EMPTY_HTML;
