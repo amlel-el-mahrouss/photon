@@ -7,19 +7,8 @@
  * =====================================================================
  */
 
-#include <URL.hpp>
-#include <ui/GLib.hpp>
+#pragma once
 
-int main(int argc, char* argv[])
-{
-#ifdef ZKA_WINDOWS
-	WSADATA dat{0};
-	ZKA::init_winsock(&dat);
-
-	std::atexit(ZKA::fini_winsock);
-#endif
-
-
-
-	return 0;
-}
+#define ZKA_JS_UNDEFINED "undefined"
+#define ZKA_JS_NULL		 "null"
+#define ZKA_JS_WINDOW	 "window"

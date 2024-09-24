@@ -21,9 +21,9 @@
 #define ZKA_URI_MAXSIZE (8196)
 #endif // ZKA_URI_MAXSIZE
 
-namespace ZKA::Utils
+namespace ZKA
 {
-	URIParser::URIParser(const char* protocol)
+	URL::URL(const char* protocol)
 	{
 		m_protocol = protocol;
 
@@ -31,21 +31,21 @@ namespace ZKA::Utils
 			m_protocol.erase(m_protocol.find(":"));
 	}
 
-	URIParser::~URIParser() = default;
+	URL::~URL() = default;
 
-	String URIParser::get() noexcept
+	String URL::get() noexcept
 	{
 		return m_data;
 	}
 
-	URIParser& URIParser::operator/=(const String& uri)
+	URL& URL::operator/=(const String& uri)
 	{
 		this->operator/=(uri.c_str());
 
 		return *this;
 	}
 
-	URIParser& URIParser::operator/=(const char* uri)
+	URL& URL::operator/=(const char* uri)
 	{
 		if (!uri ||
 			*uri == 0)
@@ -66,17 +66,17 @@ namespace ZKA::Utils
 		return *this;
 	}
 
-	String URIParser::port() noexcept
+	String URL::port() noexcept
 	{
 		return m_port;
 	}
 
-	String URIParser::protocol() noexcept
+	String URL::protocol() noexcept
 	{
 		return m_protocol;
 	}
 
-	String URIParser::send(String data)
+	String URL::send(String data)
 	{
 		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
 			this->protocol() == ZKA_HTTP_PROTOCOL)
@@ -92,7 +92,7 @@ namespace ZKA::Utils
 					ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTPS;
 				}
 
-				URIParser  url(this->protocol().c_str());
+				URL  url(this->protocol().c_str());
 				IURLLoader loader;
 
 				String root = "/";
@@ -133,7 +133,7 @@ namespace ZKA::Utils
 		return "";
 	}
 
-	String URIParser::open()
+	String URL::open()
 	{
 		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
 			this->protocol() == ZKA_HTTP_PROTOCOL)
@@ -149,7 +149,7 @@ namespace ZKA::Utils
 					ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTPS;
 				}
 
-				URIParser  url(this->protocol().c_str());
+				URL  url(this->protocol().c_str());
 				IURLLoader loader;
 
 				String root = "/";
@@ -233,9 +233,9 @@ namespace ZKA::Utils
 		return ZKA_EMPTY_HTML;
 	}
 
-	URIParser& URIError::get()
+	URL& URLError::get()
 	{
 		return m_uri;
 	}
 
-} // namespace ZKA::Utils
+} // namespace ZKA

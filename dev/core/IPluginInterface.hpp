@@ -11,5 +11,8 @@
 
 #include <BaseSpecs.hpp>
 
-class IPlugin;
-class IPluginProvider;
+namespace ZKA
+{
+	class IPlugin;
+	class IPluginProvider;
+} // namespace ZKA

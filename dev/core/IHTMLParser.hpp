@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <rapidxml/rapidxml.hpp>
 #include <BaseSpecs.hpp>
+#include <rapidxml/rapidxml.hpp>
 
 #define ZKA_DOM_OBJECT	 (0)
 #define ZKA_HTML_DOCTYPE "<!doctype html>"
@@ -21,6 +21,7 @@ namespace ZKA
 
 	class IDOMObject
 	{
+	protected:
 		explicit IDOMObject(rapidxml::xml_node<char>* p_node)
 			: m_node(p_node)
 		{
@@ -79,10 +80,13 @@ namespace ZKA
 			return m_node->first_node(attrib_name, strlen(attrib_name));
 		}
 
-		static IDOMObject* make_dom_factory(char* data)
+		static IDOMObject* make_dom_object(String data)
 		{
+		    if (data.empty())
+				return nullptr;
+
 			rapidxml::xml_document<char> doc;
-			doc.parse<0>(data);
+			doc.parse<0>(data.data());
 
 			IDOMObject* new_dom = new IDOMObject(doc.first_node());
 

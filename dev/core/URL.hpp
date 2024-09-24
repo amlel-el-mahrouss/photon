@@ -34,19 +34,16 @@
 #define ZKA_ZKA_PROTOCOL ("zka://")
 #endif // !ZKA_ZKA_PROTOCOL
 
-namespace ZKA::Utils
+namespace ZKA
 {
-	// Accessors are like iterators, but with an offset.
-	using URIAccessor = int32_t;
-
-	class ZKA_API URIParser final
+	class ZKA_API URL final
 	{
 	public:
-		URIParser(const char* protocol);
-		virtual ~URIParser();
+		URL(const char* protocol);
+		virtual ~URL();
 
-		URIParser& operator=(const URIParser&) = default;
-		URIParser(const URIParser&)			   = default;
+		URL& operator=(const URL&) = default;
+		URL(const URL&)			   = default;
 
 		String port() noexcept;
 		String protocol() noexcept;
@@ -57,8 +54,8 @@ namespace ZKA::Utils
 		String open();
 
 	public:
-		URIParser& operator/=(const String& uri);
-		URIParser& operator/=(const char* uri);
+		URL& operator/=(const String& uri);
+		URL& operator/=(const char* uri);
 
 	private:
 		String			  m_data;
@@ -66,23 +63,21 @@ namespace ZKA::Utils
 		String			  m_port;
 	};
 
-	typedef URIParser URLParser;
-
-	class ZKA_API URIError final : public std::runtime_error
+	class ZKA_API URLError final : public BrowserError
 	{
 	public:
-		URIError(URIParser& uri)
-			: std::runtime_error("URIError"), m_uri(uri)
+		URLError(URL& uri)
+			: BrowserError("INVALID_URL_AT_DEST"), m_uri(uri)
 		{
 		}
-		~URIError() = default; // let the ABI define that.
+		~URLError() = default; // let the ABI define that.
 
-		URIError& operator=(const URIError&) = default;
-		URIError(const URIError&)			 = default;
+		URLError& operator=(const URLError&) = default;
+		URLError(const URLError&)			 = default;
 
-		URIParser& get();
+		URL& get();
 
 	private:
-		URIParser m_uri;
+		URL m_uri;
 	};
-} // namespace ZKA::Utils
+} // namespace ZKA

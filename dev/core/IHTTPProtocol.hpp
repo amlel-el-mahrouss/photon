@@ -187,7 +187,7 @@ namespace ZKA::HTTP
 			MIMEFactory factory;
 			auto		mime_struct = factory(const_cast<char*>(path.data()));
 
-			if (length > 0 && request_type == ZKA_HTTP_POST)
+			if (length > 0 && request_type != ZKA_HTTP_GET)
 			{
 				request += "Content-Length: ";
 				request += std::to_string(length);
@@ -214,7 +214,7 @@ namespace ZKA::HTTP
 				request += data;
 			}
 
-			
+
 			ZKA_INFO("Packet created...");
 
 			ZKA_INFO(request.c_str());
@@ -308,7 +308,7 @@ namespace ZKA::HTTP
 				throw HTTPError(HTTP_INTERNAL_ERROR);
 
 			ZKA_INFO("Creating Socket...");
-			
+
 			sock->m_Socket = ::ZKA_SOCKET(AF_INET, SOCK_STREAM, 0);
 
 			if (sock->m_Socket == INVALID_SOCKET)

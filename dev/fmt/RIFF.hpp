@@ -14,7 +14,7 @@
 #define ZKA_RIFF_MAG "RIFF"
 
 // WAVE file header format
-struct RiffHeader
+struct ZKA_RIFF_HEADER
 {
     unsigned char riff[4];						// RIFF string
     unsigned int overall_size;				// overall size of file in bytes

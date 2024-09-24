@@ -31,7 +31,7 @@ inline int fopen_s(FILE** fp, const char* path, const char* res) noexcept
 
 #define ZKA_END_OF_BUFFER '\0'
 
-#define ZKA_EMPTY_HTML "<!doctype html><html><head></head><body></body></html>\r\n"
+#define ZKA_EMPTY_HTML "<!doctype html>\r\n<html>\r\n<head>\r\n</head>\r\n<body>\r\n</body>\r\n</html>\r\n"
 
 ZKA_API void   zka_log(const char* str);
 ZKA_API size_t zka_strlen(const char* str);

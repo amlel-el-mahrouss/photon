@@ -1,1 +1,0 @@
-cl.exe "C:\Program Files\OpenSSL-Win64\lib\VC\x64\MT\libssl.lib" "C:\Program Files\OpenSSL-Win64\lib\VC\x64\MT\libcrypto.lib" user32.lib shell32.lib /Zc:wchar_t /D"ZKA_WINDOWS=1" /EHsc /I"C:\Program Files\OpenSSL-Win64\include" /I"./" /I"../" -I"../../vendor" /std:c++20 src/core/*.cc src/plugin/*.cc src/render/*.cc src/engine/*.cc /link /out:PhotonBrowser.exe

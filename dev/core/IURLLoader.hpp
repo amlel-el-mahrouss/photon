@@ -31,10 +31,10 @@ namespace ZKA
 		ZKA_COPY_DEFAULT(IURLLoader);
 
 	public:
-		virtual String   post(Utils::URIParser& url, String data, bool cache_data = false);
-		virtual String   put(Utils::URIParser& url, String data, bool cache_data = false);
-		virtual String   del(Utils::URIParser& url, String data, bool cache_data = false);
-		virtual String   get(Utils::URIParser& url, bool cache_data = true);
+		virtual String   post(URL& url, String data, bool cache_data = false);
+		virtual String   put(URL& url, String data, bool cache_data = false);
+		virtual String   del(URL& url, String data, bool cache_data = false);
+		virtual String   get(URL& url, bool cache_data = true);
 		virtual void   set_endpoint(const String& endpoint) noexcept;
 		virtual String get_endpoint() noexcept;
 		virtual String get_protocol() noexcept;

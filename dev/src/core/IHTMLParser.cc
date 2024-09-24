@@ -7,7 +7,7 @@
  * =====================================================================
  */
 
-#include <IDOMObject.hpp>
+#include <IHTMLParser.hpp>
 
 namespace ZKA
 {
