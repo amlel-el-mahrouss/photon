@@ -7,3 +7,6 @@
 [submodule "vendor/yaml"]
 	path = vendor/yaml
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "vendor/zt"]
+	path = vendor/zt
+	url = git@gitlab.com:mahrouss/zt-dev.git
