@@ -7,13 +7,13 @@
  * =====================================================================
  */
 
- /**
- @file
- */
+/**
+@file
+*/
 
 #include <BaseSpecs.hpp>
 
-static FILE* gZKALogger{ nullptr };
+static FILE* gZKALogger{nullptr};
 
 FILE* zka_get_logger(void)
 {

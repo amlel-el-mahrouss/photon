@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	std::atexit(ZKA::fini_winsock);
 #endif
 
-    ZKA::GWindow win;
+	ZKA::GWindow win;
 
 	return win.run(argc, argv);
 }

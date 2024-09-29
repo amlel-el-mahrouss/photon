@@ -16,7 +16,6 @@
 #define ZKA_JS_NULL		 "null"
 #define ZKA_JS_WINDOW	 "window"
 
-
 /***********************************************************************************/
 /** @brief This file is also about defining core js concepts. */
 /***********************************************************************************/

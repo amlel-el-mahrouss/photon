@@ -72,7 +72,9 @@ namespace ZKA::HTTP
 			else if (strstr(extension.c_str(), ".jpg"))
 				return {.t_name = "JPEG Image", .t_mime = "image/jpeg"};
 			else if (strstr(extension.c_str(), ".zip"))
-				return {.t_name = "PKZIP", .t_mime = "application/zip"};
+				return {.t_name = "PKZIP Archive", .t_mime = "application/zip"};
+			else if (strstr(extension.c_str(), ".svg"))
+				return {.t_name = "SVG Document", .t_mime = "image/svg+xml"};
 
 			return {.t_name = "N/A", .t_mime = "*/y"};
 		}
@@ -86,6 +88,7 @@ namespace ZKA::HTTP
 			{
 				0
 			};
+
 			std::string		 m_Dns{""};
 			Network::CSocket m_Socket{INVALID_SOCKET};
 
@@ -167,7 +170,8 @@ namespace ZKA::HTTP
 										const std::string								 host,
 										const std::string								 request_type,
 										const size_t									 length	 = 0,
-										std::vector<std::pair<std::string, std::string>> headers = {}, String data = "")
+										std::vector<std::pair<std::string, std::string>> headers = {},
+										String											 data	 = "")
 		{
 			if (path.empty() || host.empty())
 				throw BrowserError("ILL_FORMED_PACKET");
@@ -214,12 +218,25 @@ namespace ZKA::HTTP
 				request += data;
 			}
 
-
-			ZKA_INFO("Packet created...");
-
-			ZKA_INFO(request.c_str());
+			ZKA_INFO("HTTP packet has been created...");
 
 			return request;
+		}
+
+		static String get_field_value(const std::string& http, const std::string& name)
+		{
+			if (http.empty())
+				return "";
+
+			if (name.empty())
+				throw BrowserError("BAD_FIELD_NAME_TYPE");
+
+			auto value = http.substr(http.find(name));
+			value.erase(value.find("\r\n"));
+
+			ZKA_INFO("Field's value has been fetched...");
+
+			return value;
 		}
 
 		static bool has_field(const std::string& http, const std::string& rest)
@@ -228,35 +245,33 @@ namespace ZKA::HTTP
 				return false;
 
 			if (rest.empty())
-				throw std::runtime_error("Bad restrict type.");
+				throw BrowserError("BAD_RESTRICT_TYPE");
 
 			return http.find(rest) != std::string::npos;
 		}
 
-		template <int Base>
+		template <size_t Base>
 		static long content_length(const std::string& http)
 		{
-			size_t at = http.find("Content-Length: ");
+			String value = IHTTPHelper::get_field_value(http, "Content-Length:");
 
-			if (at == std::string::npos)
+			if (value.empty())
 				return IHTTPHelper::bad_pos;
 
 			std::string final;
 
-			at += strlen("Content-Length: ");
-
-			for (size_t first = at; first < http.size(); ++first)
+			for (size_t first = 0; first < value.size(); ++first)
 			{
-				if (http[first] == '\r')
-					break;
+				if (value[first] == ' ')
+					continue;
 
-				if (http[first] >= '0' && http[first] <= '9')
+				if (value[first] >= '0' && value[first] <= '9')
 				{
-					final += http[first];
+					final += value[first];
 				}
 			}
 
-			std::cout << final << std::endl;
+			ZKA_INFO(final);
 
 			return std::atol(final.c_str());
 		}
@@ -422,17 +437,17 @@ namespace ZKA::HTTP
 				bytes[len - 1] = 0;
 
 				if (ret == -1)
-				    return false;
+					return false;
 
 				return ret == 1;
 			}
 			else
 			{
-				auto ret = ::recv(sock->m_Socket, bytes, len, 0);
+				auto ret	   = ::recv(sock->m_Socket, bytes, len, 0);
 				bytes[len - 1] = 0;
 
 				if (ret == -1)
-				    return false;
+					return false;
 
 				return ret == 0;
 			}

@@ -17,14 +17,14 @@ namespace ZKA::Network
 		if (type == SOCKET_TYPE::TCP)
 		{
 			this->PublicSocket = ZKA_SOCKET(AF_INET,
-				SOCK_STREAM,
-				0);
+											SOCK_STREAM,
+											0);
 		}
 		else if (type == SOCKET_TYPE::UDP)
 		{
 			this->PublicSocket = ZKA_SOCKET(AF_INET,
-				SOCK_DGRAM,
-				0);
+											SOCK_DGRAM,
+											0);
 		}
 
 		ZKA_ASSERT(this->PublicSocket != SOCKET_ERROR);
@@ -40,4 +40,4 @@ namespace ZKA::Network
 	{
 		return this->PublicSocket != SOCKET_ERROR;
 	}
-}
+} // namespace ZKA::Network

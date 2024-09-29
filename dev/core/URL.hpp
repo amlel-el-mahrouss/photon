@@ -51,16 +51,16 @@ namespace ZKA
 
 	public:
 		String send(String data);
-		String open();
+		String fetch();
 
 	public:
 		URL& operator/=(const String& uri);
 		URL& operator/=(const char* uri);
 
 	private:
-		String			  m_data;
-		String			  m_protocol;
-		String			  m_port;
+		String m_data;
+		String m_protocol;
+		String m_port;
 	};
 
 	class ZKA_API URLError final : public BrowserError

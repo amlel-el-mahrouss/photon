@@ -14,34 +14,34 @@
 
 #ifdef ZKA_WINDOWS
 
-#define ZKA_SOCKET socket
-#define ZKA_CLOSE closesocket
+#define ZKA_SOCKET	 socket
+#define ZKA_CLOSE	 closesocket
 #define ZKA_SHUTDOWN shutdown
-#define ZKA_ACCEPT accept
-#define ZKA_CONNECT connect
-#define ZKA_IOCTL ioctlsocket
+#define ZKA_ACCEPT	 accept
+#define ZKA_CONNECT	 connect
+#define ZKA_IOCTL	 ioctlsocket
 
 #else
 
 #ifndef ZKA_WINDOWS
-#   define SOCKET_ERROR -1
-#   define WSAECONNRESET ECONNRESET
-#   define WSAEWOULDBLOCK EWOULDBLOCK
-#   define WSAGetLastError() errno
+#define SOCKET_ERROR	  -1
+#define WSAECONNRESET	  ECONNRESET
+#define WSAEWOULDBLOCK	  EWOULDBLOCK
+#define WSAGetLastError() errno
 #endif
 
 #ifdef _WIN32
-#   define s_addr S_un.S_addr
+#define s_addr S_un.S_addr
 #endif
 
-#define ZKA_SOCKET socket
-#define ZKA_CLOSE close
+#define ZKA_SOCKET	 socket
+#define ZKA_CLOSE	 close
 #define ZKA_SHUTDOWN shutdown
-#define ZKA_ACCEPT accept
-#define ZKA_CONNECT connect
-#define ZKA_IOCTL ioctl
+#define ZKA_ACCEPT	 accept
+#define ZKA_CONNECT	 connect
+#define ZKA_IOCTL	 ioctl
 
-#define FIONBIO FNONBLOCK
+#define FIONBIO	 FNONBLOCK
 #define FIOASYNC FASYNC
 
 #endif // ZKA_WINDOWS
@@ -53,7 +53,7 @@ namespace ZKA
 		NON_BLOCKING = FIONBIO,
 		ASYNC		 = FIOASYNC,
 	};
-}
+} // namespace ZKA
 
 namespace ZKA::Network
 {
@@ -73,7 +73,7 @@ namespace ZKA::Network
 		~Socket();
 
 		Socket& operator=(const Socket&) = default;
-		Socket(const Socket&) = default;
+		Socket(const Socket&)			 = default;
 
 	public:
 		operator bool() noexcept;
@@ -87,9 +87,7 @@ namespace ZKA::Network
 
 	public:
 		CSocket PublicSocket;
-
-
 	};
-}
+} // namespace ZKA::Network
 
 #include <Socket.inl>

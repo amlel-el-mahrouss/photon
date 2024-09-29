@@ -92,7 +92,7 @@ namespace ZKA
 					ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTPS;
 				}
 
-				URL  url(this->protocol().c_str());
+				URL		   url(this->protocol().c_str());
 				IURLLoader loader;
 
 				String root = "/";
@@ -133,7 +133,7 @@ namespace ZKA
 		return "";
 	}
 
-	String URL::open()
+	String URL::fetch()
 	{
 		if (this->protocol() == ZKA_HTTPS_PROTOCOL ||
 			this->protocol() == ZKA_HTTP_PROTOCOL)
@@ -149,7 +149,7 @@ namespace ZKA
 					ZKA::HTTP::ZKA_HTTP_PORT = ZKA_USE_HTTPS;
 				}
 
-				URL  url(this->protocol().c_str());
+				URL		   url(this->protocol().c_str());
 				IURLLoader loader;
 
 				String root = "/";
@@ -173,7 +173,7 @@ namespace ZKA
 
 				url /= root;
 
-				auto http = loader.get(url, true);
+				auto http = loader.get(url, false);
 
 				if (http.find("\r\n\r\n") != String::npos)
 				{
@@ -183,7 +183,7 @@ namespace ZKA
 			}
 			catch (BrowserError err)
 			{
-			    ZKA_GET_DATA_DIR(DIR);
+				ZKA_GET_DATA_DIR(DIR);
 
 				DIR += "/.html/DialogError.html";
 
@@ -220,8 +220,6 @@ namespace ZKA
 		}
 		else if (this->protocol() == ZKA_ZKA_PROTOCOL)
 		{
-
-
 
 			return ZKA_EMPTY_HTML;
 		}
