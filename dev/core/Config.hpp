@@ -147,6 +147,8 @@ namespace ZKA
 
 	typedef std::int64_t  Int64;
 	typedef std::uint64_t UInt64;
+
+	typedef bool Bool;
 } // namespace ZKA
 
 #ifdef _WIN32

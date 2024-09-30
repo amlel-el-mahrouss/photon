@@ -8,3 +8,10 @@
  */
 
 #pragma once
+
+#include <BaseSpecs.hpp>
+
+namespace ZKA
+{
+
+}

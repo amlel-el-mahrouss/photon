@@ -7,8 +7,8 @@
  * =====================================================================
  */
 
-#include <URL.hpp>
-#include <ui/GWindow.hpp>
+#include <core/URL.hpp>
+#include <ui/GViews.hpp>
 
 int main(int argc, char* argv[])
 {
