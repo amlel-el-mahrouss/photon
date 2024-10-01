@@ -24,7 +24,5 @@ int main(int argc, char* argv[])
 	});
 #endif
 
-	ZKA::GWindow win;
-
-	return win.run(argc, argv);
+    return 0;
 }

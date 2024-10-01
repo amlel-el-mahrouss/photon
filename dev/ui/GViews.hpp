@@ -9,24 +9,21 @@
 
 #pragma once
 
-#include <GraphicsKit/GraphicsKit.hxx>
 #include <BaseSpecs.hpp>
 
 namespace ZKA
 {
 	class GWindow;
 
-	inline MLCoreGraphicsContext* cContext = nullptr;
-
-	class ZKA_API GWindow final
+	class ZKA_API GWindow
 	{
 	public:
 		explicit GWindow() = default;
-		~GWindow()		   = default;
+		virtual ~GWindow() = default;
 
 		ZKA_COPY_DEFAULT(GWindow);
 
-		int32_t run(int argc, char** argv);
+		virtual Int32 run(int argc, char** argv) = 0;
 	};
 
 	class ZKA_API GView
@@ -37,7 +34,7 @@ namespace ZKA
 
 		ZKA_COPY_DEFAULT(GView);
 
-		virtual bool Paint()	   = 0;
-		virtual bool ShouldPaint() = 0;
+		virtual void OnPaint()	   = 0;
+		virtual Bool ShouldPaint() = 0;
 	};
 } // namespace ZKA
