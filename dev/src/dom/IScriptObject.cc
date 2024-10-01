@@ -8,3 +8,8 @@
  */
 
 #include <IScriptObject.hpp>
+
+namespace ZKA
+{
+
+}

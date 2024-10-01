@@ -12,8 +12,9 @@
 #include <BaseSpecs.hpp>
 #include <rapidxml/rapidxml.hpp>
 
-#define ZKA_DOM_OBJECT	 (0)
-#define ZKA_HTML_DOCTYPE "<!doctype html>"
+#define ZKA_DOM_OBJECT	  (0)
+#define ZKA_HTML_DOCTYPE  "<!doctype html>"
+#define ZKA_XHTML_DOCTYPE "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
 
 namespace ZKA
 {
@@ -127,6 +128,9 @@ namespace ZKA
 
 	/// @brief Check if xml is HTML.
 	bool is_html_document(String the_xml_blob) noexcept;
+
+	/// @brief Check if xml is XHTML document.
+	bool is_xhtml_document(String the_xml_blob) noexcept;
 
 	/// @brief Get HTML document from xml blob.
 	String get_html_document(String the_xml_blob) noexcept;

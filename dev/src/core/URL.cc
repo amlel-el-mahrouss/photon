@@ -17,10 +17,6 @@
 #include <URL.hpp>
 #include <IURLLoader.hpp>
 
-#ifndef ZKA_URI_MAXSIZE
-#define ZKA_URI_MAXSIZE (8196)
-#endif // ZKA_URI_MAXSIZE
-
 namespace ZKA
 {
 	URL::URL(const char* protocol)
@@ -120,8 +116,8 @@ namespace ZKA
 
 				if (http.find("\r\n\r\n") != String::npos)
 				{
-					auto html = http.substr(http.find("\r\n\r\n") + strlen("\r\n\r\n"));
-					return html;
+					auto body = http.substr(http.find("\r\n\r\n") + strlen("\r\n\r\n"));
+					return body;
 				}
 			}
 			catch (BrowserError err)
@@ -177,15 +173,15 @@ namespace ZKA
 
 				if (http.find("\r\n\r\n") != String::npos)
 				{
-					auto html = http.substr(http.find("\r\n\r\n") + strlen("\r\n\r\n"));
-					return html;
+					auto body = http.substr(http.find("\r\n\r\n") + strlen("\r\n\r\n"));
+					return body;
 				}
 			}
 			catch (BrowserError err)
 			{
 				ZKA_GET_DATA_DIR(DIR);
 
-				DIR += "/.html/DialogError.html";
+				DIR += "/.Rsrc/DialogError.html";
 
 				std::ifstream err_html(DIR);
 

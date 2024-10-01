@@ -16,7 +16,12 @@ int main(int argc, char* argv[])
 	WSADATA dat{0};
 	ZKA::init_winsock(&dat);
 
-	std::atexit(ZKA::fini_winsock);
+	ZKA_INIT_COM;
+
+	std::atexit([]() -> void {
+		ZKA::fini_winsock();
+		ZKA_FINI_COM;
+	});
 #endif
 
 	ZKA::GWindow win;

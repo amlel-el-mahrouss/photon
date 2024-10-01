@@ -422,7 +422,7 @@ namespace ZKA
 		};
 
 		CredsResult validate(
-			PrivShellData priv, const wchar_t* message = L"Please confirm it's you.", const wchar_t* title = L"ZKA Security.") noexcept
+			PrivShellData priv, const wchar_t* message = L"Please confirm it's you.", const wchar_t* title = L"Permission Manager.") noexcept
 		{
 			static BOOL isSaved = false;
 

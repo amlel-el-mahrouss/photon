@@ -13,7 +13,7 @@
 
 namespace ZKA
 {
-	constexpr size_t ZKA_MAX_BUF = 1000000000;
+	constexpr size_t ZKA_MAX_BUF = 1000000000UL;
 
 	String IURLLoader::put(URL& url, String data, bool cache_data)
 	{

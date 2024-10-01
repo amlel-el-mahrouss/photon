@@ -4,9 +4,10 @@
   "headers_path": ["./", "./core", "../vendor", "../vendor/zt/dev"],
   "sources_path": [
     "src/core/*.cc",
-    "src/engine/*.cc",
+    "src/dom/*.cc",
     "src/plugin/*.cc",
-    "src/ui/*.cc"
+    "src/ui/*.cc",
+    "src/js/*.cc"
   ],
   "output_name": "./dist/PhotonBrowser.elf",
   "compiler_flags": [

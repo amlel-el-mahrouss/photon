@@ -16,9 +16,17 @@ namespace ZKA
 		std::transform(the_xml_blob.begin(), the_xml_blob.end(), the_xml_blob.begin(),
 					   [](unsigned char c) { return std::tolower(c); });
 
-		return the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos;
+		return the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos &&
+			   the_xml_blob.find(ZKA_XHTML_DOCTYPE) == String::npos;
 	}
 
+	/// @brief Check if xml is XHTML document.
+	bool is_xhtml_document(String the_xml_blob) noexcept
+	{
+		return the_xml_blob.find(ZKA_XHTML_DOCTYPE) != String::npos;
+	}
+
+	/// @Brief Get HTML document.
 	String get_html_document(String the_xml_blob) noexcept
 	{
 		if (!is_html_document(the_xml_blob))
