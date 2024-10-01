@@ -37,16 +37,6 @@ namespace ZKA
 
 		ZKA_COPY_DEFAULT(GView);
 
-	public:
-		virtual CGReal X() = 0;
-		virtual CGReal Y() = 0;
-
-	public:
-		virtual CGReal Width()	= 0;
-		virtual CGReal Height() = 0;
-
-		virtual CGReal Radius() = 0;
-
 		virtual bool Paint()	   = 0;
 		virtual bool ShouldPaint() = 0;
 	};
