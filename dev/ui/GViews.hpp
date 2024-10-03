@@ -37,4 +37,21 @@ namespace ZKA
 		virtual void OnPaint()	   = 0;
 		virtual Bool ShouldPaint() = 0;
 	};
+
+	class ZKA_API GApplication final
+	{
+		bool m_should_stop{false};
+		int32_t m_exit_code{0};
+
+	public:
+		explicit GApplication() = default;
+		virtual ~GApplication() = default;
+
+		ZKA_COPY_DEFAULT(GApplication);
+
+		void abort();
+		void exit(int code);
+		int run(int argc, char* argv[]);
+
+	};
 } // namespace ZKA
