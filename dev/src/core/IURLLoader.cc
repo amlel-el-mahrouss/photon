@@ -9,7 +9,7 @@
 
 /// @file IURLLoader.cc
 
-#include <IURLLoader.hpp>
+#include <core/IURLLoader.hpp>
 
 namespace ZKA
 {
@@ -17,19 +17,19 @@ namespace ZKA
 
 	String IURLLoader::put(URL& url, String data, bool cache_data)
 	{
-		HTTP::HTTPWriter http_post(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+		HTTP::HTTPWriter http_req(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
 		if (HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS &&
 			url.protocol() != ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_WARN("Trying to use HTTPS on a HTTP route.");
-			return ZKA_EMPTY_HTML;
+			throw BrowserError("HTTPS_ON_HTTP");
 		}
 		else if (HTTP::ZKA_HTTP_PORT != ZKA_USE_HTTPS &&
 				 url.protocol() == ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_ERROR("Trying to use HTTP on a HTTPS route.");
-			return ZKA_EMPTY_HTML;
+			throw BrowserError("HTTP_ON_HTTPS");
 		}
 
 		std::vector<std::pair<std::string, std::string>> headers;
@@ -42,12 +42,12 @@ namespace ZKA
 
 		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_PUT, data.size(), headers, data);
 
-		auto sock = http_post.create_and_connect(mEndpoint);
+		auto sock = http_req.create_and_connect(mEndpoint);
 
 		if (!sock)
 			return ZKA_EMPTY_HTML;
 
-		if (!http_post.send_from_socket(sock, http_request.c_str(), http_request.size()))
+		if (!http_req.send_from_socket(sock, http_request.c_str(), http_request.size()))
 			return ZKA_EMPTY_HTML;
 
 		char* bytes = new char[ZKA_MAX_BUF];
@@ -57,11 +57,11 @@ namespace ZKA
 
 		if (bytes)
 		{
-			http_post.read_from_socket(sock, bytes, ZKA_MAX_BUF);
+			http_req.read_from_socket(sock, bytes, ZKA_MAX_BUF);
 
 			String result = bytes;
 
-			http_post.close_socket();
+			http_req.close_socket();
 
 			delete[] bytes;
 			bytes = nullptr;
@@ -69,26 +69,26 @@ namespace ZKA
 			return result;
 		}
 
-		http_post.close_socket();
+		http_req.close_socket();
 
 		return ZKA_EMPTY_HTML;
 	}
 
 	String IURLLoader::del(URL& url, String data, bool cache_data)
 	{
-		HTTP::HTTPWriter http_post(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+		HTTP::HTTPWriter http_req(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
 		if (HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS &&
 			url.protocol() != ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_WARN("Trying to use HTTPS on a HTTP route.");
-			return ZKA_EMPTY_HTML;
+			throw BrowserError("HTTPS_ON_HTTP");
 		}
 		else if (HTTP::ZKA_HTTP_PORT != ZKA_USE_HTTPS &&
 				 url.protocol() == ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_ERROR("Trying to use HTTP on a HTTPS route.");
-			return ZKA_EMPTY_HTML;
+			throw BrowserError("HTTP_ON_HTTPS");
 		}
 
 		std::vector<std::pair<std::string, std::string>> headers;
@@ -101,12 +101,12 @@ namespace ZKA
 
 		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_DELETE, data.size(), headers, data);
 
-		auto sock = http_post.create_and_connect(mEndpoint);
+		auto sock = http_req.create_and_connect(mEndpoint);
 
 		if (!sock)
 			return ZKA_EMPTY_HTML;
 
-		if (!http_post.send_from_socket(sock, http_request.c_str(), http_request.size()))
+		if (!http_req.send_from_socket(sock, http_request.c_str(), http_request.size()))
 			return ZKA_EMPTY_HTML;
 
 		char* bytes = new char[ZKA_MAX_BUF];
@@ -116,11 +116,11 @@ namespace ZKA
 
 		if (bytes)
 		{
-			http_post.read_from_socket(sock, bytes, ZKA_MAX_BUF);
+			http_req.read_from_socket(sock, bytes, ZKA_MAX_BUF);
 
 			String result = bytes;
 
-			http_post.close_socket();
+			http_req.close_socket();
 
 			delete[] bytes;
 			bytes = nullptr;
@@ -128,26 +128,26 @@ namespace ZKA
 			return result;
 		}
 
-		http_post.close_socket();
+		http_req.close_socket();
 
 		return ZKA_EMPTY_HTML;
 	}
 
 	String IURLLoader::post(URL& url, String data, bool cache_data)
 	{
-		HTTP::HTTPWriter http_post(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
+		HTTP::HTTPWriter http_req(HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS);
 
 		if (HTTP::ZKA_HTTP_PORT == ZKA_USE_HTTPS &&
 			url.protocol() != ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_WARN("Trying to use HTTPS on a HTTP route.");
-			return ZKA_EMPTY_HTML;
+			throw BrowserError("HTTPS_ON_HTTP");
 		}
 		else if (HTTP::ZKA_HTTP_PORT != ZKA_USE_HTTPS &&
 				 url.protocol() == ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_ERROR("Trying to use HTTP on a HTTPS route.");
-			return ZKA_EMPTY_HTML;
+			throw BrowserError("HTTP_ON_HTTPS");
 		}
 
 		std::vector<std::pair<std::string, std::string>> headers;
@@ -160,12 +160,12 @@ namespace ZKA
 
 		auto http_request = HTTP::IHTTPHelper::form_request(url.get(), mEndpoint, HTTP::ZKA_HTTP_POST, data.size(), headers, data);
 
-		auto sock = http_post.create_and_connect(mEndpoint);
+		auto sock = http_req.create_and_connect(mEndpoint);
 
 		if (!sock)
 			return ZKA_EMPTY_HTML;
 
-		if (!http_post.send_from_socket(sock, http_request.c_str(), http_request.size()))
+		if (!http_req.send_from_socket(sock, http_request.c_str(), http_request.size()))
 			return ZKA_EMPTY_HTML;
 
 		char* bytes = new char[ZKA_MAX_BUF];
@@ -175,11 +175,11 @@ namespace ZKA
 
 		if (bytes)
 		{
-			http_post.read_from_socket(sock, bytes, ZKA_MAX_BUF);
+			http_req.read_from_socket(sock, bytes, ZKA_MAX_BUF);
 
 			String result = bytes;
 
-			http_post.close_socket();
+			http_req.close_socket();
 
 			delete[] bytes;
 			bytes = nullptr;
@@ -187,7 +187,7 @@ namespace ZKA
 			return result;
 		}
 
-		http_post.close_socket();
+		http_req.close_socket();
 
 		return ZKA_EMPTY_HTML;
 	}
@@ -200,13 +200,13 @@ namespace ZKA
 			url.protocol() != ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_WARN("Trying to use HTTPS on a HTTP route.");
-			return ZKA_EMPTY_HTML;
+			throw BrowserError("HTTPS_ON_HTTP");
 		}
 		else if (HTTP::ZKA_HTTP_PORT != ZKA_USE_HTTPS &&
 				 url.protocol() == ZKA_HTTPS_PROTOCOL)
 		{
 			ZKA_ERROR("Trying to use HTTP on a HTTPS route.");
-			return ZKA_EMPTY_HTML;
+			throw BrowserError("HTTP_ON_HTTPS");
 		}
 
 		std::vector<std::pair<std::string, std::string>> headers;

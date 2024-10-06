@@ -7,7 +7,7 @@
  * =====================================================================
  */
 
-#include <Socket.hpp>
+#include <core/Socket.hpp>
 
 namespace ZKA::Network
 {

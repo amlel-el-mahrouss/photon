@@ -34,6 +34,7 @@ namespace ZKA
 
 		ZKA_COPY_DEFAULT(IDOMObject);
 
+	public:
 		virtual Int32 node_type()
 		{
 			return ZKA_DOM_OBJECT;
@@ -103,24 +104,7 @@ namespace ZKA
 			return m_node->first_node(attrib_name, strlen(attrib_name));
 		}
 
-		static IDOMObject* make_dom_object(String data)
-		{
-			if (data.empty())
-				return nullptr;
-
-			rapidxml::xml_document<char> doc;
-			doc.parse<0>(data.data());
-
-			IDOMObject* new_dom = new IDOMObject(doc.first_node());
-
-			if (new_dom)
-			{
-				ZKA_ERROR("new_dom allocation failure, probably out of memory.");
-				return nullptr;
-			}
-
-			return new_dom;
-		}
+		static IDOMObject* make_dom_object(String data);
 
 	private:
 		rapidxml::xml_node<char>* m_node{nullptr};

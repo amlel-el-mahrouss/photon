@@ -11,13 +11,13 @@
 @file
 */
 
-#include <BaseSpecs.hpp>
+#include <core/BaseSpecs.hpp>
 
-static FILE* gZKALogger{nullptr};
+static FILE* cFileLogger{nullptr};
 
 FILE* zka_get_logger(void)
 {
-	return gZKALogger;
+	return cFileLogger;
 }
 
 time_t zka_get_epoch()
@@ -35,7 +35,7 @@ void zka_log(const char* msg)
 #else
 	snprintf(buf, sizeof(time_t), "%lu", zka_get_epoch());
 #endif
-	fprintf(gZKALogger, "[%s - LOG] %s", buf, msg);
+	fprintf(cFileLogger, "[%s - LOG] %s", buf, msg);
 #endif // ifdef ZKA_DEBUG
 }
 
@@ -49,7 +49,7 @@ ZKA_API bool zka_open_logger()
 #else
 	snprintf(gDbgFilename, sizeof(time_t), "%lu_zka.log", zka_get_epoch());
 #endif
-	if (fopen_s(&gZKALogger, gDbgFilename, "w+") != EXIT_SUCCESS)
+	if (fopen_s(&cFileLogger, gDbgFilename, "w+") != EXIT_SUCCESS)
 	{
 		ZKA_ASSERT(false);
 		::exit(EXIT_FAILURE);

@@ -13,7 +13,9 @@
 
 namespace ZKA
 {
+	class GApplication;
 	class GWindow;
+	class GView;
 
 	class ZKA_API GWindow
 	{

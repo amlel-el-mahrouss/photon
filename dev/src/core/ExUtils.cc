@@ -11,12 +11,13 @@
 @file
 */
 
-#include <BaseSpecs.hpp>
+#include <core/BaseSpecs.hpp>
 
 size_t zka_strlen(const char* buffer)
 {
 	if (!buffer)
 		return 0;
+
 	if (*buffer == ZKA_END_OF_BUFFER)
 		return 0;
 

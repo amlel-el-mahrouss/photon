@@ -7,7 +7,7 @@
  * =====================================================================
  */
 
-#include <IDOMObject.hpp>
+#include <core/IDOMObject.hpp>
 
 namespace ZKA
 {
@@ -50,5 +50,24 @@ namespace ZKA
 
 			return the_xml_blob.substr(the_xml_blob.find(doc_type) + doc_type.size());
 		}
+	}
+
+	IDOMObject* IDOMObject::make_dom_object(String data)
+	{
+		if (data.empty())
+			return nullptr;
+
+		rapidxml::xml_document<char> doc;
+		doc.parse<0>(data.data());
+
+		IDOMObject* new_dom = new IDOMObject(doc.first_node());
+
+		if (new_dom)
+		{
+			ZKA_ERROR("new_dom allocation failure, probably out of memory.");
+			return nullptr;
+		}
+
+		return new_dom;
 	}
 } // namespace ZKA

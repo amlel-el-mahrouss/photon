@@ -89,7 +89,7 @@ namespace ZKA
 				}
 
 				URL		   url(this->protocol().c_str());
-				IURLLoader loader;
+				IURLLoader url_loader;
 
 				String root = "/";
 
@@ -97,7 +97,7 @@ namespace ZKA
 
 				if (content.find("/") != std::string::npos)
 				{
-					loader.set_endpoint(content.substr(0, content.find("/")));
+					url_loader.set_endpoint(content.substr(0, content.find("/")));
 
 					root = content.substr(content.find("/"));
 
@@ -107,12 +107,12 @@ namespace ZKA
 				}
 				else
 				{
-					loader.set_endpoint(content);
+					url_loader.set_endpoint(content);
 				}
 
 				url /= root;
 
-				auto http = loader.post(url, data, true);
+				auto http = url_loader.post(url, data, true);
 
 				if (http.find("\r\n\r\n") != String::npos)
 				{
@@ -146,7 +146,7 @@ namespace ZKA
 				}
 
 				URL		   url(this->protocol().c_str());
-				IURLLoader loader;
+				IURLLoader url_loader;
 
 				String root = "/";
 
@@ -154,7 +154,7 @@ namespace ZKA
 
 				if (content.find("/") != std::string::npos)
 				{
-					loader.set_endpoint(content.substr(0, content.find("/")));
+					url_loader.set_endpoint(content.substr(0, content.find("/")));
 
 					root = content.substr(content.find("/"));
 
@@ -164,12 +164,12 @@ namespace ZKA
 				}
 				else
 				{
-					loader.set_endpoint(content);
+					url_loader.set_endpoint(content);
 				}
 
 				url /= root;
 
-				auto http = loader.get(url, false);
+				auto http = url_loader.get(url, false);
 
 				if (http.find("\r\n\r\n") != String::npos)
 				{
@@ -179,11 +179,11 @@ namespace ZKA
 			}
 			catch (BrowserError err)
 			{
-				ZKA_GET_DATA_DIR(DIR);
+				ZKA_GET_DATA_DIR(cur_work_dir);
 
-				DIR += "/.Rsrc/DialogError.html";
+				cur_work_dir += "/.Rsrc/DialogError.html";
 
-				std::ifstream err_html(DIR);
+				std::ifstream err_html(cur_work_dir);
 
 				if (err_html.is_open())
 				{
