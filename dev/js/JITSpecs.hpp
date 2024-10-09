@@ -9,6 +9,8 @@
 
 #pragma once
 
+#ifndef _WIN32
+
 #include <BaseSpecs.hpp>
 #include <stdarg.h>
 #include <sys/mman.h>
@@ -53,3 +55,5 @@ namespace ZKA
 		return (zka_asm_fn_t)mem_exec;
 	}
 } // namespace ZKA
+
+#endif // !_WIN32

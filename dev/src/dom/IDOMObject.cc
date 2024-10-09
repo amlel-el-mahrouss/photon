@@ -11,44 +11,44 @@
 
 namespace ZKA
 {
-	bool is_html_document(String the_xml_blob) noexcept
+	bool is_html_document(String data) noexcept
 	{
-		std::transform(the_xml_blob.begin(), the_xml_blob.end(), the_xml_blob.begin(),
+		std::transform(data.begin(), data.end(), data.begin(),
 					   [](unsigned char c) { return std::tolower(c); });
 
-		return the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos &&
-			   the_xml_blob.find(ZKA_XHTML_DOCTYPE) == String::npos;
+		return data.find(ZKA_HTML_DOCTYPE) != String::npos &&
+			   data.find(ZKA_XHTML_DOCTYPE) == String::npos;
 	}
 
 	/// @brief Check if xml is XHTML document.
-	bool is_xhtml_document(String the_xml_blob) noexcept
+	bool is_xhtml_document(String data) noexcept
 	{
-		return the_xml_blob.find(ZKA_XHTML_DOCTYPE) != String::npos;
+		return data.find(ZKA_XHTML_DOCTYPE) != String::npos;
 	}
 
 	/// @Brief Get HTML document.
-	String get_html_document(String the_xml_blob) noexcept
+	String get_html_document(String data) noexcept
 	{
-		if (!is_html_document(the_xml_blob))
+		if (!is_html_document(data))
 		{
 			return ZKA_EMPTY_HTML;
 		}
 
-		std::transform(the_xml_blob.begin(), the_xml_blob.end(), the_xml_blob.begin(),
+		std::transform(data.begin(), data.end(), data.begin(),
 					   [](unsigned char c) { return std::tolower(c); });
 
-		if (the_xml_blob.find(ZKA_HTML_DOCTYPE) != String::npos)
+		if (data.find(ZKA_HTML_DOCTYPE) != String::npos)
 		{
-			return the_xml_blob.substr(the_xml_blob.find(ZKA_HTML_DOCTYPE) + strlen(ZKA_HTML_DOCTYPE));
+			return data.substr(data.find(ZKA_HTML_DOCTYPE) + strlen(ZKA_HTML_DOCTYPE));
 		}
 		else
 		{
-			String doc_type = the_xml_blob.substr(0, strlen(ZKA_HTML_DOCTYPE));
+			String doc_type = data.substr(0, strlen(ZKA_HTML_DOCTYPE));
 
 			std::transform(doc_type.begin(), doc_type.end(), doc_type.begin(),
 						   [](unsigned char c) { return std::tolower(c); });
 
-			return the_xml_blob.substr(the_xml_blob.find(doc_type) + doc_type.size());
+			return data.substr(data.find(doc_type) + doc_type.size());
 		}
 	}
 
@@ -64,7 +64,7 @@ namespace ZKA
 
 		if (new_dom)
 		{
-			ZKA_ERROR("new_dom allocation failure, probably out of memory.");
+			ZKA_ERROR("make_dom_object allocation failure, probably out of memory.");
 			return nullptr;
 		}
 

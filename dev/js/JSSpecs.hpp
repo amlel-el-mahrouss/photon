@@ -22,12 +22,9 @@
 
 namespace ZKA
 {
-    class IJSDeclaration;
-    class IJSExpression;
-    class IJSStatement;
-
     class IJSProgram;
 
+    /// @brief JavaScriptEngine class program.
     class IJSProgram final
     {
     private:
@@ -37,6 +34,9 @@ namespace ZKA
         explicit IJSProgram(String file_blob);
         ~IJSProgram() = default;
 
+        Bool run_script();
+
+    public:
         ZKA_COPY_DEFAULT(IJSProgram);
 
     };

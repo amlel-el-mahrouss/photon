@@ -29,5 +29,7 @@ namespace ZKA
 
 		Int32				  node_type() override;
 		static IScriptObject* make_script_object(String data);
+
+		Bool 				  run_script();
 	};
 } // namespace ZKA
