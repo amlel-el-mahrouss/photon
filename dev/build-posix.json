@@ -9,13 +9,10 @@
     "src/ui/*.cc",
     "src/js/*.cc"
   ],
-  "output_name": "./dist/PhotonBrowser.elf",
+  "output_name": "./dist/Photon",
   "compiler_flags": [
-    "-lssl",
-    "-lcrypto",
-    "-lGraphicsKit",
-    "-lFoundationKit",
-    "$(pkg-config gtkmm-3.0 --cflags --libs)"
+    "$(pkg-config gtkmm-3.0 --cflags --libs)",
+    "$(pkg-config openssl --cflags --libs)"
   ],
   "cpp_macros": [
     "__PHOTON__",

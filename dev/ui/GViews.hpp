@@ -44,6 +44,7 @@ namespace ZKA
 	{
 		bool m_should_stop{false};
 		int32_t m_exit_code{0};
+		std::vector<GView*> m_views;
 
 	public:
 		explicit GApplication() = default;

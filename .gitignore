@@ -6,8 +6,7 @@
 *.exe
 *.elf
 
-vendor/skia/
-depot_tools/
+dev/dist/Photon
 
 *.manifest
 

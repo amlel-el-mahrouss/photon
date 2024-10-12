@@ -28,6 +28,12 @@ int ZKA::GApplication::run(int argc, char* argv[])
 	{
 		if (m_should_stop)
 			break;
+
+		for (auto& view : m_views)
+		{
+		    if (view->ShouldPaint())
+				view->OnPaint();
+		}
 	}
 
     return m_exit_code;

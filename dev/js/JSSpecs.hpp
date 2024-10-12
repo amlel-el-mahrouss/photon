@@ -28,10 +28,10 @@ namespace ZKA
     class IJSProgram final
     {
     private:
-        String mBlob;
+        std::vector<String> mBlob;
 
     public:
-        explicit IJSProgram(String file_blob);
+        explicit IJSProgram(std::vector<String> js_blob);
         ~IJSProgram() = default;
 
         Bool run_script();

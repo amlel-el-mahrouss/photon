@@ -18,7 +18,7 @@
 namespace ZKA
 {
 	/// @brief Generic javascript function.
-	typedef void (*zka_asm_fn_t)(void);
+	typedef void (*zka_asm_fn_t)(void* arg, size_t arg_cnt);
 
 	inline int zka_delete_chunk(char* fn, size_t size)
 	{

@@ -27,9 +27,43 @@ namespace ZKA
 		if (!this->get_node(nullptr)->value())
 			return false;
 
-		String js = this->get_node(nullptr)->value();
+		std::vector<String> blob;
 
-		IJSProgram prog(js);
+		String node_data;
+		size_t node_index	= 0UL;
+		String in_node_data = this->get_node(nullptr)->value();
+
+		for (auto& ch : in_node_data)
+		{
+			if (ch == '\n')
+			{
+				if (in_node_data[node_index - 1] == '\'' ||
+					in_node_data[node_index - 1] == '\"')
+				{
+					++node_index;
+					node_data.push_back(ch);
+					continue;
+				}
+				else if (in_node_data[node_index + 1] == '\'' ||
+						 in_node_data[node_index + 1] == '\"')
+				{
+					++node_index;
+					node_data.push_back(ch);
+					continue;
+				}
+
+				blob.push_back(node_data);
+				node_data.clear();
+
+				++node_index;
+				continue;
+			}
+
+			++node_index;
+			node_data.push_back(ch);
+		}
+
+		IJSProgram prog(blob);
 		return prog.run_script();
 	}
 
@@ -48,6 +82,8 @@ namespace ZKA
 		{
 			return nullptr;
 		}
+
+		std::vector<String> blob;
 
 		IScriptObject* new_dom = new IScriptObject(doc.first_node());
 
