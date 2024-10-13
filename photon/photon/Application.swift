@@ -8,7 +8,7 @@
 import Foundation
 
 struct Application: Identifiable {
-    let appName: String = "Photon";
+    let appName: String = "MyPhoton";
     let appVersion: String = "1.0.0";
     
     var id: String { appName }

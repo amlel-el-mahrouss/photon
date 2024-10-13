@@ -9,19 +9,29 @@ import SwiftUI
 
 struct ContentView: View {
     private var noTabs: Bool = false;
-    public var bookmarks: [Bookmark] = [
+    public var devices: [PhotonDevice] = [
     ]
+    
+    init() {
+        let photonDevice = PhotonDevice(markName: "Add...", markURL: kPhotonUrlProtocol + "new");
+    
+        var login = PhotonDevice(markName: "Profile", markURL: "https://www.el-mahrouss-logic.com/login");
+        
+        login.markIcon = "person.crop.circle";
+        
+        devices.append(login);
+        devices.append(photonDevice);
+    }
     
     var body: some View {
         NavigationView {
-            List(bookmarks) { mark in
+            List(devices) { mark in
                 HStack {
                     Image(systemName: mark.markIcon)
-                    Text(mark.markName)
-                }.foregroundColor(mark.markColor)
+                    Link(mark.markName, destination: URL(string: mark.markURL)!)
+                }
             }.listStyle(.sidebar)
-        }
-        
+        }.frame(width: 720, height: 500)
     }
 }
 

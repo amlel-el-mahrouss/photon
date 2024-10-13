@@ -1,7 +1,7 @@
-# ZKA Photon SDK.
+# ZKA Photon SDK and MyPhoton.
 
 ## Description:
 
-A Browser engine written in C++ for ZKA OS, Windows and Linux.
+A runtime written in C++ for Photon OS, Windows and Linux.
 
 ##### Copyright ZKA Technologies. All rights reserved.

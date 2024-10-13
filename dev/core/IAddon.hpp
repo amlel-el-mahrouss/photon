@@ -13,6 +13,6 @@
 
 namespace ZKA
 {
-	class IPlugin;
-	class IPluginProvider;
+	class IAddon;
+	class IAddonProvider;
 } // namespace ZKA

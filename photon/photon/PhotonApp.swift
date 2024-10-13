@@ -13,12 +13,11 @@ struct PhotonApp: App {
         appInfo = Application();
     }
     
-    public var bookmarkList: [Bookmark] = [];
     public var appInfo: Application;
     
     var body: some Scene {
         WindowGroup {
-            ContentView().navigationTitle(appInfo.appName)
+            ContentView().navigationTitle(appInfo.appName + " " + appInfo.appVersion)
         }
     }
 }

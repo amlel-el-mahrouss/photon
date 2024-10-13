@@ -34,6 +34,8 @@ int ZKA::GApplication::run(int argc, char* argv[])
 		    if (view->ShouldPaint())
 				view->OnPaint();
 		}
+
+		// TODO: Execute JavaScript VM here as well.
 	}
 
     return m_exit_code;
