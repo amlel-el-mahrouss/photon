@@ -8,12 +8,20 @@
 import SwiftUI
 
 struct ContentView: View {
+    private var noTabs: Bool = false;
+    public var bookmarks: [Bookmark] = [
+    ]
+    
     var body: some View {
         NavigationView {
-            List {
-                
+            List(bookmarks) { mark in
+                HStack {
+                    Image(systemName: mark.markIcon)
+                    Text(mark.markName)
+                }.foregroundColor(mark.markColor)
             }.listStyle(.sidebar)
         }
+        
     }
 }
 
