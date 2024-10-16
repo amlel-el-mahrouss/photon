@@ -12,7 +12,7 @@
 /// @file IScriptObject.hpp
 /// @brief <script> element.
 
-#include <IDOMObject.hpp>
+#include <dom/IDOMObject.hpp>
 
 #define ZKA_SCRIPT_OBJECT (1)
 

@@ -7,7 +7,7 @@
  * =====================================================================
  */
 
-#include <core/IDOMObject.hpp>
+#include <dom/IDOMObject.hpp>
 
 namespace ZKA
 {
@@ -64,7 +64,7 @@ namespace ZKA
 
 		if (new_dom)
 		{
-			ZKA_ERROR("make_dom_object allocation failure, probably out of memory.");
+			ZKA_ERROR("DOM allocation failure, probably out of memory.");
 			return nullptr;
 		}
 

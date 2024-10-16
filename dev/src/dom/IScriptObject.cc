@@ -7,7 +7,7 @@
  * =====================================================================
  */
 
-#include <core/IScriptObject.hpp>
+#include <dom/IScriptObject.hpp>
 #include <js/JSSpecs.hpp>
 
 namespace ZKA
@@ -63,7 +63,7 @@ namespace ZKA
 			node_data.push_back(ch);
 		}
 
-		IJSProgram prog(blob);
+		IJSVirtualMachine prog(blob);
 		return prog.run_script();
 	}
 

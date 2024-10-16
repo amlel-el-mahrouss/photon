@@ -11,13 +11,13 @@
 
 using namespace ZKA;
 
-IJSProgram::IJSProgram(std::vector<String> js_blob)
+IJSVirtualMachine::IJSVirtualMachine(std::vector<String> js_blob)
 	: mBlob(js_blob)
 {
     ZKA_INFO("Allocated JavaScript Context!");
 }
 
-Bool IJSProgram::run_script()
+Bool IJSVirtualMachine::run_script()
 {
     ZKA_INFO("Start running JavaScript context...");
 

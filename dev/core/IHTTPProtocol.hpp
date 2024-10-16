@@ -136,6 +136,7 @@ namespace ZKA::HTTP
 			: std::runtime_error("HTTP_RESULT_")
 		{
 		}
+
 		~HTTPError() override = default; // let the ABI define that.
 
 		HTTPError& operator=(const HTTPError&) = default;
@@ -174,7 +175,7 @@ namespace ZKA::HTTP
 										String											 data	 = "")
 		{
 			if (path.empty() || host.empty())
-				throw BrowserError("ILL_FORMED_PACKET");
+				throw BrowserError("NO_HOST_PROVIDED");
 
 			ZKA_INFO("Forming packet...");
 
@@ -186,7 +187,7 @@ namespace ZKA::HTTP
 			request += "Host: ";
 			request += host;
 			request += "\r\n";
-			request += "User-Agent: Photon/1.0.0 (NewOS) Photon/1.0.0 Version/1.0.0\r\n";
+			request += "User-Agent: Photon/1.0.0 (ZKA) Photon/1.0.0 Version/1.0.0\r\n";
 
 			MIMEFactory factory;
 			auto		mime_struct = factory(const_cast<char*>(path.data()));
@@ -300,7 +301,7 @@ namespace ZKA::HTTP
 				throw BrowserError("Bad SSL context, SSL_new() failed!");
 			}
 
-			ZKA_WARN("Init HTTPS context.");
+			ZKA_WARN("Init HTTPS SSL.");
 		}
 
 		~HTTPWriter() = default;
@@ -322,7 +323,7 @@ namespace ZKA::HTTP
 			if (!sock)
 				throw HTTPError(HTTP_INTERNAL_ERROR);
 
-			ZKA_INFO("Creating Socket...");
+			ZKA_INFO("Creating network socket...");
 
 			sock->m_Socket = ::ZKA_SOCKET(AF_INET, SOCK_STREAM, 0);
 
@@ -336,7 +337,7 @@ namespace ZKA::HTTP
 			sock->m_Addr.sin_addr.s_addr = inet_addr(dns.c_str());
 			sock->m_Addr.sin_port		 = htons(ZKA_HTTP_PORT);
 
-			ZKA_INFO("Connecting...");
+			ZKA_INFO("Connecting using socket...");
 
 			if (sock->m_Addr.sin_addr.s_addr == INADDR_NONE)
 			{

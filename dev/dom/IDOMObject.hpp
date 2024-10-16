@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <BaseSpecs.hpp>
+#include <core/BaseSpecs.hpp>
 #include <rapidxml/rapidxml.hpp>
 
 #define ZKA_DOM_OBJECT	  (0)

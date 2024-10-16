@@ -22,22 +22,22 @@
 
 namespace ZKA
 {
-    class IJSProgram;
+    class IJSVirtualMachine;
 
     /// @brief JavaScriptEngine class program.
-    class IJSProgram final
+    class IJSVirtualMachine final
     {
     private:
         std::vector<String> mBlob;
 
     public:
-        explicit IJSProgram(std::vector<String> js_blob);
-        ~IJSProgram() = default;
+        explicit IJSVirtualMachine(std::vector<String> js_blob);
+        ~IJSVirtualMachine() = default;
 
         Bool run_script();
 
     public:
-        ZKA_COPY_DEFAULT(IJSProgram);
+        ZKA_COPY_DEFAULT(IJSVirtualMachine);
 
     };
 }
