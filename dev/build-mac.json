@@ -9,7 +9,7 @@
     "src/js/*.cc",
     "src/network/*.cc"
   ],
-  "output_name": "./dist/libPhoton.so",
+  "output_name": "./dist/libPhoton.dylib",
   "compiler_flags": [
     "$(pkg-config gtkmm-3.0 --cflags --libs)",
     "$(pkg-config openssl --cflags --libs)",
