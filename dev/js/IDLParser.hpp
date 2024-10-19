@@ -13,5 +13,5 @@
 
 namespace ZKA
 {
-
+    class IDLParserProvider;
 }
