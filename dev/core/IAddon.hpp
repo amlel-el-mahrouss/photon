@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <BaseSpecs.hpp>
+#include <core/BaseSpecs.hpp>
 
 namespace ZKA
 {
