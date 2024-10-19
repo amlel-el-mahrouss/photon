@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <BaseSpecs.hpp>
-#include <Socket.hpp>
+#include <core/BaseSpecs.hpp>
+#include <core/Socket.hpp>
 
 // OpenSSL headers.
 #include <cstddef>

@@ -11,7 +11,7 @@
  */
 
 /// <summary>
-/// Winsock ::send wrapper
+/// Socket ::send wrapper
 /// </summary>
 /// <typeparam name="Data">Data type</typeparam>
 /// <param name="ptr">Data pointer</param>
@@ -23,7 +23,7 @@ void ZKA::Network::Socket::send(Data ptr, size_t sz)
 }
 
 /// <summary>
-/// Winsock ::recv wrapper
+/// Socket ::recv wrapper
 /// </summary>
 /// <typeparam name="Data"></typeparam>
 /// <param name="ptr"></param>
