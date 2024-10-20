@@ -7,11 +7,5 @@
  * =====================================================================
  */
 
-#pragma once
+#include <browser/BTabProcess.hpp>
 
-#include <BaseSpecs.hpp>
-
-namespace ZKA
-{
-
-}

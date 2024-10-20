@@ -26,6 +26,32 @@ namespace ZKA
 		return data.find(ZKA_XHTML_DOCTYPE) != String::npos;
 	}
 
+	/// @brief Get HTML document from xml blob.
+	String get_xhtml_document(String data) noexcept
+    {
+        if (!is_xhtml_document(data))
+		{
+			return ZKA_EMPTY_HTML;
+		}
+
+		std::transform(data.begin(), data.end(), data.begin(),
+					   [](unsigned char c) { return std::tolower(c); });
+
+		if (data.find(ZKA_HTML_DOCTYPE) != String::npos)
+		{
+			return data.substr(data.find(ZKA_HTML_DOCTYPE) + strlen(ZKA_HTML_DOCTYPE));
+		}
+		else
+		{
+			String doc_type = data.substr(0, strlen(ZKA_HTML_DOCTYPE));
+
+			std::transform(doc_type.begin(), doc_type.end(), doc_type.begin(),
+						   [](unsigned char c) { return std::tolower(c); });
+
+			return data.substr(data.find(doc_type) + doc_type.size());
+		}
+    }
+    
 	/// @Brief Get HTML document.
 	String get_html_document(String data) noexcept
 	{

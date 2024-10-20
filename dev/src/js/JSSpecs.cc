@@ -19,12 +19,11 @@ IJSVirtualMachine::IJSVirtualMachine(std::vector<String> js_blob)
 
 Bool IJSVirtualMachine::run_script()
 {
-    ZKA_INFO("Start running JavaScript context...");
+    ZKA_INFO("Running script...");
 
     for (auto& line : mBlob)
     {
-        ZKA_INFO("Line: " + line);
-
+        
     }
 
     return true;

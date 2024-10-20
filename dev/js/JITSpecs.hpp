@@ -11,7 +11,7 @@
 
 #ifndef _WIN32
 
-#include <BaseSpecs.hpp>
+#include <core/BaseSpecs.hpp>
 #include <stdarg.h>
 #include <sys/mman.h>
 
