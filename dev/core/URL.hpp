@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <BaseSpecs.hpp>
+#include <core/BaseSpecs.hpp>
 
 #ifndef ZKA_HTTPS_PROTOCOL
 #define ZKA_HTTPS_PROTOCOL ("https")
