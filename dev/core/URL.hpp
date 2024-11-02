@@ -4,7 +4,7 @@
  *			Photon
  *			Copyright ZKA Technologies, all rights reserved.
  *
- *			File: Uri.h
+ *			File: URL.hpp
  *			Purpose: ZKA URI parser
  *
  * =====================================================================
@@ -31,7 +31,7 @@
 #endif // !ZKA_MAIL_PROTOCOL
 
 #ifndef ZKA_ZKA_PROTOCOL
-#define ZKA_ZKA_PROTOCOL ("zka://")
+#define ZKA_ZKA_PROTOCOL ("zka")
 #endif // !ZKA_ZKA_PROTOCOL
 
 namespace ZKA
