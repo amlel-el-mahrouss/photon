@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *			Photon
- *			Copyright ZKA Technologies, all rights reserved.
+ *			Copyright Amlal EL Mahrouss, all rights reserved.
  *
  *			File: Socket.inl
  *			Purpose: C++ Socket Wrapper

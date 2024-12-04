@@ -2,7 +2,7 @@
  * =====================================================================
  *
  *			Photon
- *			Copyright ZKA Technologies, all rights reserved.
+ *			Copyright Amlal EL Mahrouss, all rights reserved.
  *
  *			File: URL.hpp
  *			Purpose: ZKA URI parser
